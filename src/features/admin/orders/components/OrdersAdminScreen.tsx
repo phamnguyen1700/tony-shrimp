@@ -72,7 +72,7 @@ export default function OrdersAdmin({ t }: Props) {
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`px-4 py-2.5 font-mono-label text-[10px] uppercase tracking-widest transition-colors relative
+              className={`px-4 py-2.5 font-mono-label text-xs uppercase tracking-widest transition-colors relative
                 ${activeTab === tab.id ? 'text-accent' : 'text-muted-foreground hover:text-foreground'}`}
             >
               {tab.label}
@@ -88,7 +88,7 @@ export default function OrdersAdmin({ t }: Props) {
             <thead>
               <tr className="border-b border-border">
                 {['Order #', 'Customer', 'Items', 'Total', 'Date', 'Status', ''].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <th key={h} className="px-4 py-3 text-left font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
                     {h}
                   </th>
                 ))}
@@ -101,7 +101,7 @@ export default function OrdersAdmin({ t }: Props) {
                   <td className="px-4 py-3 text-sm text-foreground">{order.shippingAddress.name}</td>
                   <td className="px-4 py-3 text-sm text-muted-foreground max-w-[180px]">
                     <div className="truncate">{order.items.map((i) => i.name).join(', ')}</div>
-                    <div className="font-mono-label text-[10px] text-muted-foreground">{order.items.length} item{order.items.length !== 1 ? 's' : ''}</div>
+                    <div className="font-mono-label text-xs text-muted-foreground">{order.items.length} item{order.items.length !== 1 ? 's' : ''}</div>
                   </td>
                   <td className="px-4 py-3 text-sm text-foreground">A${order.total}</td>
                   <td className="px-4 py-3 font-mono-label text-xs text-muted-foreground">{order.date}</td>
@@ -111,7 +111,7 @@ export default function OrdersAdmin({ t }: Props) {
                   <td className="px-4 py-3">
                     <Link
                       href={`/admin/orders/${order.id}`}
-                      className="font-mono-label text-[10px] uppercase tracking-widest text-accent hover:underline"
+                      className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline"
                     >
                       View
                     </Link>
@@ -139,12 +139,12 @@ export default function OrdersAdmin({ t }: Props) {
               </div>
               <div className="text-xs text-muted-foreground mb-3 line-clamp-1">{order.items.map((i) => i.name).join(', ')}</div>
               <div className="flex items-center justify-between">
-                <div className="font-mono-label text-[10px] text-muted-foreground uppercase tracking-widest">
+                <div className="font-mono-label text-xs text-muted-foreground uppercase tracking-widest">
                   {order.items.length} items · A${order.total} · {order.date}
                 </div>
                 <Link
                   href={`/admin/orders/${order.id}`}
-                  className="font-mono-label text-[10px] uppercase tracking-widest text-accent hover:underline"
+                  className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline"
                 >
                   View
                 </Link>
@@ -158,7 +158,7 @@ export default function OrdersAdmin({ t }: Props) {
 
         {filtered.length > 0 && (
           <div className="flex items-center justify-between">
-            <p className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">
+            <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
               Showing {Math.min((page - 1) * PAGE_SIZE + 1, filtered.length)}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
             </p>
             {totalPages > 1 && (
@@ -166,7 +166,7 @@ export default function OrdersAdmin({ t }: Props) {
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-3 py-1.5 font-mono-label text-[10px] uppercase tracking-widest border border-border text-foreground disabled:opacity-40 hover:bg-secondary transition-colors"
+                  className="px-3 py-1.5 font-mono-label text-xs uppercase tracking-widest border border-border text-foreground disabled:opacity-40 hover:bg-secondary transition-colors"
                   style={{ borderRadius: 'var(--radius-sm)' }}
                 >
                   Prev
@@ -174,7 +174,7 @@ export default function OrdersAdmin({ t }: Props) {
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="px-3 py-1.5 font-mono-label text-[10px] uppercase tracking-widest border border-border text-foreground disabled:opacity-40 hover:bg-secondary transition-colors"
+                  className="px-3 py-1.5 font-mono-label text-xs uppercase tracking-widest border border-border text-foreground disabled:opacity-40 hover:bg-secondary transition-colors"
                   style={{ borderRadius: 'var(--radius-sm)' }}
                 >
                   Next

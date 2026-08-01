@@ -168,7 +168,7 @@ export default function ShrimpAdmin({ t }: Props) {
             <thead>
               <tr className="border-b border-border">
                 {['', 'Name', 'Type', 'Price', 'Qty', 'Status', 'Actions'].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <th key={h} className="px-4 py-3 text-left font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
                     {h}
                   </th>
                 ))}
@@ -195,7 +195,7 @@ export default function ShrimpAdmin({ t }: Props) {
                   </td>
                   <td className="px-4 py-3">
                     <div className="text-sm font-body text-foreground">{p.name}</div>
-                    {p.grade && <div className="font-mono-label text-[10px] text-muted-foreground mt-0.5">{p.grade}</div>}
+                    {p.grade && <div className="font-mono-label text-xs text-muted-foreground mt-0.5">{p.grade}</div>}
                   </td>
                   <td className="px-4 py-3 font-mono-label text-xs text-muted-foreground">{p.type}</td>
                   <td className="px-4 py-3 text-sm text-foreground">A${p.price}</td>
@@ -207,13 +207,13 @@ export default function ShrimpAdmin({ t }: Props) {
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => openEdit(p)}
-                        className="font-mono-label text-[10px] uppercase tracking-widest text-accent hover:underline"
+                        className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline"
                       >
                         {t.admin.editShrimp}
                       </button>
                       <button
                         onClick={() => setDeleteTarget(p.id)}
-                        className="font-mono-label text-[10px] uppercase tracking-widest text-red-500 hover:underline"
+                        className="font-mono-label text-xs uppercase tracking-widest text-red-500 hover:underline"
                       >
                         {t.admin.deleteShrimp}
                       </button>
@@ -238,15 +238,15 @@ export default function ShrimpAdmin({ t }: Props) {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="text-sm font-body text-foreground">{p.name}</div>
-                    <div className="font-mono-label text-[10px] text-muted-foreground mt-0.5">{p.type} · A${p.price}</div>
+                    <div className="font-mono-label text-xs text-muted-foreground mt-0.5">{p.type} · A${p.price}</div>
                   </div>
                   <Badge variant={statusBadgeVariant(p.status)}>{statusLabel[p.status]}</Badge>
                 </div>
                 <div className="flex gap-4 mt-2">
-                  <button onClick={() => openEdit(p)} className="font-mono-label text-[10px] uppercase tracking-widest text-accent">
+                  <button onClick={() => openEdit(p)} className="font-mono-label text-xs uppercase tracking-widest text-accent">
                     {t.admin.editShrimp}
                   </button>
-                  <button onClick={() => setDeleteTarget(p.id)} className="font-mono-label text-[10px] uppercase tracking-widest text-red-500">
+                  <button onClick={() => setDeleteTarget(p.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500">
                     {t.admin.deleteShrimp}
                   </button>
                 </div>

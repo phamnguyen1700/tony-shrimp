@@ -44,7 +44,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
               {t.brand}
             </span>
             <span
-              className="font-mono-label text-[9px] tracking-[0.35em] uppercase"
+              className="font-mono-label text-[11px] tracking-[0.24em] uppercase"
               style={{ color: isLanding ? 'rgba(237,234,227,0.45)' : 'var(--muted-foreground)' }}
             >
               {t.tagline}
@@ -87,7 +87,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
             {/* Language */}
             <button
               onClick={() => setLang(lang === 'en' ? 'vi' : 'en')}
-              className={`hidden md:flex text-[10px] font-mono-label tracking-widest uppercase transition-colors p-2 ${
+              className={`hidden md:flex text-xs font-mono-label tracking-widest uppercase transition-colors p-2 ${
                 isLanding ? 'text-white/60 hover:text-white' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -133,7 +133,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
                     initial={reduced ? { opacity: 0 } : { scale: 0, opacity: 0 }}
                     animate={reduced ? { opacity: 1 } : { scale: 1, opacity: 1 }}
                     exit={reduced ? { opacity: 0 } : { scale: 0, opacity: 0 }}
-                    className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-accent text-accent-foreground text-[9px] font-mono-label flex items-center justify-center"
+                    className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-accent text-accent-foreground text-[11px] font-mono-label flex items-center justify-center"
                   >
                     {totalItems}
                   </motion.span>

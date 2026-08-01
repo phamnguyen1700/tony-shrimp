@@ -89,14 +89,14 @@ export default function Dashboard({ t }: Props) {
                 <span className="text-muted-foreground">{card.icon}</span>
               </div>
               <div className="font-display text-3xl font-semibold text-foreground mb-1">{card.value}</div>
-              <div className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">{card.label}</div>
+              <div className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">{card.label}</div>
             </motion.div>
           ))}
         </motion.div>
 
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-mono-label text-xs uppercase tracking-widest text-foreground">{t.admin.recentOrders}</h2>
-          <Link href="/admin/orders" className="font-mono-label text-[10px] uppercase tracking-widest text-accent hover:underline">
+          <Link href="/admin/orders" className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">
             View all →
           </Link>
         </div>
@@ -106,7 +106,7 @@ export default function Dashboard({ t }: Props) {
             <thead>
               <tr className="border-b border-border">
                 {['Order #', 'Customer', 'Items', 'Total', 'Date', 'Status', ''].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <th key={h} className="px-4 py-3 text-left font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
                     {h}
                   </th>
                 ))}
@@ -136,7 +136,7 @@ export default function Dashboard({ t }: Props) {
                   <td className="px-4 py-3">
                     <Link
                       href={`/admin/orders/${order.id}`}
-                      className="font-mono-label text-[10px] uppercase tracking-widest text-accent hover:underline"
+                      className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline"
                     >
                       View
                     </Link>
@@ -158,12 +158,12 @@ export default function Dashboard({ t }: Props) {
                 <Badge variant={badgeVariant(order.status)}>{order.status}</Badge>
               </div>
               <div className="flex items-center justify-between mt-3">
-                <div className="font-mono-label text-[10px] text-muted-foreground uppercase tracking-widest">
+                <div className="font-mono-label text-xs text-muted-foreground uppercase tracking-widest">
                   {order.items.length} items · A${order.total}
                 </div>
                 <Link
                   href={`/admin/orders/${order.id}`}
-                  className="font-mono-label text-[10px] uppercase tracking-widest text-accent hover:underline"
+                  className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline"
                 >
                   View
                 </Link>

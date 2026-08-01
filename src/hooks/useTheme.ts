@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react'
 
 export type ThemeMode = 'light' | 'dark' | 'system'
+const DEFAULT_THEME: ThemeMode = 'dark'
+
+function isThemeMode(value: string | null): value is ThemeMode {
+  return value === 'light' || value === 'dark' || value === 'system'
+}
 
 function getSystemTheme(): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'dark'
@@ -14,10 +19,14 @@ function applyTheme(mode: ThemeMode) {
 }
 
 export function useTheme() {
-  const [theme, setThemeState] = useState<ThemeMode>(() => {
-    if (typeof localStorage === 'undefined') return 'dark'
-    return (localStorage.getItem('tony-theme') as ThemeMode) ?? 'dark'
-  })
+  const [theme, setThemeState] = useState<ThemeMode>(DEFAULT_THEME)
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('tony-theme')
+    const nextTheme = isThemeMode(storedTheme) ? storedTheme : DEFAULT_THEME
+    setThemeState(nextTheme)
+    applyTheme(nextTheme)
+  }, [])
 
   useEffect(() => {
     applyTheme(theme)

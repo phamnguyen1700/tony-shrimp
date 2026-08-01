@@ -76,7 +76,7 @@ export default function MobileDrawer({ open, onClose, t, lang, setLang, theme, s
               ))}
 
               <div className="mt-6 pt-4 border-t border-border">
-                <p className="text-[10px] font-mono-label uppercase tracking-widest text-muted-foreground mb-3">{t.nav.language}</p>
+                <p className="text-xs font-mono-label uppercase tracking-widest text-muted-foreground mb-3">{t.nav.language}</p>
                 <div className="flex gap-2">
                   {(['en', 'vi'] as Lang[]).map(l => (
                     <button
@@ -96,7 +96,7 @@ export default function MobileDrawer({ open, onClose, t, lang, setLang, theme, s
               </div>
 
               <div className="mt-5">
-                <p className="text-[10px] font-mono-label uppercase tracking-widest text-muted-foreground mb-3">{t.nav.theme}</p>
+                <p className="text-xs font-mono-label uppercase tracking-widest text-muted-foreground mb-3">{t.nav.theme}</p>
                 <div className="flex gap-2">
                   {themes.map(m => (
                     <button

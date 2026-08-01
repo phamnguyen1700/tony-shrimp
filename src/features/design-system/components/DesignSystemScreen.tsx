@@ -40,8 +40,8 @@ function ColorSwatch({ name, cssVar }: { name: string; cssVar: string }) {
         className="w-full h-14 border border-border"
         style={{ backgroundColor: `var(${cssVar})`, borderRadius: 'var(--radius-sm)' }}
       />
-      <div className="font-mono-label text-[10px] uppercase tracking-widest text-foreground">{name}</div>
-      <div className="font-mono-label text-[9px] text-muted-foreground">{cssVar}</div>
+      <div className="font-mono-label text-xs uppercase tracking-widest text-foreground">{name}</div>
+      <div className="font-mono-label text-[11px] text-muted-foreground">{cssVar}</div>
     </div>
   )
 }
@@ -52,7 +52,7 @@ function SectionAnchor({ id }: { id: string }) {
 
 function SectionTitle({ children }: { children: string }) {
   return (
-    <h2 className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground mb-6 pb-3 border-b border-border">
+    <h2 className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground mb-6 pb-3 border-b border-border">
       {children}
     </h2>
   )
@@ -69,7 +69,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
   return (
     <div className="min-h-screen bg-background">
       <header className="fixed top-0 left-0 right-0 h-14 bg-card border-b border-border z-20 flex items-center justify-between px-6">
-        <div className="font-mono-label text-[10px] uppercase tracking-widest text-foreground">
+        <div className="font-mono-label text-xs uppercase tracking-widest text-foreground">
           TONY SHRIMP · DESIGN SYSTEM
         </div>
         <div className="flex items-center gap-4">
@@ -78,7 +78,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
               <button
                 key={m}
                 onClick={() => setTheme(m)}
-                className={`px-2.5 py-1 font-mono-label text-[9px] uppercase tracking-widest transition-colors border
+                className={`px-2.5 py-1 font-mono-label text-[11px] uppercase tracking-widest transition-colors border
                   ${theme === m
                     ? 'bg-accent text-accent-foreground border-accent'
                     : 'bg-transparent text-muted-foreground border-border hover:text-foreground'
@@ -94,7 +94,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
               <button
                 key={l}
                 onClick={() => setLang(l)}
-                className={`px-2.5 py-1 font-mono-label text-[9px] uppercase tracking-widest transition-colors border
+                className={`px-2.5 py-1 font-mono-label text-[11px] uppercase tracking-widest transition-colors border
                   ${lang === l
                     ? 'bg-accent text-accent-foreground border-accent'
                     : 'bg-transparent text-muted-foreground border-border hover:text-foreground'
@@ -114,7 +114,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
             <a
               key={s}
               href={`#${s.toLowerCase()}`}
-              className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground hover:text-accent py-1.5 transition-colors"
+              className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground hover:text-accent py-1.5 transition-colors"
             >
               {s}
             </a>
@@ -152,11 +152,11 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
               </div>
               <div className="space-y-2 pt-4 border-t border-border">
                 <div className="font-mono-label text-xs uppercase tracking-widest text-foreground">MONO LABEL · DM MONO · UPPERCASE</div>
-                <div className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">SMALL LABEL · SECTION HEADER · METADATA</div>
-                <div className="font-mono-label text-[9px] uppercase tracking-widest text-muted-foreground">MICRO LABEL · TABLE HEADERS · TIMESTAMPS</div>
+                <div className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">SMALL LABEL · SECTION HEADER · METADATA</div>
+                <div className="font-mono-label text-[11px] uppercase tracking-widest text-muted-foreground">MICRO LABEL · TABLE HEADERS · TIMESTAMPS</div>
               </div>
               <div className="space-y-3 pt-4 border-t border-border">
-                <p className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Vietnamese samples</p>
+                <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground mb-2">Vietnamese samples</p>
                 <div className="font-display text-2xl text-foreground">Cửa hàng · Giỏ hàng · Tài khoản</div>
                 <div className="font-body text-sm text-muted-foreground">Đang xử lý · Đã gửi · Đã giao · Đã huỷ</div>
                 <div className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">ĐƠN HÀNG · SẢN PHẨM · KHÁCH HÀNG</div>
@@ -170,7 +170,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
             <div className="space-y-6">
               {(['primary', 'secondary', 'ghost', 'accent'] as const).map((variant) => (
                 <div key={variant} className="flex flex-wrap items-center gap-3">
-                  <span className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground w-20">{variant}</span>
+                  <span className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground w-20">{variant}</span>
                   <MotionButton variant={variant} size="sm">Small</MotionButton>
                   <MotionButton variant={variant} size="md">Medium</MotionButton>
                   <MotionButton variant={variant} size="lg">Large</MotionButton>
@@ -239,7 +239,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
                   <div className="p-3">
                     <div className="font-display text-sm text-foreground leading-tight mb-1">{p.name}</div>
                     {p.grade && (
-                      <div className="font-mono-label text-[9px] uppercase tracking-widest text-muted-foreground mb-2">{p.grade}</div>
+                      <div className="font-mono-label text-[11px] uppercase tracking-widest text-muted-foreground mb-2">{p.grade}</div>
                     )}
                     <div className="flex items-center justify-between">
                       <span className="font-body text-sm text-foreground">A${p.price}</span>
@@ -265,7 +265,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
                   </div>
                   <div className="pb-6">
                     <div className="font-mono-label text-xs uppercase tracking-widest text-foreground">{status}</div>
-                    <div className="font-mono-label text-[9px] text-muted-foreground mt-0.5">
+                    <div className="font-mono-label text-[11px] text-muted-foreground mt-0.5">
                       {idx === 0 ? '28 Jul 2026' : idx === 1 ? '29 Jul 2026' : '31 Jul 2026'}
                     </div>
                     <div className="text-xs text-muted-foreground mt-1">
@@ -283,7 +283,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
             <div className="space-y-3">
               {spacingScale.map((px) => (
                 <div key={px} className="flex items-center gap-4">
-                  <div className="font-mono-label text-[10px] text-muted-foreground w-10 text-right">{px}px</div>
+                  <div className="font-mono-label text-xs text-muted-foreground w-10 text-right">{px}px</div>
                   <div
                     className="bg-accent/30 border border-accent/40 h-4"
                     style={{ width: `${px}px`, borderRadius: 'var(--radius-sm)' }}
@@ -309,7 +309,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
                       animate={reduced ? undefined : 'visible'}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.4 }}
-                      className="px-4 py-2 bg-accent/10 border border-accent/20 text-accent font-mono-label text-[10px] uppercase tracking-widest"
+                      className="px-4 py-2 bg-accent/10 border border-accent/20 text-accent font-mono-label text-xs uppercase tracking-widest"
                       style={{ borderRadius: 'var(--radius-sm)' }}
                     >
                       Fade In Element
@@ -330,7 +330,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
                       animate={reduced ? undefined : 'visible'}
                       exit={{ opacity: 0, y: 12 }}
                       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                      className="px-4 py-2 bg-primary text-primary-foreground font-mono-label text-[10px] uppercase tracking-widest"
+                      className="px-4 py-2 bg-primary text-primary-foreground font-mono-label text-xs uppercase tracking-widest"
                       style={{ borderRadius: 'var(--radius-sm)' }}
                     >
                       Slide Up Element
@@ -350,7 +350,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
                       initial={reduced ? undefined : 'hidden'}
                       animate={reduced ? undefined : 'visible'}
                       exit={reduced ? { opacity: 0 } : 'exit'}
-                      className="px-4 py-2 bg-secondary border border-border text-foreground font-mono-label text-[10px] uppercase tracking-widest"
+                      className="px-4 py-2 bg-secondary border border-border text-foreground font-mono-label text-xs uppercase tracking-widest"
                       style={{ borderRadius: 'var(--radius-sm)' }}
                     >
                       Scale Element
@@ -360,7 +360,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
               </div>
 
               <div className="pt-4 border-t border-border">
-                <p className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground mb-4">Stagger Demo</p>
+                <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground mb-4">Stagger Demo</p>
                 <motion.div
                   className="flex flex-wrap gap-2"
                   variants={reduced ? undefined : staggerFast}
@@ -371,7 +371,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
                     <motion.div
                       key={label}
                       variants={reduced ? undefined : fadeUp}
-                      className="px-3 py-1.5 bg-muted font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground"
+                      className="px-3 py-1.5 bg-muted font-mono-label text-xs uppercase tracking-widest text-muted-foreground"
                       style={{ borderRadius: 'var(--radius-sm)' }}
                     >
                       {label}

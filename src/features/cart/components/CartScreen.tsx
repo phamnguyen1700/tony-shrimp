@@ -26,7 +26,7 @@ export default function Cart({ t }: Props) {
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="mb-8 md:mb-12"
         >
-          <p className="font-mono-label text-[9px] tracking-[0.3em] text-muted-foreground uppercase mb-2">
+          <p className="font-mono-label text-[11px] tracking-[0.22em] text-muted-foreground uppercase mb-2">
             TONY SHRIMP AUSTRALIA
           </p>
           <h1 className="font-display italic font-semibold text-5xl md:text-7xl text-foreground leading-none">
@@ -41,10 +41,10 @@ export default function Cart({ t }: Props) {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <p className="font-mono-label text-[10px] tracking-widest text-muted-foreground uppercase">{t.cart.empty}</p>
+            <p className="font-mono-label text-xs tracking-widest text-muted-foreground uppercase">{t.cart.empty}</p>
             <Link
               href="/shop"
-              className="inline-block font-mono-label text-[10px] tracking-widest uppercase text-accent underline underline-offset-2 hover:text-accent/80 transition-colors"
+              className="inline-block font-mono-label text-xs tracking-widest uppercase text-accent underline underline-offset-2 hover:text-accent/80 transition-colors"
             >
               {t.cart.continueShopping} →
             </Link>
@@ -58,10 +58,10 @@ export default function Cart({ t }: Props) {
               animate="visible"
             >
               <div className="border-b border-border pb-3 mb-4 hidden md:grid grid-cols-[1fr_auto_auto_auto] gap-6 items-center">
-                <p className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground">ITEM</p>
-                <p className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground w-24 text-center">QTY</p>
-                <p className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground w-16 text-right">PRICE</p>
-                <p className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground w-4" />
+                <p className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground">ITEM</p>
+                <p className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground w-24 text-center">QTY</p>
+                <p className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground w-16 text-right">PRICE</p>
+                <p className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground w-4" />
               </div>
 
               <AnimatePresence initial={false}>
@@ -91,7 +91,7 @@ export default function Cart({ t }: Props) {
                         {item.name}
                       </Link>
                       {item.grade && (
-                        <p className="font-mono-label text-[9px] tracking-widest text-muted-foreground uppercase mt-0.5">{item.grade}</p>
+                        <p className="font-mono-label text-[11px] tracking-widest text-muted-foreground uppercase mt-0.5">{item.grade}</p>
                       )}
                       <p className="font-display text-sm font-medium text-foreground mt-1 md:hidden">A${item.price * item.quantity}</p>
                     </div>
@@ -144,7 +144,7 @@ export default function Cart({ t }: Props) {
                       </div>
                       <button
                         onClick={() => removeItem(item.productId)}
-                        className="font-mono-label text-[9px] tracking-widest uppercase text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors"
+                        className="font-mono-label text-[11px] tracking-widest uppercase text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors"
                       >
                         {t.cart.remove}
                       </button>
@@ -156,7 +156,7 @@ export default function Cart({ t }: Props) {
               <div className="mt-6">
                 <Link
                   href="/shop"
-                  className="font-mono-label text-[10px] tracking-widest uppercase text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors"
+                  className="font-mono-label text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors"
                 >
                   ← {t.cart.continueShopping}
                 </Link>
@@ -170,7 +170,7 @@ export default function Cart({ t }: Props) {
               transition={{ duration: 0.4, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="border border-border p-6 space-y-4" style={{ borderRadius: 'var(--radius)' }}>
-                <p className="font-mono-label text-[10px] tracking-[0.2em] uppercase text-foreground">ORDER SUMMARY</p>
+                <p className="font-mono-label text-xs tracking-[0.16em] uppercase text-foreground">ORDER SUMMARY</p>
                 <div className="border-t border-border pt-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <p className="font-body text-sm text-muted-foreground">{t.cart.subtotal}</p>
@@ -182,7 +182,7 @@ export default function Cart({ t }: Props) {
                   </div>
                 </div>
                 <div className="border-t border-border pt-4 flex items-center justify-between">
-                  <p className="font-mono-label text-[10px] tracking-[0.2em] uppercase text-foreground">{t.cart.total}</p>
+                  <p className="font-mono-label text-xs tracking-[0.16em] uppercase text-foreground">{t.cart.total}</p>
                   <p className="font-display text-xl font-semibold text-foreground">A${total}</p>
                 </div>
                 <MotionButton variant="accent" size="lg" className="w-full mt-2">

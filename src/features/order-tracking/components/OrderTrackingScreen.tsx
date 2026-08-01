@@ -63,7 +63,7 @@ export default function OrderTracking({ t, id }: Props) {
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="mb-8 md:mb-12"
         >
-          <p className="font-mono-label text-[9px] tracking-[0.3em] text-muted-foreground uppercase mb-2">
+          <p className="font-mono-label text-[11px] tracking-[0.22em] text-muted-foreground uppercase mb-2">
             {t.order.orderNumber}
           </p>
           <h1 className="font-display italic font-semibold text-4xl md:text-6xl text-foreground leading-none">
@@ -71,7 +71,7 @@ export default function OrderTracking({ t, id }: Props) {
           </h1>
           <div className="flex items-center gap-3 mt-4">
             <Badge variant={getStatusBadgeVariant(order.status)}>{getStatusLabel(order.status, t)}</Badge>
-            <span className="font-mono-label text-[9px] tracking-widest text-muted-foreground">{formatDate(order.date)}</span>
+            <span className="font-mono-label text-[11px] tracking-widest text-muted-foreground">{formatDate(order.date)}</span>
           </div>
         </motion.div>
 
@@ -90,7 +90,7 @@ export default function OrderTracking({ t, id }: Props) {
                       <span className="w-2 h-2 rounded-full bg-red-500" />
                     </div>
                     <div>
-                      <p className="font-mono-label text-[10px] tracking-[0.2em] uppercase text-red-500">{t.order.cancelled}</p>
+                      <p className="font-mono-label text-xs tracking-[0.16em] uppercase text-red-500">{t.order.cancelled}</p>
                     </div>
                   </motion.div>
                 ) : (
@@ -124,12 +124,12 @@ export default function OrderTracking({ t, id }: Props) {
                       </div>
 
                       <div className="flex-1 pt-0.5">
-                        <p className={`font-mono-label text-[10px] tracking-[0.2em] uppercase ${state !== 'future' ? 'text-foreground' : 'text-muted-foreground'}`}>
+                        <p className={`font-mono-label text-xs tracking-[0.16em] uppercase ${state !== 'future' ? 'text-foreground' : 'text-muted-foreground'}`}>
                           {getStatusLabel(step, t)}
                         </p>
                         {historyEntry && (
                           <>
-                            <p className="font-mono-label text-[9px] tracking-widest text-muted-foreground mt-1">
+                            <p className="font-mono-label text-[11px] tracking-widest text-muted-foreground mt-1">
                               {formatDateTime(historyEntry.timestamp)}
                             </p>
                             {historyEntry.note && (
@@ -152,19 +152,19 @@ export default function OrderTracking({ t, id }: Props) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: 0.3 }}
               >
-                <p className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground">TRACKING</p>
+                <p className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground">TRACKING</p>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="font-mono-label text-[9px] tracking-widest uppercase text-muted-foreground">{t.order.carrier}</p>
+                    <p className="font-mono-label text-[11px] tracking-widest uppercase text-muted-foreground">{t.order.carrier}</p>
                     <p className="font-body text-sm text-foreground mt-0.5">{order.carrier}</p>
                   </div>
                   <div>
-                    <p className="font-mono-label text-[9px] tracking-widest uppercase text-muted-foreground">{t.order.trackingNumber}</p>
+                    <p className="font-mono-label text-[11px] tracking-widest uppercase text-muted-foreground">{t.order.trackingNumber}</p>
                     <p className="font-mono-label text-xs text-foreground mt-0.5">{order.trackingNumber}</p>
                   </div>
                   {order.shippedDate && (
                     <div>
-                      <p className="font-mono-label text-[9px] tracking-widest uppercase text-muted-foreground">{t.order.shippedDate}</p>
+                      <p className="font-mono-label text-[11px] tracking-widest uppercase text-muted-foreground">{t.order.shippedDate}</p>
                       <p className="font-body text-sm text-foreground mt-0.5">{formatDate(order.shippedDate)}</p>
                     </div>
                   )}
@@ -173,7 +173,7 @@ export default function OrderTracking({ t, id }: Props) {
                   href={`https://auspost.com.au/mypost/track/#/search?trackingId=${order.trackingNumber}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block font-mono-label text-[10px] tracking-[0.2em] uppercase text-accent hover:text-accent/80 transition-colors"
+                  className="inline-block font-mono-label text-xs tracking-[0.16em] uppercase text-accent hover:text-accent/80 transition-colors"
                 >
                   {t.order.trackPackage}
                 </a>
@@ -186,7 +186,7 @@ export default function OrderTracking({ t, id }: Props) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: 0.35 }}
             >
-              <p className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground">ITEMS</p>
+              <p className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground">ITEMS</p>
               {order.items.map((item, i) => (
                 <div key={i} className="flex items-center gap-4 py-3 border-b border-border">
                   <div className="w-14 h-14 bg-[#080b08] shrink-0" style={{ borderRadius: 'var(--radius)' }}>
@@ -194,9 +194,9 @@ export default function OrderTracking({ t, id }: Props) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-display italic font-semibold text-sm text-foreground">{item.name}</p>
-                    {item.grade && <p className="font-mono-label text-[9px] tracking-widest text-muted-foreground uppercase">{item.grade}</p>}
+                    {item.grade && <p className="font-mono-label text-[11px] tracking-widest text-muted-foreground uppercase">{item.grade}</p>}
                   </div>
-                  <p className="font-mono-label text-[10px] tracking-widest text-muted-foreground">×{item.quantity}</p>
+                  <p className="font-mono-label text-xs tracking-widest text-muted-foreground">×{item.quantity}</p>
                   <p className="font-display text-sm font-medium text-foreground">A${item.unitPrice * item.quantity}</p>
                 </div>
               ))}
@@ -210,15 +210,15 @@ export default function OrderTracking({ t, id }: Props) {
             transition={{ duration: 0.4, delay: 0.2 }}
           >
             <div className="border border-border p-5 space-y-4" style={{ borderRadius: 'var(--radius)' }}>
-              <p className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground">ORDER DETAILS</p>
+              <p className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground">ORDER DETAILS</p>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <p className="font-mono-label text-[9px] tracking-widest uppercase text-muted-foreground">{t.order.orderNumber}</p>
-                  <p className="font-mono-label text-[10px] text-foreground">{order.number}</p>
+                  <p className="font-mono-label text-[11px] tracking-widest uppercase text-muted-foreground">{t.order.orderNumber}</p>
+                  <p className="font-mono-label text-xs text-foreground">{order.number}</p>
                 </div>
                 <div className="flex justify-between">
-                  <p className="font-mono-label text-[9px] tracking-widest uppercase text-muted-foreground">{t.order.orderDate}</p>
-                  <p className="font-mono-label text-[10px] text-foreground">{formatDate(order.date)}</p>
+                  <p className="font-mono-label text-[11px] tracking-widest uppercase text-muted-foreground">{t.order.orderDate}</p>
+                  <p className="font-mono-label text-xs text-foreground">{formatDate(order.date)}</p>
                 </div>
               </div>
               <div className="border-t border-border pt-4 space-y-2">
@@ -231,14 +231,14 @@ export default function OrderTracking({ t, id }: Props) {
                   <p className="font-display text-sm text-foreground">A${order.shipping}</p>
                 </div>
                 <div className="flex justify-between border-t border-border pt-2">
-                  <p className="font-mono-label text-[10px] tracking-[0.2em] uppercase">{t.cart.total}</p>
+                  <p className="font-mono-label text-xs tracking-[0.16em] uppercase">{t.cart.total}</p>
                   <p className="font-display text-base font-semibold text-foreground">A${order.total}</p>
                 </div>
               </div>
             </div>
 
             <div className="border border-border p-5 space-y-2" style={{ borderRadius: 'var(--radius)' }}>
-              <p className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground mb-3">SHIPPING ADDRESS</p>
+              <p className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground mb-3">SHIPPING ADDRESS</p>
               <p className="font-body text-sm text-foreground">{order.shippingAddress.name}</p>
               <p className="font-body text-sm text-muted-foreground">{order.shippingAddress.line1}</p>
               <p className="font-body text-sm text-muted-foreground">

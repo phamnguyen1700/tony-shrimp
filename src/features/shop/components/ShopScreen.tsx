@@ -50,7 +50,7 @@ function FilterCheckbox({ label, checked, onChange }: { label: string; checked: 
 function FilterSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <p className="font-mono-label text-[9px] tracking-[0.2em] text-muted-foreground uppercase">{title}</p>
+      <p className="font-mono-label text-[11px] tracking-[0.16em] text-muted-foreground uppercase">{title}</p>
       <div className="space-y-1.5">{children}</div>
     </div>
   )
@@ -147,7 +147,7 @@ export default function Shop({ t }: Props) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="font-mono-label text-[9px] tracking-[0.3em] text-muted-foreground uppercase mb-2">
+          <p className="font-mono-label text-[11px] tracking-[0.22em] text-muted-foreground uppercase mb-2">
             TONY SHRIMP AUSTRALIA
           </p>
           <h1 className="font-display italic font-semibold text-5xl md:text-7xl text-foreground leading-none">
@@ -158,7 +158,7 @@ export default function Shop({ t }: Props) {
         <div className="hidden md:flex items-start gap-8 pb-6 border-b border-border">
           <div className="flex-1 flex flex-wrap gap-6">
             <div className="flex items-center gap-2">
-              <p className="font-mono-label text-[9px] tracking-[0.2em] text-muted-foreground uppercase">{t.shop.type}:</p>
+              <p className="font-mono-label text-[11px] tracking-[0.16em] text-muted-foreground uppercase">{t.shop.type}:</p>
               {(['Caridina', 'Neocaridina'] as const).map(type => (
                 <button
                   key={type}
@@ -166,7 +166,7 @@ export default function Shop({ t }: Props) {
                     ...prev,
                     types: prev.types.includes(type) ? prev.types.filter(v => v !== type) : [...prev.types, type],
                   }))}
-                  className={`font-mono-label text-[10px] tracking-widest px-2.5 py-1 border transition-colors ${filters.types.includes(type) ? 'border-accent text-accent bg-accent/8' : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'}`}
+                  className={`font-mono-label text-xs tracking-widest px-2.5 py-1 border transition-colors ${filters.types.includes(type) ? 'border-accent text-accent bg-accent/8' : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'}`}
                   style={{ borderRadius: 'var(--radius)' }}
                 >
                   {type}
@@ -174,7 +174,7 @@ export default function Shop({ t }: Props) {
               ))}
             </div>
             <div className="flex items-center gap-2">
-              <p className="font-mono-label text-[9px] tracking-[0.2em] text-muted-foreground uppercase">{t.shop.colour}:</p>
+              <p className="font-mono-label text-[11px] tracking-[0.16em] text-muted-foreground uppercase">{t.shop.colour}:</p>
               {COLOURS.map(c => (
                 <button
                   key={c}
@@ -182,7 +182,7 @@ export default function Shop({ t }: Props) {
                     ...prev,
                     colours: prev.colours.includes(c) ? prev.colours.filter(v => v !== c) : [...prev.colours, c],
                   }))}
-                  className={`font-mono-label text-[10px] tracking-widest px-2.5 py-1 border transition-colors ${filters.colours.includes(c) ? 'border-accent text-accent bg-accent/8' : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'}`}
+                  className={`font-mono-label text-xs tracking-widest px-2.5 py-1 border transition-colors ${filters.colours.includes(c) ? 'border-accent text-accent bg-accent/8' : 'border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground'}`}
                   style={{ borderRadius: 'var(--radius)' }}
                 >
                   {c}
@@ -193,7 +193,7 @@ export default function Shop({ t }: Props) {
           {filterCount > 0 && (
             <button
               onClick={clearAll}
-              className="font-mono-label text-[10px] tracking-widest text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors shrink-0"
+              className="font-mono-label text-xs tracking-widest text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors shrink-0"
             >
               {t.shop.clearAll}
             </button>
@@ -203,20 +203,20 @@ export default function Shop({ t }: Props) {
         <div className="md:hidden flex items-center justify-between py-4 border-b border-border">
           <button
             onClick={() => setMobileFiltersOpen(true)}
-            className="flex items-center gap-2 font-mono-label text-[10px] tracking-widest text-foreground uppercase"
+            className="flex items-center gap-2 font-mono-label text-xs tracking-widest text-foreground uppercase"
           >
             <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
               <path d="M1 1H13M3 5H11M5 9H9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
             </svg>
             {t.shop.showFilters}
             {filterCount > 0 && (
-              <span className="w-4 h-4 rounded-full bg-accent text-accent-foreground text-[9px] flex items-center justify-center">
+              <span className="w-4 h-4 rounded-full bg-accent text-accent-foreground text-[11px] flex items-center justify-center">
                 {filterCount}
               </span>
             )}
           </button>
           {filterCount > 0 && (
-            <button onClick={clearAll} className="font-mono-label text-[10px] tracking-widest text-muted-foreground underline">
+            <button onClick={clearAll} className="font-mono-label text-xs tracking-widest text-muted-foreground underline">
               {t.shop.clearAll}
             </button>
           )}
@@ -269,7 +269,7 @@ export default function Shop({ t }: Props) {
                             }
                           }}
                           disabled={product.status === 'out-of-stock'}
-                          className="w-full py-2 font-mono-label text-[9px] tracking-[0.2em] uppercase bg-accent text-accent-foreground hover:bg-accent/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="w-full py-2 font-mono-label text-[11px] tracking-[0.16em] uppercase bg-accent text-accent-foreground hover:bg-accent/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                           style={{ borderRadius: 'var(--radius)' }}
                         >
                           {t.product.addToCart}
@@ -282,7 +282,7 @@ export default function Shop({ t }: Props) {
                   <div className="flex items-start justify-between gap-2">
                     <h2 className="font-display italic font-semibold text-sm text-foreground leading-snug">{product.name}</h2>
                   </div>
-                  <p className="font-mono-label text-[9px] tracking-widest text-muted-foreground uppercase">{product.classification}</p>
+                  <p className="font-mono-label text-[11px] tracking-widest text-muted-foreground uppercase">{product.classification}</p>
                   <div className="flex items-center justify-between">
                     <p className="font-display text-sm font-medium text-foreground">A${product.price}</p>
                     <span className="flex items-center gap-1">
@@ -298,7 +298,7 @@ export default function Shop({ t }: Props) {
 
         {filtered.length === 0 && (
           <div className="py-24 text-center">
-            <p className="font-mono-label text-[10px] tracking-widest text-muted-foreground uppercase">No shrimp match your filters.</p>
+            <p className="font-mono-label text-xs tracking-widest text-muted-foreground uppercase">No shrimp match your filters.</p>
           </div>
         )}
       </div>
@@ -323,7 +323,7 @@ export default function Shop({ t }: Props) {
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <p className="font-mono-label text-[10px] tracking-[0.2em] uppercase text-foreground">{t.shop.filters}</p>
+                  <p className="font-mono-label text-xs tracking-[0.16em] uppercase text-foreground">{t.shop.filters}</p>
                   <button onClick={() => setMobileFiltersOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors p-1">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                       <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -335,7 +335,7 @@ export default function Shop({ t }: Props) {
                   {filterCount > 0 && (
                     <button
                       onClick={() => { clearAll(); setMobileFiltersOpen(false) }}
-                      className="flex-1 py-3 font-mono-label text-[10px] tracking-widest uppercase border border-border text-muted-foreground hover:text-foreground transition-colors"
+                      className="flex-1 py-3 font-mono-label text-xs tracking-widest uppercase border border-border text-muted-foreground hover:text-foreground transition-colors"
                       style={{ borderRadius: 'var(--radius)' }}
                     >
                       {t.shop.clearAll}
