@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import type { Translations } from '@/i18n'
 import { shrimpProducts } from '@/data/shrimp'
-import { shrimpImages } from '@/assets/images'
+import { getShrimpImage } from '@/assets/images'
 import { useCart } from '@/store/cartStore'
 import Badge, { StatusDot } from '@/shared/ui/Badge'
 import MotionButton from '@/components/common/motion/MotionButton'
@@ -240,7 +240,7 @@ export default function Shop({ t }: Props) {
               <Link href={`/products/${product.slug}`} className="block">
                 <div className="relative overflow-hidden bg-[#080b08] aspect-[4/3]">
                   <img
-                    src={shrimpImages[product.imageKey]}
+                    src={getShrimpImage(product.imageKey)}
                     alt={product.name}
                     className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                   />

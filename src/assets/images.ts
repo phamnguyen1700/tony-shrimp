@@ -1,23 +1,39 @@
-import redBoa from '@/imports/c2396a6f-e1ad-47fa-b414-da0e8740bdbe.jpg'
-import yellowSnowflakeGalaxy from '@/imports/bfe90309-368a-46b2-9276-f0d95f20f3bc.jpg'
-import blueSnowflakeGalaxy from '@/imports/513fb6f1-5888-4960-8067-900e61667ea1.jpg'
-import redSnowflakeGalaxy from '@/imports/76264120-d227-4a89-871f-edd90fc03d2d.jpg'
-import orangeBoa from '@/imports/752a707b-f4dd-4046-9e35-c6b4a6ac2d1c.jpg'
-import blueBoa from '@/imports/5989ead3-f7ab-403b-8639-55fbbe8ccf88.jpg'
-import oceanRed from '@/imports/15a0a19b-81d9-4b4b-905a-79862c3b6402.jpg'
-import oceanBlue from '@/imports/073805b1-8d22-4986-b1d9-9989a7330208.jpg'
+const imageKeys = [
+  "red-boa",
+  "yellow-snowflake-galaxy",
+  "blue-snowflake-galaxy",
+  "red-snowflake-galaxy",
+  "orange-boa",
+  "blue-boa",
+  "ocean-red",
+  "ocean-blue",
+] as const;
 
-function imageSrc(image: string | { src: string }) {
-  return typeof image === 'string' ? image : image.src
-}
+type ShrimpImageKey = (typeof imageKeys)[number];
+
+export const shrimpImageGalleries: Record<ShrimpImageKey, string[]> =
+  Object.fromEntries(
+    imageKeys.map((key) => [
+      key,
+      Array.from({ length: 5 }, (_, index) =>
+        `/shrimp/${key}/${String(index + 1).padStart(2, "0")}.jpg`
+      ),
+    ]),
+  ) as Record<ShrimpImageKey, string[]>;
 
 export const shrimpImages: Record<string, string> = {
-  'red-boa': imageSrc(redBoa),
-  'yellow-snowflake-galaxy': imageSrc(yellowSnowflakeGalaxy),
-  'blue-snowflake-galaxy': imageSrc(blueSnowflakeGalaxy),
-  'red-snowflake-galaxy': imageSrc(redSnowflakeGalaxy),
-  'orange-boa': imageSrc(orangeBoa),
-  'blue-boa': imageSrc(blueBoa),
-  'ocean-red': imageSrc(oceanRed),
-  'ocean-blue': imageSrc(oceanBlue),
+  "red-boa": "/shrimp/red-boa/01.jpg",
+  "yellow-snowflake-galaxy": "/shrimp/yellow-snowflake-galaxy/01.jpg",
+  "blue-snowflake-galaxy": "/shrimp/blue-snowflake-galaxy/01.jpg",
+  "red-snowflake-galaxy": "/shrimp/red-snowflake-galaxy/01.jpg",
+  "orange-boa": "/shrimp/orange-boa/01.jpg",
+  "blue-boa": "/shrimp/blue-boa/01.jpg",
+  "ocean-red": "/shrimp/ocean-red/01.jpg",
+  "ocean-blue": "/shrimp/ocean-blue/01.jpg",
+};
+
+export function getShrimpImage(imageKey: string, imageIndex = 0) {
+  return shrimpImageGalleries[imageKey as ShrimpImageKey]?.[imageIndex] ??
+    shrimpImages[imageKey] ??
+    shrimpImages["red-boa"];
 }

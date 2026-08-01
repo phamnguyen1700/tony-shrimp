@@ -6,7 +6,7 @@ import Badge from '@/shared/ui/Badge'
 import MotionButton from '@/components/common/motion/MotionButton'
 import Input from '@/shared/ui/Input'
 import Select from '@/shared/ui/Select'
-import { shrimpImages } from '@/assets/images'
+import { getShrimpImage } from '@/assets/images'
 import { shrimpProducts } from '@/data/shrimp'
 import { fadeUp, fadeIn, modalScale, staggerContainer, staggerFast } from '@/lib/motionVariants'
 
@@ -231,7 +231,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
                 <div key={p.id} className="bg-card border border-border overflow-hidden" style={{ borderRadius: 'var(--radius)' }}>
                   <div className="aspect-square overflow-hidden bg-muted">
                     <img
-                      src={shrimpImages[p.imageKey]}
+                      src={getShrimpImage(p.imageKey)}
                       alt={p.name}
                       className="w-full h-full object-cover"
                     />

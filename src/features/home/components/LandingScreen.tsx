@@ -9,7 +9,7 @@ import {
   type PanInfo,
 } from "motion/react";
 import { featuredShrimp } from "@/data/shrimp";
-import { shrimpImages } from "@/assets/images";
+import { getShrimpImage } from "@/assets/images";
 import type { Translations } from "@/i18n";
 import { springGentle, springSmooth } from "@/lib/motionVariants";
 
@@ -170,7 +170,7 @@ export default function Landing({ t }: Props) {
                 transition={springGentle}
               >
                 <motion.img
-                  src={shrimpImages[specimen.imageKey]}
+                  src={getShrimpImage(specimen.imageKey)}
                   alt={specimen.name}
                   className="w-auto h-[52vh] md:h-[65vh] max-w-[80vw] md:max-w-[70vw] object-contain"
                   style={{ filter: "drop-shadow(0 0 60px rgba(0,0,0,0.8))" }}

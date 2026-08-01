@@ -6,7 +6,7 @@ import { z } from 'zod'
 import type { Translations } from '@/i18n'
 import type { ShrimpProduct, ShrimpStatus } from '@/data/shrimp'
 import { shrimpProducts as initialProducts } from '@/data/shrimp'
-import { shrimpImages } from '@/assets/images'
+import { getShrimpImage } from '@/assets/images'
 import AdminLayout from '@/features/admin/components/AdminLayout'
 import Badge from '@/shared/ui/Badge'
 import MotionButton from '@/components/common/motion/MotionButton'
@@ -187,7 +187,7 @@ export default function ShrimpAdmin({ t }: Props) {
                 >
                   <td className="px-4 py-3">
                     <img
-                      src={shrimpImages[p.imageKey]}
+                      src={getShrimpImage(p.imageKey)}
                       alt={p.name}
                       className="w-10 h-10 object-cover"
                       style={{ borderRadius: 'var(--radius-sm)' }}
@@ -229,7 +229,7 @@ export default function ShrimpAdmin({ t }: Props) {
           {products.map((p) => (
             <div key={p.id} className="bg-card border border-border p-4 flex gap-3" style={{ borderRadius: 'var(--radius)' }}>
               <img
-                src={shrimpImages[p.imageKey]}
+                src={getShrimpImage(p.imageKey)}
                 alt={p.name}
                 className="w-14 h-14 object-cover flex-shrink-0"
                 style={{ borderRadius: 'var(--radius-sm)' }}

@@ -30,7 +30,8 @@ The app runs on Next.js. If a preview server is already active, use that preview
 - `src/data` - Current mock catalog/order data.
 - `src/hooks` - Client hooks for theme, i18n, and cart persistence.
 - `src/i18n` - English and Vietnamese translation resources.
-- `src/imports` - Runtime image assets used by the current UI.
+- `public/shrimp` - Mock storefront shrimp image folders. Each image key has `01.jpg` through `05.jpg`.
+- `public/background-vid` - Landing background video assets.
 - `src/index.css` - Tailwind CSS v4 import, design tokens, theme variables, and global utilities.
 
 ## Stack

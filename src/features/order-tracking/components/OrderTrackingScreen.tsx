@@ -2,7 +2,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import type { Translations } from '@/i18n'
 import { sampleOrders } from '@/data/orders'
 import type { OrderStatus } from '@/data/orders'
-import { shrimpImages } from '@/assets/images'
+import { getShrimpImage } from '@/assets/images'
 import Badge from '@/shared/ui/Badge'
 
 interface Props {
@@ -190,7 +190,7 @@ export default function OrderTracking({ t, id }: Props) {
               {order.items.map((item, i) => (
                 <div key={i} className="flex items-center gap-4 py-3 border-b border-border">
                   <div className="w-14 h-14 bg-[#080b08] shrink-0" style={{ borderRadius: 'var(--radius)' }}>
-                    <img src={shrimpImages[item.imageKey]} alt={item.name} className="w-full h-full object-contain" />
+                    <img src={getShrimpImage(item.imageKey)} alt={item.name} className="w-full h-full object-contain" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-display italic font-semibold text-sm text-foreground">{item.name}</p>

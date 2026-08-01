@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import type { Translations } from '@/i18n'
-import { shrimpImages } from '@/assets/images'
+import { getShrimpImage } from '@/assets/images'
 import { useCart } from '@/store/cartStore'
 import MotionButton from '@/components/common/motion/MotionButton'
 import { fadeUp, staggerContainer } from '@/lib/motionVariants'
@@ -77,7 +77,7 @@ export default function Cart({ t }: Props) {
                   >
                     <div className="w-[70px] h-[70px] bg-[#080b08] overflow-hidden shrink-0" style={{ borderRadius: 'var(--radius)' }}>
                       <img
-                        src={shrimpImages[item.imageKey]}
+                        src={getShrimpImage(item.imageKey)}
                         alt={item.name}
                         className="w-full h-full object-contain"
                       />

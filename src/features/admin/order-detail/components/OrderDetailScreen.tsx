@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import type { Translations } from '@/i18n'
 import type { Order, OrderStatus } from '@/data/orders'
 import { adminOrders } from '@/data/orders'
-import { shrimpImages } from '@/assets/images'
+import { getShrimpImage } from '@/assets/images'
 import AdminLayout from '@/features/admin/components/AdminLayout'
 import Badge from '@/shared/ui/Badge'
 import MotionButton from '@/components/common/motion/MotionButton'
@@ -116,7 +116,7 @@ export default function OrderDetail({ t, id }: Props) {
                     className="flex items-center gap-4 px-5 py-4 border-b border-border last:border-0"
                   >
                     <img
-                      src={shrimpImages[item.imageKey]}
+                      src={getShrimpImage(item.imageKey)}
                       alt={item.name}
                       className="w-14 h-14 object-cover flex-shrink-0"
                       style={{ borderRadius: 'var(--radius-sm)' }}
