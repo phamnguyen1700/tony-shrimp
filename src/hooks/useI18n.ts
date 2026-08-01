@@ -1,0 +1,17 @@
+import { useState } from 'react'
+import { type Lang, getT } from '@/i18n'
+
+export function useI18n() {
+  const [lang, setLangState] = useState<Lang>(() => {
+    return (localStorage.getItem('tony-lang') as Lang) ?? 'en'
+  })
+
+  function setLang(l: Lang) {
+    localStorage.setItem('tony-lang', l)
+    setLangState(l)
+  }
+
+  const t = getT(lang)
+
+  return { lang, setLang, t }
+}

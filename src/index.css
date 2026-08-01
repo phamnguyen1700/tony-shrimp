@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&display=swap');
+@import 'tailwindcss';
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-dm-mono);
+  --radius-sm: calc(var(--radius) - 1px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+}
+
+:root {
+  --font-fraunces: 'Fraunces', Georgia, serif;
+  --font-dm-sans: 'DM Sans', system-ui, sans-serif;
+  --font-dm-mono: 'DM Mono', 'Courier New', monospace;
+
+  --background: #f2f0eb;
+  --foreground: #0d0f0d;
+  --card: #ffffff;
+  --card-foreground: #0d0f0d;
+  --primary: #0d0f0d;
+  --primary-foreground: #f2f0eb;
+  --secondary: #e6e3dc;
+  --secondary-foreground: #0d0f0d;
+  --muted: #e2dfd8;
+  --muted-foreground: #6a6d66;
+  --accent: #4a7c55;
+  --accent-foreground: #ffffff;
+  --border: rgba(13, 15, 13, 0.10);
+  --ring: #4a7c55;
+  --radius: 2px;
+}
+
+.dark {
+  --background: #080b08;
+  --foreground: #edeae3;
+  --card: #101410;
+  --card-foreground: #edeae3;
+  --primary: #edeae3;
+  --primary-foreground: #080b08;
+  --secondary: #171c17;
+  --secondary-foreground: #edeae3;
+  --muted: #141814;
+  --muted-foreground: #7c8078;
+  --accent: #4a7c55;
+  --accent-foreground: #ffffff;
+  --border: rgba(237, 234, 227, 0.07);
+  --ring: #5a9467;
+  --radius: 2px;
+}
+
+html {
+  font-family: var(--font-dm-sans);
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Hide scrollbar, show on hover */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Focus ring */
+:focus-visible {
+  outline: 1.5px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Typography utilities */
+.font-display { font-family: var(--font-fraunces); }
+.font-body { font-family: var(--font-dm-sans); }
+.font-mono-label { font-family: var(--font-dm-mono); }
+
+/* Draggable cursor */
+.cursor-grab { cursor: grab; }
+.cursor-grab:active { cursor: grabbing; }
+
+/* Selection color */
+::selection {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
