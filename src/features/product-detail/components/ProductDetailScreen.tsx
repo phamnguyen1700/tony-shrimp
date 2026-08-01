@@ -22,7 +22,7 @@ function AccordionSection({ title, children }: { title: string; children: React.
         className="w-full flex items-center justify-between py-4 text-left"
         onClick={() => setOpen(o => !o)}
       >
-        <span className="font-mono-label text-[10px] tracking-[0.2em] uppercase text-foreground">{title}</span>
+        <span className="font-mono-label text-xs tracking-[0.16em] uppercase text-foreground">{title}</span>
         <span className="font-mono-label text-base text-muted-foreground leading-none select-none">{open ? '−' : '+'}</span>
       </button>
       <AnimatePresence initial={false}>
@@ -54,8 +54,8 @@ export default function ProductDetail({ t, slug }: Props) {
     return (
       <div className="pt-14 min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
-          <p className="font-mono-label text-[10px] tracking-widest text-muted-foreground uppercase">Product not found</p>
-          <Link href="/shop" className="font-mono-label text-[10px] tracking-widest uppercase text-accent underline underline-offset-2">
+          <p className="font-mono-label text-xs tracking-widest text-muted-foreground uppercase">Product not found</p>
+          <Link href="/shop" className="font-mono-label text-xs tracking-widest uppercase text-accent underline underline-offset-2">
             ← Back to Shop
           </Link>
         </div>
@@ -91,6 +91,30 @@ export default function ProductDetail({ t, slug }: Props) {
   }
 
   const wp = product.waterParams
+  const productAccordions = (
+    <motion.div variants={reduced ? undefined : fadeUp} className="space-y-0">
+      <AccordionSection title={t.product.description}>
+        <p>{product.description}</p>
+        {product.traits.length > 0 && (
+          <ul className="mt-3 space-y-1 list-disc list-inside">
+            {product.traits.map(trait => (
+              <li key={trait}>{trait}</li>
+            ))}
+          </ul>
+        )}
+      </AccordionSection>
+      <AccordionSection title={t.product.shipping}>
+        <p>
+          All shrimp are shipped live via Australia Post Express Post or StarTrack overnight courier. Orders are dispatched Monday to Wednesday to ensure safe arrival. A flat shipping rate of A$15 applies to all orders Australia-wide.
+        </p>
+      </AccordionSection>
+      <AccordionSection title={t.product.doaPolicy}>
+        <p>
+          We guarantee live arrival on all orders. If any shrimp arrive deceased, please photograph the unopened bag within 2 hours of delivery and contact us. We will arrange a replacement or refund. Our DOA policy does not cover transit delays outside our control.
+        </p>
+      </AccordionSection>
+    </motion.div>
+  )
 
   return (
     <div className="pt-14 min-h-screen bg-background">
@@ -101,16 +125,20 @@ export default function ProductDetail({ t, slug }: Props) {
           initial={reduced ? false : 'hidden'}
           animate="visible"
         >
-          <motion.div
-            className="bg-[#080b08] aspect-[4/3] md:aspect-auto md:min-h-[520px] flex items-center justify-center overflow-hidden sticky md:top-20"
-            variants={reduced ? undefined : fadeIn}
-            transition={{ duration: 0.5 }}
-          >
-            <img
-              src={shrimpImages[product.imageKey]}
-              alt={product.name}
-              className="w-full h-full object-contain"
-            />
+          <motion.div className="space-y-6" variants={reduced ? undefined : staggerContainer}>
+            <motion.div
+              className="bg-[#080b08] aspect-[4/3] md:aspect-auto md:min-h-[520px] flex items-center justify-center overflow-hidden"
+              variants={reduced ? undefined : fadeIn}
+              transition={{ duration: 0.5 }}
+            >
+              <img
+                src={shrimpImages[product.imageKey]}
+                alt={product.name}
+                className="w-full h-full object-contain"
+              />
+            </motion.div>
+
+            {productAccordions}
           </motion.div>
 
           <motion.div
@@ -120,7 +148,7 @@ export default function ProductDetail({ t, slug }: Props) {
             animate="visible"
           >
             <motion.div variants={reduced ? undefined : fadeUp}>
-              <p className="font-mono-label text-[9px] tracking-[0.3em] text-muted-foreground uppercase mb-3">
+              <p className="font-mono-label text-[11px] tracking-[0.22em] text-muted-foreground uppercase mb-3">
                 {String(productIndex + 1).padStart(2, '0')} / {String(totalProducts).padStart(2, '0')}
               </p>
               <h1 className="font-display italic font-semibold text-4xl md:text-5xl text-foreground leading-tight">
@@ -128,7 +156,7 @@ export default function ProductDetail({ t, slug }: Props) {
                   <span key={i} className="block">{part}</span>
                 ))}
               </h1>
-              <p className="font-mono-label text-[9px] tracking-[0.3em] text-muted-foreground uppercase mt-2">
+              <p className="font-mono-label text-[11px] tracking-[0.22em] text-muted-foreground uppercase mt-2">
                 {product.classification}
               </p>
             </motion.div>
@@ -142,7 +170,7 @@ export default function ProductDetail({ t, slug }: Props) {
             </motion.div>
 
             <motion.div variants={reduced ? undefined : fadeUp}>
-              <p className="font-mono-label text-[9px] tracking-widest text-muted-foreground uppercase mb-1">{t.product.from}</p>
+              <p className="font-mono-label text-[11px] tracking-widest text-muted-foreground uppercase mb-1">{t.product.from}</p>
               <p className="font-display font-semibold text-4xl text-foreground">A${product.price}</p>
             </motion.div>
 
@@ -150,12 +178,12 @@ export default function ProductDetail({ t, slug }: Props) {
               <StatusDot status={product.status} />
               <Badge variant={getStatusVariant(product.status)}>{getStatusLabel(product.status)}</Badge>
               {product.status !== 'out-of-stock' && (
-                <span className="font-mono-label text-[9px] tracking-widest text-muted-foreground">{product.quantity} available</span>
+                <span className="font-mono-label text-[11px] tracking-widest text-muted-foreground">{product.quantity} available</span>
               )}
             </motion.div>
 
             <motion.div variants={reduced ? undefined : fadeUp} className="space-y-3">
-              <p className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground">{t.product.quantity}</p>
+              <p className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground">{t.product.quantity}</p>
               <div className="flex items-center gap-4">
                 <div className="flex items-center border border-border" style={{ borderRadius: 'var(--radius)' }}>
                   <button
@@ -186,7 +214,7 @@ export default function ProductDetail({ t, slug }: Props) {
 
             <motion.div variants={reduced ? undefined : fadeUp}>
               <div className="border-t border-border pt-6 space-y-4">
-                <p className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground">{t.product.waterParams}</p>
+                <p className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground">{t.product.waterParams}</p>
                 <div className="grid grid-cols-2 gap-x-6 gap-y-3">
                   {[
                     { label: t.product.temperature, value: `${wp.tempMin}–${wp.tempMax}°C` },
@@ -196,41 +224,18 @@ export default function ProductDetail({ t, slug }: Props) {
                     { label: t.product.tds, value: `${wp.tdsMin}–${wp.tdsMax} ppm` },
                   ].map(({ label, value }) => (
                     <div key={label}>
-                      <p className="font-mono-label text-[9px] tracking-widest text-muted-foreground uppercase">{label}</p>
+                      <p className="font-mono-label text-[11px] tracking-widest text-muted-foreground uppercase">{label}</p>
                       <p className="font-mono-label text-xs text-foreground mt-0.5">{value}</p>
                     </div>
                   ))}
                   <div>
-                    <p className="font-mono-label text-[9px] tracking-widest text-muted-foreground uppercase">{t.product.careLevel}</p>
+                    <p className="font-mono-label text-[11px] tracking-widest text-muted-foreground uppercase">{t.product.careLevel}</p>
                     <Badge variant={product.careLevel === 'Beginner' ? 'inStock' : product.careLevel === 'Intermediate' ? 'lowStock' : 'outOfStock'} className="mt-0.5">
                       {product.careLevel}
                     </Badge>
                   </div>
                 </div>
               </div>
-            </motion.div>
-
-            <motion.div variants={reduced ? undefined : fadeUp} className="space-y-0">
-              <AccordionSection title={t.product.description}>
-                <p>{product.description}</p>
-                {product.traits.length > 0 && (
-                  <ul className="mt-3 space-y-1 list-disc list-inside">
-                    {product.traits.map(trait => (
-                      <li key={trait}>{trait}</li>
-                    ))}
-                  </ul>
-                )}
-              </AccordionSection>
-              <AccordionSection title={t.product.shipping}>
-                <p>
-                  All shrimp are shipped live via Australia Post Express Post or StarTrack overnight courier. Orders are dispatched Monday to Wednesday to ensure safe arrival. A flat shipping rate of A$15 applies to all orders Australia-wide.
-                </p>
-              </AccordionSection>
-              <AccordionSection title={t.product.doaPolicy}>
-                <p>
-                  We guarantee live arrival on all orders. If any shrimp arrive deceased, please photograph the unopened bag within 2 hours of delivery and contact us. We will arrange a replacement or refund. Our DOA policy does not cover transit delays outside our control.
-                </p>
-              </AccordionSection>
             </motion.div>
           </motion.div>
         </motion.div>

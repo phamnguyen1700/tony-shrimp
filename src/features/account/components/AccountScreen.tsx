@@ -54,7 +54,7 @@ export default function Account({ t }: Props) {
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="mb-8 md:mb-10"
         >
-          <p className="font-mono-label text-[9px] tracking-[0.3em] text-muted-foreground uppercase mb-2">
+          <p className="font-mono-label text-[11px] tracking-[0.22em] text-muted-foreground uppercase mb-2">
             TONY SHRIMP AUSTRALIA
           </p>
           <h1 className="font-display italic font-semibold text-5xl md:text-7xl text-foreground leading-none">
@@ -68,7 +68,7 @@ export default function Account({ t }: Props) {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`relative px-0 mr-8 pb-3 font-mono-label text-[10px] tracking-[0.2em] uppercase transition-colors ${
+                className={`relative px-0 mr-8 pb-3 font-mono-label text-xs tracking-[0.16em] uppercase transition-colors ${
                   activeTab === tab.key ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -110,7 +110,7 @@ export default function Account({ t }: Props) {
                         <p className="font-display italic font-semibold text-base text-foreground">{order.number}</p>
                         <Badge variant={getStatusBadgeVariant(order.status)}>{getStatusLabel(order.status, t)}</Badge>
                       </div>
-                      <p className="font-mono-label text-[9px] tracking-widest text-muted-foreground uppercase mt-1">
+                      <p className="font-mono-label text-[11px] tracking-widest text-muted-foreground uppercase mt-1">
                         {formatDate(order.date)}
                       </p>
                       <p className="font-body text-sm text-muted-foreground mt-2">
@@ -121,7 +121,7 @@ export default function Account({ t }: Props) {
                       <p className="font-display text-lg font-semibold text-foreground">A${order.total}</p>
                       <Link
                         href={`/orders/${order.id}`}
-                        className="inline-block mt-2 font-mono-label text-[9px] tracking-[0.2em] uppercase text-accent hover:text-accent/80 transition-colors"
+                        className="inline-block mt-2 font-mono-label text-[11px] tracking-[0.16em] uppercase text-accent hover:text-accent/80 transition-colors"
                       >
                         {t.order.viewOrder}
                       </Link>
@@ -132,10 +132,10 @@ export default function Account({ t }: Props) {
 
               {sampleOrders.length === 0 && (
                 <div className="py-16 text-center">
-                  <p className="font-mono-label text-[10px] tracking-widest text-muted-foreground uppercase">No orders yet.</p>
+                  <p className="font-mono-label text-xs tracking-widest text-muted-foreground uppercase">No orders yet.</p>
                   <Link
                     href="/shop"
-                    className="inline-block mt-4 font-mono-label text-[10px] tracking-widest uppercase text-accent underline underline-offset-2"
+                    className="inline-block mt-4 font-mono-label text-xs tracking-widest uppercase text-accent underline underline-offset-2"
                   >
                     Browse the shop →
                   </Link>
@@ -155,7 +155,7 @@ export default function Account({ t }: Props) {
             >
               <div className="space-y-5">
                 <div className="space-y-1.5">
-                  <label className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground">Full Name</label>
+                  <label className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground">Full Name</label>
                   <Input
                     value={profileName}
                     onChange={e => setProfileName(e.target.value)}
@@ -163,7 +163,7 @@ export default function Account({ t }: Props) {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground">Email</label>
+                  <label className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground">Email</label>
                   <Input
                     type="email"
                     value={profileEmail}
@@ -172,7 +172,7 @@ export default function Account({ t }: Props) {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="font-mono-label text-[9px] tracking-[0.2em] uppercase text-muted-foreground">Phone</label>
+                  <label className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-muted-foreground">Phone</label>
                   <Input
                     type="tel"
                     value={profilePhone}
@@ -204,7 +204,7 @@ export default function Account({ t }: Props) {
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <p className="font-body text-sm font-medium text-foreground">Alex Nguyen</p>
-                      <span className="font-mono-label text-[8px] tracking-widest uppercase px-1.5 py-0.5 bg-accent/10 text-accent border border-accent/20" style={{ borderRadius: 'var(--radius)' }}>
+                      <span className="font-mono-label text-xs tracking-widest uppercase px-1.5 py-0.5 bg-accent/10 text-accent border border-accent/20" style={{ borderRadius: 'var(--radius)' }}>
                         DEFAULT
                       </span>
                     </div>
@@ -212,14 +212,14 @@ export default function Account({ t }: Props) {
                     <p className="font-body text-sm text-muted-foreground">Melbourne VIC 3000</p>
                     <p className="font-body text-sm text-muted-foreground">Australia</p>
                   </div>
-                  <button className="font-mono-label text-[9px] tracking-widest uppercase text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors">
+                  <button className="font-mono-label text-[11px] tracking-widest uppercase text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors">
                     Edit
                   </button>
                 </div>
               </div>
 
               <button
-                className="flex items-center gap-2 font-mono-label text-[10px] tracking-[0.2em] uppercase text-accent hover:text-accent/80 transition-colors py-2"
+                className="flex items-center gap-2 font-mono-label text-xs tracking-[0.16em] uppercase text-accent hover:text-accent/80 transition-colors py-2"
               >
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                   <path d="M6 1V11M1 6H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -231,7 +231,7 @@ export default function Account({ t }: Props) {
         </AnimatePresence>
 
         <div className="mt-16 pt-8 border-t border-border">
-          <button className="font-mono-label text-[10px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground transition-colors">
+          <button className="font-mono-label text-xs tracking-[0.16em] uppercase text-muted-foreground hover:text-foreground transition-colors">
             {t.account.signOut}
           </button>
         </div>

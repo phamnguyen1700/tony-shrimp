@@ -75,7 +75,7 @@ export default function OrderDetail({ t, id }: Props) {
       >
         <Link
           href="/admin/orders"
-          className="inline-flex items-center gap-1.5 font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors mb-6"
+          className="inline-flex items-center gap-1.5 font-mono-label text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors mb-6"
         >
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -90,11 +90,11 @@ export default function OrderDetail({ t, id }: Props) {
                 <h1 className="font-display text-2xl font-semibold text-foreground">{order.number}</h1>
                 <Badge variant={badgeVariant(order.status)}>{statusLabel[order.status]}</Badge>
               </div>
-              <p className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">{t.order.orderDate}: {order.date}</p>
+              <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">{t.order.orderDate}: {order.date}</p>
             </div>
 
             <div className="bg-card border border-border p-5" style={{ borderRadius: 'var(--radius)' }}>
-              <h2 className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground mb-4">Shipping Address</h2>
+              <h2 className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground mb-4">Shipping Address</h2>
               <p className="text-sm text-foreground font-medium">{order.shippingAddress.name}</p>
               <p className="text-sm text-muted-foreground mt-1">{order.shippingAddress.line1}</p>
               <p className="text-sm text-muted-foreground">{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postcode}</p>
@@ -102,7 +102,7 @@ export default function OrderDetail({ t, id }: Props) {
 
             <div className="bg-card border border-border overflow-hidden" style={{ borderRadius: 'var(--radius)' }}>
               <div className="px-5 py-4 border-b border-border">
-                <h2 className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">Order Items</h2>
+                <h2 className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">Order Items</h2>
               </div>
               <motion.div
                 variants={reduced ? undefined : staggerContainer}
@@ -123,8 +123,8 @@ export default function OrderDetail({ t, id }: Props) {
                     />
                     <div className="flex-1">
                       <div className="text-sm text-foreground">{item.name}</div>
-                      {item.grade && <div className="font-mono-label text-[10px] text-muted-foreground mt-0.5">{item.grade}</div>}
-                      <div className="font-mono-label text-[10px] text-muted-foreground mt-1">Qty: {item.quantity}</div>
+                      {item.grade && <div className="font-mono-label text-xs text-muted-foreground mt-0.5">{item.grade}</div>}
+                      <div className="font-mono-label text-xs text-muted-foreground mt-1">Qty: {item.quantity}</div>
                     </div>
                     <div className="text-sm text-foreground">A${item.unitPrice * item.quantity}</div>
                   </motion.div>
@@ -149,7 +149,7 @@ export default function OrderDetail({ t, id }: Props) {
 
           <div className="space-y-4">
             <div className="bg-card border border-border p-5 lg:sticky lg:top-6" style={{ borderRadius: 'var(--radius)' }}>
-              <h2 className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground mb-4">Status</h2>
+              <h2 className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground mb-4">Status</h2>
               <Badge variant={badgeVariant(order.status)} className="mb-5">{statusLabel[order.status]}</Badge>
 
               {order.status === 'processing' && (
@@ -161,25 +161,25 @@ export default function OrderDetail({ t, id }: Props) {
               {order.status === 'shipped' && order.carrier && (
                 <div className="space-y-2 mb-5 pb-5 border-b border-border">
                   <div>
-                    <p className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">{t.order.carrier}</p>
+                    <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">{t.order.carrier}</p>
                     <p className="text-sm text-foreground mt-0.5">{order.carrier}</p>
                   </div>
                   {order.trackingNumber && (
                     <div>
-                      <p className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">{t.order.trackingNumber}</p>
+                      <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">{t.order.trackingNumber}</p>
                       <p className="text-sm text-foreground mt-0.5 font-mono-label">{order.trackingNumber}</p>
                     </div>
                   )}
                   {order.shippedDate && (
                     <div>
-                      <p className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">{t.order.shippedDate}</p>
+                      <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">{t.order.shippedDate}</p>
                       <p className="text-sm text-foreground mt-0.5">{order.shippedDate}</p>
                     </div>
                   )}
                 </div>
               )}
 
-              <h3 className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground mb-3">History</h3>
+              <h3 className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground mb-3">History</h3>
               <div className="space-y-3">
                 {order.statusHistory.map((entry, idx) => (
                   <div key={idx} className="flex gap-3">
@@ -190,8 +190,8 @@ export default function OrderDetail({ t, id }: Props) {
                       )}
                     </div>
                     <div className="pb-3">
-                      <div className="font-mono-label text-[10px] uppercase tracking-widest text-foreground">{statusLabel[entry.status]}</div>
-                      <div className="font-mono-label text-[9px] text-muted-foreground mt-0.5">
+                      <div className="font-mono-label text-xs uppercase tracking-widest text-foreground">{statusLabel[entry.status]}</div>
+                      <div className="font-mono-label text-[11px] text-muted-foreground mt-0.5">
                         {new Date(entry.timestamp).toLocaleDateString()}
                       </div>
                       {entry.note && <div className="text-xs text-muted-foreground mt-0.5">{entry.note}</div>}
