@@ -7,13 +7,17 @@ import blueBoa from '@/imports/5989ead3-f7ab-403b-8639-55fbbe8ccf88.jpg'
 import oceanRed from '@/imports/15a0a19b-81d9-4b4b-905a-79862c3b6402.jpg'
 import oceanBlue from '@/imports/073805b1-8d22-4986-b1d9-9989a7330208.jpg'
 
+function imageSrc(image: string | { src: string }) {
+  return typeof image === 'string' ? image : image.src
+}
+
 export const shrimpImages: Record<string, string> = {
-  'red-boa': redBoa,
-  'yellow-snowflake-galaxy': yellowSnowflakeGalaxy,
-  'blue-snowflake-galaxy': blueSnowflakeGalaxy,
-  'red-snowflake-galaxy': redSnowflakeGalaxy,
-  'orange-boa': orangeBoa,
-  'blue-boa': blueBoa,
-  'ocean-red': oceanRed,
-  'ocean-blue': oceanBlue,
+  'red-boa': imageSrc(redBoa),
+  'yellow-snowflake-galaxy': imageSrc(yellowSnowflakeGalaxy),
+  'blue-snowflake-galaxy': imageSrc(blueSnowflakeGalaxy),
+  'red-snowflake-galaxy': imageSrc(redSnowflakeGalaxy),
+  'orange-boa': imageSrc(orangeBoa),
+  'blue-boa': imageSrc(blueBoa),
+  'ocean-red': imageSrc(oceanRed),
+  'ocean-blue': imageSrc(oceanBlue),
 }
