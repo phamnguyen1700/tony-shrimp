@@ -3,16 +3,19 @@ import { useState, useEffect } from 'react'
 export type ThemeMode = 'light' | 'dark' | 'system'
 
 function getSystemTheme(): 'light' | 'dark' {
+  if (typeof window === 'undefined') return 'dark'
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
 function applyTheme(mode: ThemeMode) {
+  if (typeof document === 'undefined') return
   const resolved = mode === 'system' ? getSystemTheme() : mode
   document.documentElement.classList.toggle('dark', resolved === 'dark')
 }
 
 export function useTheme() {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
+    if (typeof localStorage === 'undefined') return 'dark'
     return (localStorage.getItem('tony-theme') as ThemeMode) ?? 'dark'
   })
 
@@ -29,7 +32,7 @@ export function useTheme() {
   }, [theme])
 
   function setTheme(mode: ThemeMode) {
-    localStorage.setItem('tony-theme', mode)
+    if (typeof localStorage !== 'undefined') localStorage.setItem('tony-theme', mode)
     setThemeState(mode)
   }
 

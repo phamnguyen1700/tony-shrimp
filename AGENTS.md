@@ -1,41 +1,64 @@
-# figma-make-app
+# tony-shrimp
 
-React + Vite + Tailwind CSS project running inside Figma Make.
+Next.js App Router storefront/admin application migrated from an approved Figma Make visual baseline.
 
 ## Development Server
 
-A Vite development server is **already running** on `$PORT` (default 8443). You don't need to start it manually.
+Use npm.
 
-- Preview URL: The user can access the running app through the preview panel
-- Hot reload: Changes to source files are reflected immediately
+```bash
+npm install
+npm run dev
+npm run build
+```
+
+The app runs on Next.js. If a preview server is already active, use that preview instead of starting a duplicate server.
 
 ## Project Structure
 
-This is the canonical project structure. Start with task-relevant files below. Only follow imports or inspect other files when required, when a documented path is missing, or when the repository contradicts this guide.
+- `src/app` - Next.js App Router route files and layouts only.
+- `src/features/<feature>/index.tsx` - Feature orchestration and client boundary.
+- `src/features/<feature>/components` - Presentational components owned by that feature.
+- `src/shared/ui` - Source-owned shadcn/ui primitives.
+- `src/components/common` - Reusable app-level layout and motion components.
+- `src/service` - Axios clients and domain API services.
+- `src/hooks` - Reusable hooks and TanStack Query hooks.
+- `src/store` - Zustand global client stores.
+- `src/types` - Shared and domain types.
+- `src/config` - Environment, route, and endpoint configuration.
+- `src/providers/AppProviders.tsx` - Root theme, i18n, TanStack Query, navigation, and page-motion providers.
+- `src/data` - Current mock catalog/order data.
+- `src/hooks` - Client hooks for theme, i18n, and cart persistence.
+- `src/i18n` - English and Vietnamese translation resources.
+- `src/imports` - Runtime image assets used by the current UI.
+- `src/index.css` - Tailwind CSS v4 import, design tokens, theme variables, and global utilities.
 
-- `src/main.tsx` - React entrypoint; imports `src/index.css` and mounts `src/App.tsx` into the `#root` element
-- `src/App.tsx` - Primary application component and the usual starting point for UI work
-- `src/index.css` - Global CSS entrypoint and Tailwind CSS v4 import
-- `index.html` - Vite HTML shell containing the `#root` element and loading `src/main.tsx`
-- `package.json` - Project dependencies and the Vite build, development, preview, and formatting scripts
-- `vite.config.ts` - Vite configuration with React, Tailwind CSS v4, and Figma Make plugins plus the `@` alias for `src`
-- `.mise.toml` - Toolchain versions for Node.js and pnpm
+## Stack
 
-## Dependencies
+- Next.js App Router
+- React
+- TypeScript
+- Tailwind CSS v4 via `@tailwindcss/postcss`
+- Motion for React (`motion/react`)
+- shadcn/ui conventions and Radix primitives
+- Lucide React
+- Axios and TanStack Query
+- Zustand
+- React Hook Form and Zod
+- npm lockfile
 
-- Runtime: React 19 and React DOM 19
-- Styling: Tailwind CSS v4 with the `@tailwindcss/vite` plugin
-- Build tooling: Vite 8, TypeScript 5.7, and `@vitejs/plugin-react`
-- Formatting: oxfmt
+## Migration Rules
 
-## Styling
+The existing Tony Shrimp UI is the approved design reference. Do not redesign while refactoring.
 
-This project uses **Tailwind CSS v4** through the `@tailwindcss/vite` plugin configured in `vite.config.ts`. `src/index.css` imports Tailwind with `@import 'tailwindcss';`. Use Tailwind utility classes directly in JSX and put global CSS or Tailwind v4 theme customization in `src/index.css`. This scaffold does not need a Tailwind config file or PostCSS config.
+Preserve:
 
-`src/main.tsx` imports `src/index.css`, so global font wiring belongs in `src/index.css`. Keep CSS `@import` statements first, then add any `@font-face` rules and font-family defaults there.
+- layout, typography, color tokens, spacing, and responsive behavior
+- image usage and asset framing
+- Motion variants, transitions, spring behavior, drag/swipe behavior, hover/tap states, and `AnimatePresence`
+- light, dark, and system theme behavior
+- English and Vietnamese UI copy
 
-## Code quality
+Prefer Server Components by default in `src/app`. Put `"use client"` only on client boundaries or components that need state, effects, browser APIs, event handlers, or Motion.
 
-- Use double quotes for strings containing apostrophes (`"We're here to help"`), or escape them in single-quoted strings. An unescaped apostrophe in a single-quoted string breaks the build.
-- Ensure JSX tags are closed and braces are balanced.
-- Export components as default exports.
+Keep future refactors incremental and feature-scoped. Do not replace custom storefront UI with generic component-library layouts.
