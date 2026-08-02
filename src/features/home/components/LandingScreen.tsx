@@ -1,4 +1,10 @@
-import { useState, useEffect, useCallback, useRef, type WheelEvent } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  type WheelEvent,
+} from "react";
 import Link from "next/link";
 import {
   motion,
@@ -110,7 +116,10 @@ export default function Landing({ t }: Props) {
   const active = shrimp[activeIndex];
 
   return (
-    <div className="relative w-full min-h-screen bg-[#080b08] overflow-hidden select-none" onWheel={handleWheel}>
+    <div
+      className="relative w-full min-h-screen bg-[#080b08] overflow-hidden select-none"
+      onWheel={handleWheel}
+    >
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <video
           className="h-full w-full object-cover opacity-95"
@@ -128,7 +137,7 @@ export default function Landing({ t }: Props) {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(8,11,8,0.92) 0%, rgba(8,11,8,0.46) 42%, rgba(8,11,8,0.72) 100%)",
+              "linear-gradient(90deg, rgba(8,11,8,0.82) 0%, rgba(8,11,8,0.36) 42%, rgba(8,11,8,0.62) 100%)",
           }}
         />
       </div>
