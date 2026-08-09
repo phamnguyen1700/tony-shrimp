@@ -31,8 +31,7 @@ export default function Dialog({ open, onClose, title, children, maxWidth = 'max
               </DialogPrimitive.Overlay>
               <DialogPrimitive.Content asChild forceMount>
                 <motion.div
-                  className={`relative w-full ${maxWidth} bg-card border border-border shadow-2xl`}
-                  style={{ borderRadius: 'var(--radius-lg)' }}
+                  className={`ui-radius-lg relative w-full ${maxWidth} bg-card border border-border shadow-2xl`}
                   variants={reduced ? undefined : modalScale}
                   initial={reduced ? { opacity: 0 } : 'hidden'}
                   animate={reduced ? { opacity: 1 } : 'visible'}

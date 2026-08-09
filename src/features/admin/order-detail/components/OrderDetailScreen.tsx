@@ -5,7 +5,6 @@ import type { Translations } from '@/i18n'
 import type { Order, OrderStatus } from '@/data/orders'
 import { adminOrders } from '@/data/orders'
 import { getShrimpImage } from '@/assets/images'
-import AdminLayout from '@/features/admin/components/AdminLayout'
 import Badge from '@/shared/ui/Badge'
 import MotionButton from '@/components/common/motion/MotionButton'
 import Dialog from '@/shared/ui/Dialog'
@@ -36,11 +35,9 @@ export default function OrderDetail({ t, id }: Props) {
 
   if (!order) {
     return (
-      <AdminLayout t={t} activeRoute="/admin/orders">
-        <div className="p-8">
-          <p className="text-muted-foreground">Order not found.</p>
-        </div>
-      </AdminLayout>
+      <div className="p-8">
+        <p className="text-muted-foreground">Order not found.</p>
+      </div>
     )
   }
 
@@ -65,7 +62,7 @@ export default function OrderDetail({ t, id }: Props) {
   }
 
   return (
-    <AdminLayout t={t} activeRoute="/admin/orders">
+    <>
       <motion.div
         className="p-6 md:p-8 max-w-6xl"
         variants={reduced ? undefined : fadeIn}
@@ -239,6 +236,6 @@ export default function OrderDetail({ t, id }: Props) {
           </MotionButton>
         </div>
       </Dialog>
-    </AdminLayout>
+    </>
   )
 }

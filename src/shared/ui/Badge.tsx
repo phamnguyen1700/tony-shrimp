@@ -20,8 +20,7 @@ const variantStyles = {
 export default function Badge({ children, variant = 'default', className = '' }: Props) {
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-mono-label font-medium uppercase tracking-widest ${variantStyles[variant]} ${className}`}
-      style={{ borderRadius: 'var(--radius)' }}
+      className={`ui-radius inline-flex items-center gap-1 px-2 py-0.5 text-xs font-mono-label font-medium uppercase tracking-widest ${variantStyles[variant]} ${className}`}
     >
       {children}
     </span>

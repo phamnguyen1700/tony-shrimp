@@ -32,12 +32,12 @@ export default function MotionButton({ children, variant = 'primary', size = 'md
       whileHover={reduced ? undefined : 'hover'}
       whileTap={reduced ? undefined : 'tap'}
       className={`
+        ui-radius
         inline-flex items-center justify-center gap-2 font-body font-medium
         uppercase transition-colors duration-150 cursor-pointer
         focus-visible:outline-ring disabled:opacity-40 disabled:cursor-not-allowed
         ${variantStyles[variant]} ${sizeStyles[size]} ${className}
       `}
-      style={{ borderRadius: 'var(--radius)' }}
       {...(props as any)}
     >
       {children}

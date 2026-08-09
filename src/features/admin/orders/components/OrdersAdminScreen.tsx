@@ -3,7 +3,6 @@ import Link from 'next/link'
 import type { Translations } from '@/i18n'
 import type { OrderStatus } from '@/data/orders'
 import { adminOrders } from '@/data/orders'
-import AdminLayout from '@/features/admin/components/AdminLayout'
 import Badge from '@/shared/ui/Badge'
 import Input from '@/shared/ui/Input'
 
@@ -53,8 +52,7 @@ export default function OrdersAdmin({ t }: Props) {
   }
 
   return (
-    <AdminLayout t={t} activeRoute="/admin/orders">
-      <div className="p-6 md:p-8 max-w-6xl">
+    <div className="p-6 md:p-8 max-w-6xl">
         <div className="flex items-center justify-between mb-6">
           <h1 className="font-display text-2xl md:text-3xl font-semibold text-foreground">{t.admin.orders}</h1>
         </div>
@@ -183,7 +181,6 @@ export default function OrdersAdmin({ t }: Props) {
             )}
           </div>
         )}
-      </div>
-    </AdminLayout>
+    </div>
   )
 }

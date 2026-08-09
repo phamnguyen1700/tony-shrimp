@@ -2,14 +2,11 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { usePathname } from "next/navigation";
-import Navbar from "@/components/common/layout/Navbar";
-import PageTransition from "@/components/common/motion/PageTransition";
+import { Toaster } from "react-hot-toast";
 import { useI18n } from "@/hooks/useI18n";
 import { useTheme } from "@/hooks/useTheme";
 import type { Lang, Translations } from "@/i18n";
 import type { ThemeMode } from "@/hooks/useTheme";
-import { useCartStore } from "@/store/cartStore";
 
 interface AppRuntimeValue {
   t: Translations;
@@ -22,25 +19,12 @@ interface AppRuntimeValue {
 const AppRuntimeContext = createContext<AppRuntimeValue | null>(null);
 
 function AppFrame({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const { lang, setLang, t } = useI18n();
-  const cartItems = useCartStore((state) => state.items);
-  const hideNav = pathname.startsWith("/admin") || pathname === "/design-system";
 
   return (
     <AppRuntimeContext.Provider value={{ t, lang, setLang, theme, setTheme }}>
-      {!hideNav && (
-        <Navbar
-          t={t}
-          lang={lang}
-          setLang={setLang}
-          theme={theme}
-          setTheme={setTheme}
-          cartItems={cartItems}
-        />
-      )}
-      <PageTransition routeKey={pathname}>{children}</PageTransition>
+      {children}
     </AppRuntimeContext.Provider>
   );
 }
@@ -61,6 +45,33 @@ export default function AppProviders({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AppFrame>{children}</AppFrame>
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          duration: 4500,
+          style: {
+            background: "var(--card)",
+            color: "var(--foreground)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius)",
+            boxShadow: "0 18px 50px rgba(0,0,0,0.18)",
+            fontFamily: "var(--font-dm-sans)",
+            fontSize: "14px",
+          },
+          success: {
+            iconTheme: {
+              primary: "var(--accent)",
+              secondary: "var(--accent-foreground)",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "#ef4444",
+              secondary: "#ffffff",
+            },
+          },
+        }}
+      />
     </QueryClientProvider>
   );
 }
