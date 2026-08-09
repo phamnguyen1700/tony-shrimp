@@ -6,7 +6,10 @@ import type { ThemeMode } from '@/hooks/useTheme'
 import type { Lang } from '@/i18n'
 import type { Translations } from '@/i18n'
 import type { CartItem } from '@/types/cart'
+import { canAccessAdmin } from '@/lib/authAccess'
+import { useAuthStore } from '@/store/authStore'
 import MobileDrawer from './MobileDrawer'
+import NavSearch from './NavSearch'
 
 interface Props {
   t: Translations
@@ -21,8 +24,11 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
   const [drawerOpen, setDrawerOpen] = useState(false)
   const pathname = usePathname()
   const reduced = useReducedMotion()
+  const user = useAuthStore((state) => state.user)
   const isLanding = pathname === '/'
+  const canGoAdmin = canAccessAdmin(user)
   const totalItems = cartItems.reduce((s, i) => s + i.quantity, 0)
+  const cartHref = pathname.startsWith('/products/') ? '/cart?fromLastViewed=1' : '/cart'
 
   const nextTheme: ThemeMode = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'
   const themeIcon = theme === 'light' ? '☀' : theme === 'dark' ? '☾' : '◑'
@@ -36,7 +42,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
       >
         <div className="max-w-[1440px] mx-auto px-6 md:px-10 flex items-center justify-between h-14">
           {/* Brand */}
-          <Link href="/" className="flex flex-col leading-none group">
+          <Link href={canGoAdmin ? "/admin" : "/"} className="flex flex-col leading-none group">
             <span
               className="font-display font-semibold tracking-[0.18em] text-sm uppercase"
               style={{ color: isLanding ? '#edeae3' : 'var(--foreground)' }}
@@ -47,7 +53,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
               className="font-mono-label text-[11px] tracking-[0.24em] uppercase"
               style={{ color: isLanding ? 'rgba(237,234,227,0.45)' : 'var(--muted-foreground)' }}
             >
-              {t.tagline}
+              {t.tagline}{canGoAdmin ? ' · ADMIN' : ''}
             </span>
           </Link>
 
@@ -74,15 +80,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
           {/* Controls */}
           <div className="flex items-center gap-3">
             {/* Search */}
-            <button
-              className={`hidden md:flex p-2 transition-colors ${isLanding ? 'text-white/60 hover:text-white' : 'text-muted-foreground hover:text-foreground'}`}
-              aria-label="Search"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="7" strokeWidth={1.5} />
-                <path d="m21 21-4.35-4.35" strokeWidth={1.5} strokeLinecap="round" />
-              </svg>
-            </button>
+            <NavSearch isLanding={isLanding} />
 
             {/* Language */}
             <button
@@ -117,7 +115,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
 
             {/* Cart */}
             <Link
-              href="/cart"
+              href={cartHref}
               className={`relative flex p-2 transition-colors ${isLanding ? 'text-white/60 hover:text-white' : 'text-muted-foreground hover:text-foreground'}`}
               aria-label={`${t.nav.cart} (${totalItems})`}
             >

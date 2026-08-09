@@ -9,6 +9,7 @@ import Select from '@/shared/ui/Select'
 import { getShrimpImage } from '@/assets/images'
 import { shrimpProducts } from '@/data/shrimp'
 import { fadeUp, fadeIn, modalScale, staggerContainer, staggerFast } from '@/lib/motionVariants'
+import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from '@/lib/shrimpBadgeStyles'
 
 interface Props {
   t: Translations
@@ -29,9 +30,13 @@ const colorTokens = [
   { name: 'border', var: '--border' },
 ]
 
-const sections = ['Colors', 'Typography', 'Buttons', 'Badges', 'Forms', 'Product Card', 'Status', 'Spacing', 'Motion']
+const sections = ['Colors', 'Typography', 'Buttons', 'Badges', 'Forms', 'Product Card', 'Admin Table', 'Status', 'Spacing', 'Motion']
 
 const spacingScale = [2, 4, 8, 12, 16, 24, 32, 48, 64]
+
+function sectionId(section: string) {
+  return section.toLowerCase().replace(/\s+/g, '-')
+}
 
 function ColorSwatch({ name, cssVar }: { name: string; cssVar: string }) {
   return (
@@ -113,7 +118,7 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
           {sections.map((s) => (
             <a
               key={s}
-              href={`#${s.toLowerCase()}`}
+              href={`#${sectionId(s)}`}
               className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground hover:text-accent py-1.5 transition-colors"
             >
               {s}
@@ -193,6 +198,13 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
               <Badge variant="default">Default</Badge>
               <Badge variant="accent">Accent</Badge>
               <Badge variant="muted">Muted</Badge>
+              <Badge variant="accent" className={gradeBadgeClass('S')}>S</Badge>
+              <Badge variant="accent" className={gradeBadgeClass('SS')}>SS</Badge>
+              <Badge variant="accent" className={gradeBadgeClass('SSS')}>SSS</Badge>
+              <Badge variant="muted" className={traitBadgeClass('Galaxy')}>Galaxy</Badge>
+              <Badge variant="muted" className={rarityBadgeClass('Common')}>Common</Badge>
+              <Badge variant="muted" className={rarityBadgeClass('Rare')}>Rare</Badge>
+              <Badge variant="muted" className={rarityBadgeClass('Extremely Rare')}>Extremely Rare</Badge>
             </div>
           </section>
 
@@ -250,6 +262,69 @@ export default function DesignSystem({ t, theme, setTheme, lang, setLang }: Prop
                   </div>
                 </div>
               ))}
+            </div>
+          </section>
+
+          <section>
+            <SectionAnchor id="admin-table" />
+            <SectionTitle>Admin Table</SectionTitle>
+            <div className="overflow-x-auto border border-border bg-card" style={{ borderRadius: 'var(--radius)' }}>
+              <table className="admin-data-table">
+                <thead>
+                  <tr className="border-b border-border">
+                    {['Name', 'Type', 'Badges', 'Price', 'Available', 'Status', 'Actions', 'Primary Image'].map((heading, index) => (
+                      <th
+                        key={heading}
+                        className={`admin-data-th ${index === 0 || index === 2 ? 'text-left' : 'text-center'}`}
+                      >
+                        {heading}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="admin-data-row">
+                    <td className="admin-data-cell admin-data-name-cell">
+                      <div className="text-sm font-body text-foreground">Ocean Blue</div>
+                      <div className="mt-0.5 font-mono-label text-xs text-muted-foreground">Neocaridina</div>
+                    </td>
+                    <td className="admin-data-cell admin-data-type-cell">Ocean</td>
+                    <td className="admin-data-cell admin-data-badge-cell">
+                      <div className="flex flex-wrap gap-1.5">
+                        <Badge variant="accent" className={gradeBadgeClass('SS')}>SS</Badge>
+                        <Badge variant="muted" className={rarityBadgeClass('Rare')}>Rare</Badge>
+                        <Badge variant="muted" className={traitBadgeClass('Galaxy')}>Galaxy</Badge>
+                        <Badge variant="muted">Blue</Badge>
+                      </div>
+                    </td>
+                    <td className="admin-data-cell min-w-[130px] text-center">
+                      <button className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">View Prices</button>
+                    </td>
+                    <td className="admin-data-cell min-w-[110px] text-center">
+                      <Badge variant="inStock">Yes</Badge>
+                    </td>
+                    <td className="admin-data-cell min-w-[120px] text-center">
+                      <Badge variant="default">Active</Badge>
+                    </td>
+                    <td className="admin-data-cell admin-data-action-cell">
+                      <div className="flex items-center justify-center gap-3">
+                        <button className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">Edit</button>
+                        <button className="font-mono-label text-xs uppercase tracking-widest text-red-500 hover:underline">Deactivate</button>
+                      </div>
+                    </td>
+                    <td className="admin-data-cell admin-data-image-cell">
+                      <div className="admin-image-slots">
+                        <div className="admin-image-slot">
+                          <img src={getShrimpImage('ocean-blue')} alt="Ocean Blue" className="h-full w-full object-cover" />
+                        </div>
+                        <div className="admin-image-slot-empty">+</div>
+                        <div className="admin-image-slot-empty">+</div>
+                        <div className="admin-image-slot-empty">+</div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </section>
 

@@ -3,7 +3,6 @@ import { motion, useReducedMotion } from 'motion/react'
 import type { Translations } from '@/i18n'
 import { adminOrders } from '@/data/orders'
 import { shrimpProducts } from '@/data/shrimp'
-import AdminLayout from '@/features/admin/components/AdminLayout'
 import Badge from '@/shared/ui/Badge'
 import { staggerContainer, staggerFast, fadeUp } from '@/lib/motionVariants'
 import type { OrderStatus } from '@/data/orders'
@@ -66,8 +65,7 @@ export default function Dashboard({ t }: Props) {
   const recentOrders = [...adminOrders].slice(0, 5)
 
   return (
-    <AdminLayout t={t} activeRoute="/admin">
-      <div className="p-6 md:p-8 max-w-6xl">
+    <div className="p-6 md:p-8 max-w-6xl">
         <h1 className="font-display text-2xl md:text-3xl font-semibold text-foreground mb-8">
           {t.admin.dashboard}
         </h1>
@@ -171,7 +169,6 @@ export default function Dashboard({ t }: Props) {
             </div>
           ))}
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   )
 }

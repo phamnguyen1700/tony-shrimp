@@ -20,12 +20,11 @@ const Select = forwardRef<HTMLSelectElement, Props>(function Select(
       <select
         ref={ref}
         id={id}
-        className={cn(`
+        className={cn(`ui-radius
           w-full px-3 py-2.5 text-sm font-body appearance-none
           bg-card border border-border text-foreground cursor-pointer
           focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring
         `, className)}
-        style={{ borderRadius: 'var(--radius)' }}
         {...props}
       >
         {options.map(o => (

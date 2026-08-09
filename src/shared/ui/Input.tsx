@@ -20,7 +20,7 @@ const Input = forwardRef<HTMLInputElement, Props>(function Input(
       <input
         ref={ref}
         id={id}
-        className={cn(`
+        className={cn(`ui-radius
           w-full px-3 py-2.5 text-sm font-body
           bg-card border border-border text-foreground
           placeholder:text-muted-foreground
@@ -28,7 +28,6 @@ const Input = forwardRef<HTMLInputElement, Props>(function Input(
           focus:outline-none focus:border-ring focus:ring-1 focus:ring-ring
           disabled:opacity-50 disabled:cursor-not-allowed
         `, error && 'border-red-500 focus:ring-red-500', className)}
-        style={{ borderRadius: 'var(--radius)' }}
         {...props}
       />
       {error && <p className="text-xs text-red-500">{error}</p>}

@@ -66,9 +66,9 @@ function NavContent({ t, activeRoute, onClose }: { t: Translations; activeRoute:
   return (
     <>
       <div className="px-5 py-5 border-b border-border">
-        <Link href="/" className="block" onClick={onClose}>
+        <Link href="/shop" className="block" onClick={onClose}>
           <div className="font-display text-base font-semibold text-foreground leading-none">TONY SHRIMP</div>
-          <div className="font-mono-label text-[11px] tracking-widest text-muted-foreground mt-0.5">AUSTRALIA · ADMIN</div>
+          <div className="font-mono-label text-[11px] tracking-widest text-muted-foreground mt-0.5">AUSTRALIA · SHOP</div>
         </Link>
       </div>
       <nav className="py-3">

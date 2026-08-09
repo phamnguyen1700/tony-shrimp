@@ -1,3 +1,3 @@
 export const env = {
-  apiBaseUrl: process.env.NEXT_PUBLIC_API_URL ?? "/api",
+  apiBaseUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000",
 } as const;
