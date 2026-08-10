@@ -27,8 +27,10 @@ import { adminShrimpFormSchema } from "@/schema/shrimp";
 import { useShrimpOptionsStore } from "@/store/shrimpStore";
 import type {
   AdminShrimpCareDraft,
+  AdminShrimpFilters,
   AdminShrimpFormInput,
   CreateShrimpPayload,
+  OwnerShrimpListQuery,
   SaleUnit,
   ShrimpImage,
   ShrimpListItem,
@@ -46,17 +48,42 @@ import {
   uniqueItems,
 } from "@/lib/shrimpAdminUtils";
 import { normalizeRarityValue } from "./selectorElements";
+import AdminShrimpFiltersPanel from "./components/AdminShrimpFilters";
 import ConfirmActionDialog from "./components/ConfirmActionDialog";
 import ShrimpFormModal from "./components/ShrimpFormModal";
 import ShrimpTable from "./components/ShrimpTable";
 import VariantManagerDialog from "./components/VariantManagerDialog";
+
+const emptyAdminShrimpFilters: AdminShrimpFilters = {
+  search: "",
+  catalog_status: "",
+  type: "",
+  color: "",
+  grade: "",
+  rarity: "",
+  trait: "",
+  availability: "",
+};
 
 export default function AdminShrimpFeature() {
   const { t } = useAppRuntime();
   const reduced = useReducedMotion();
   const ownerOptionsQuery = useOwnerCatalogOptions();
   const storedOptions = useShrimpOptionsStore((state) => state.ownerCatalogOptions);
-  const shrimpQuery = useOwnerShrimpList({ limit: 100 });
+  const [filters, setFilters] = useState<AdminShrimpFilters>(emptyAdminShrimpFilters);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const shrimpQueryParams: OwnerShrimpListQuery = {
+    limit: 100,
+    ...(debouncedSearch ? { search: debouncedSearch } : {}),
+    ...(filters.catalog_status ? { catalog_status: filters.catalog_status } : {}),
+    ...(filters.type ? { type: filters.type } : {}),
+    ...(filters.color ? { color: filters.color } : {}),
+    ...(filters.grade ? { grade: filters.grade } : {}),
+    ...(filters.rarity ? { rarity: filters.rarity } : {}),
+    ...(filters.trait ? { trait: filters.trait } : {}),
+    ...(filters.availability ? { in_stock: filters.availability === "in_stock" } : {}),
+  };
+  const shrimpQuery = useOwnerShrimpList(shrimpQueryParams);
   const products = shrimpQuery.data ?? [];
   const detailQueries = useOwnerShrimpDetails(products.map((product) => product.id));
 
@@ -129,6 +156,11 @@ export default function AdminShrimpFeature() {
   ]);
   const currentArchiveTarget = products.find((product) => product.id === archiveTarget);
   const currentHardDeleteTarget = products.find((product) => product.id === hardDeleteTarget);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 300);
+    return () => window.clearTimeout(timer);
+  }, [filters.search]);
 
   useEffect(() => {
     if (!formOpen || !editingId || !editingDetailQuery.data) return;
@@ -321,6 +353,14 @@ export default function AdminShrimpFeature() {
             imagePendingById={imagePendingById}
             t={t}
             isLoading={shrimpQuery.isLoading}
+            filtersSlot={
+              <AdminShrimpFiltersPanel
+                filters={filters}
+                options={options ?? undefined}
+                onChange={setFilters}
+                onClear={() => setFilters(emptyAdminShrimpFilters)}
+              />
+            }
             onAdd={openAdd}
             onEdit={openEdit}
             onViewVariants={setVariantTarget}

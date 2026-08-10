@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Translations } from "@/i18n";
 import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
-import Badge from "@/shared/ui/Badge";
+import Badge from "@/components/ui/Badge";
 import type { ShrimpListItem } from "@/types/shrimp";
 
 interface LandingSpecimenOverlayProps {

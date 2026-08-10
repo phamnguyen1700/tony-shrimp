@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import AppFooter from "@/components/common/layout/AppFooter";
 import Navbar from "@/components/common/layout/Navbar";
 import PageTransition from "@/components/common/motion/PageTransition";
+import { useCurrentUser } from "@/hooks/user";
 import { useAppRuntime } from "@/providers/AppProviders";
 import { useCartStore } from "@/store/cartStore";
 
@@ -12,6 +13,7 @@ export default function EcommerceLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { t, lang, setLang, theme, setTheme } = useAppRuntime();
   const cartItems = useCartStore((state) => state.items);
+  useCurrentUser();
 
   return (
     <>

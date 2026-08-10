@@ -1,49 +1,124 @@
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import type { Translations } from "@/i18n";
+import type { AddressLocalityCheckResponse, AddressSuburbSuggestion, UserAddress } from "@/types/user";
+import AccountAddressCard from "./AccountAddressCard";
+import AccountAddressForm, { type AccountAddressDraft } from "./AccountAddressForm";
 
 interface AccountAddressesPanelProps {
+  t: Translations;
   reduced: boolean | null;
+  addresses: UserAddress[];
+  formDraft: AccountAddressDraft;
+  formOpen: boolean;
+  editingAddressId: string | null;
+  states: string[];
+  suburbSuggestions: AddressSuburbSuggestion[];
+  localityCheck: AddressLocalityCheckResponse | undefined;
+  errors: Partial<Record<keyof AccountAddressDraft, string>>;
+  canSave: boolean;
+  isLoading: boolean;
+  isValidating: boolean;
+  isMutating: boolean;
+  onAddAddress: () => void;
+  onEditAddress: (address: UserAddress) => void;
+  onDeleteAddress: (addressId: string) => void;
+  onSetDefaultAddress: (addressId: string) => void;
+  onDraftChange: (draft: AccountAddressDraft) => void;
+  onSaveAddress: () => void;
+  onCancelForm: () => void;
 }
 
-export default function AccountAddressesPanel({ reduced }: AccountAddressesPanelProps) {
+export default function AccountAddressesPanel({
+  t,
+  reduced,
+  addresses,
+  formDraft,
+  formOpen,
+  editingAddressId,
+  states,
+  suburbSuggestions,
+  localityCheck,
+  errors,
+  canSave,
+  isLoading,
+  isValidating,
+  isMutating,
+  onAddAddress,
+  onEditAddress,
+  onDeleteAddress,
+  onSetDefaultAddress,
+  onDraftChange,
+  onSaveAddress,
+  onCancelForm,
+}: AccountAddressesPanelProps) {
+  const labels = t.account.addressFields;
+
   return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={reduced ? undefined : { opacity: 0, y: -6 }}
-      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-      className="space-y-4"
-    >
-      <div className="ui-radius border border-border p-5">
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="mb-2 flex items-center gap-2">
-              <p className="font-body text-sm font-medium text-foreground">Alex Nguyen</p>
-              <span className="ui-radius border border-accent/20 bg-accent/10 px-1.5 py-0.5 font-mono-label text-xs uppercase tracking-widest text-accent">
-                DEFAULT
-              </span>
-            </div>
-            <p className="font-body text-sm text-muted-foreground">42 Botanical Ave</p>
-            <p className="font-body text-sm text-muted-foreground">Melbourne VIC 3000</p>
-            <p className="font-body text-sm text-muted-foreground">Australia</p>
-          </div>
-          <button className="font-mono-label text-[11px] uppercase tracking-widest text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground">
-            Edit
-          </button>
-        </div>
+    <section>
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h2 className="font-mono-label text-xs uppercase tracking-[0.18em] text-foreground">
+          {labels.title}
+        </h2>
       </div>
 
-      <button className="flex items-center gap-2 py-2 font-mono-label text-xs uppercase tracking-[0.16em] text-accent transition-colors hover:text-accent/80">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path
-            d="M6 1V11M1 6H11"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
+      <div className="space-y-4">
+        {isLoading && (
+          <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
+            {labels.loading}
+          </p>
+        )}
+        {!isLoading && addresses.length === 0 && !formOpen && (
+          <p className="font-body text-sm text-muted-foreground">{labels.empty}</p>
+        )}
+        {addresses.map((address) => (
+          <AccountAddressCard
+            key={address.id}
+            t={t}
+            address={address}
+            onEdit={() => onEditAddress(address)}
+            onDelete={() => onDeleteAddress(address.id)}
+            onSetDefault={() => onSetDefaultAddress(address.id)}
+            isMutating={isMutating}
           />
-        </svg>
-        Add Address
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={onAddAddress}
+        className="mt-5 flex items-center gap-2 py-2 font-mono-label text-xs uppercase tracking-[0.16em] text-accent transition-colors hover:text-accent/80"
+      >
+        {labels.add}
       </button>
-    </motion.div>
+
+      <AnimatePresence initial={false}>
+        {formOpen && (
+          <motion.div
+            key={editingAddressId ?? "new-address-form"}
+            initial={reduced ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduced ? undefined : { opacity: 0, y: -6 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-4 border border-border p-5"
+            style={{ borderRadius: "var(--radius)" }}
+          >
+            <AccountAddressForm
+              t={t}
+              draft={formDraft}
+              states={states}
+              suburbSuggestions={suburbSuggestions}
+              localityCheck={localityCheck}
+              errors={errors}
+              canSave={canSave}
+              isValidating={isValidating}
+              isSaving={isMutating}
+              onDraftChange={onDraftChange}
+              onSave={onSaveAddress}
+              onCancel={onCancelForm}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
   );
 }
-

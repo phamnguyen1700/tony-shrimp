@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import PageHero from "@/components/common/layout/PageHero";
 import { fadeUp, staggerContainer } from "@/lib/motionVariants";
 import { useAppRuntime } from "@/providers/AppProviders";
 import AboutAccordionList from "./components/AboutAccordionList";
-import AboutHero from "./components/AboutHero";
 
 export default function AboutFeature() {
   const { t, lang } = useAppRuntime();
@@ -40,7 +40,7 @@ export default function AboutFeature() {
           animate="visible"
         >
           <motion.div variants={reduced ? undefined : fadeUp}>
-            <AboutHero t={t} />
+            <PageHero title={t.nav.about} reduced={reduced} className="mb-0" />
           </motion.div>
           <motion.div variants={reduced ? undefined : fadeUp}>
             <AboutAccordionList t={t} lang={lang} openId={activeHash} />

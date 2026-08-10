@@ -1,11 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "@/config/api";
-import { refreshTokenSchema, requestOtpSchema, verifyOtpSchema } from "@/schema/auth";
+import { requestOtpSchema, verifyOtpSchema } from "@/schema/auth";
 import { authService } from "@/services/auth";
-import { authQueryKeys } from "@/hooks/user";
+import { authQueryKeys, userQueryKeys } from "@/hooks/user";
 import { useAuthStore } from "@/store/authStore";
-import { userService } from "@/services/user";
 import type { RequestOtpPayload, VerifyOtpPayload } from "@/types/auth";
 
 export function useRequestOtp() {
@@ -30,10 +29,12 @@ export function useVerifyOtp() {
   return useMutation({
     mutationFn: async (payload: VerifyOtpPayload) => {
       const validPayload = verifyOtpSchema.parse(payload);
-      await authService.verifyOtp(validPayload);
-      return userService.getCurrentUser();
+      const session = await authService.verifyOtp(validPayload);
+      return session.user;
     },
     onSuccess: (user) => {
+      queryClient.removeQueries({ queryKey: userQueryKeys.profile });
+      queryClient.removeQueries({ queryKey: userQueryKeys.addresses });
       queryClient.setQueryData(authQueryKeys.me, user);
       setUser(user);
       toast.success("Signed in.");
@@ -48,10 +49,7 @@ export function useRefreshToken() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (refreshToken: string) => {
-      const validPayload = refreshTokenSchema.parse({ refresh_token: refreshToken });
-      return authService.refresh(validPayload.refresh_token);
-    },
+    mutationFn: () => authService.refresh(),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: authQueryKeys.me });
     },

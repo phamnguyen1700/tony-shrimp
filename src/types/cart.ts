@@ -1,7 +1,7 @@
 export interface CartItem {
   lineId: string;
   productId: string;
-  variantId?: string;
+  variantId: string;
   name: string;
   variantName?: string;
   grade?: string;

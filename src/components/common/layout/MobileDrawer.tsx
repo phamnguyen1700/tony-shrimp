@@ -20,7 +20,7 @@ export default function MobileDrawer({ open, onClose, t, lang, setLang, theme, s
   const navLinks = [
     { to: '/shop', label: t.nav.shop },
     { to: '/about', label: t.nav.about },
-    { to: '/account', label: t.nav.myOrders },
+    { to: '/orders', label: t.nav.myOrders },
     { to: '/account', label: t.nav.account },
   ]
 

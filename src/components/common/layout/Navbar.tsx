@@ -8,6 +8,7 @@ import type { Translations } from '@/i18n'
 import type { CartItem } from '@/types/cart'
 import { canAccessAdmin } from '@/lib/authAccess'
 import { useAuthStore } from '@/store/authStore'
+import BrandMark from './BrandMark'
 import MobileDrawer from './MobileDrawer'
 import NavSearch from './NavSearch'
 
@@ -40,33 +41,27 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
           isLanding ? 'bg-transparent' : 'bg-background/95 backdrop-blur-md border-b border-border'
         }`}
       >
-        <div className="max-w-[1440px] mx-auto px-6 md:px-10 flex items-center justify-between h-14">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-10 flex items-center justify-between h-16">
           {/* Brand */}
-          <Link href={canGoAdmin ? "/admin" : "/"} className="flex flex-col leading-none group">
-            <span
-              className="font-display font-semibold tracking-[0.18em] text-sm uppercase"
-              style={{ color: isLanding ? '#edeae3' : 'var(--foreground)' }}
-            >
-              {t.brand}
-            </span>
-            <span
-              className="font-mono-label text-[11px] tracking-[0.24em] uppercase"
-              style={{ color: isLanding ? 'rgba(237,234,227,0.45)' : 'var(--muted-foreground)' }}
-            >
-              {t.tagline}{canGoAdmin ? ' · ADMIN' : ''}
-            </span>
+          <Link href={canGoAdmin ? "/admin" : "/"} className="group">
+            <BrandMark
+              tagline={t.tagline}
+              isAdmin={canGoAdmin}
+              tone={isLanding ? "light" : "dark"}
+            />
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-7">
+          <nav className="hidden md:flex items-center gap-8">
             {[
               { to: '/shop', label: t.nav.shop },
               { to: '/about', label: t.nav.about },
+              { to: '/orders', label: t.nav.myOrders },
             ].map(({ to, label }) => (
               <Link
                 key={to}
                 href={to}
-                className={`text-xs font-mono-label uppercase tracking-widest transition-colors duration-150 ${
+                className={`text-[13px] font-mono-label uppercase tracking-widest transition-colors duration-150 ${
                   isLanding
                     ? 'text-white/60 hover:text-white'
                     : 'text-muted-foreground hover:text-foreground'
@@ -78,14 +73,14 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
           </nav>
 
           {/* Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3.5">
             {/* Search */}
             <NavSearch isLanding={isLanding} />
 
             {/* Language */}
             <button
               onClick={() => setLang(lang === 'en' ? 'vi' : 'en')}
-              className={`hidden md:flex text-xs font-mono-label tracking-widest uppercase transition-colors p-2 ${
+              className={`hidden md:flex p-2 text-[13px] font-mono-label uppercase tracking-widest transition-colors ${
                 isLanding ? 'text-white/60 hover:text-white' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -95,7 +90,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
             {/* Theme toggle */}
             <button
               onClick={() => setTheme(nextTheme)}
-              className={`hidden md:flex text-xs p-2 transition-colors ${isLanding ? 'text-white/60 hover:text-white' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`hidden md:flex p-2 text-[13px] transition-colors ${isLanding ? 'text-white/60 hover:text-white' : 'text-muted-foreground hover:text-foreground'}`}
               aria-label={`Switch to ${nextTheme} theme`}
             >
               {themeIcon}
@@ -107,7 +102,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
               className={`hidden md:flex p-2 transition-colors ${isLanding ? 'text-white/60 hover:text-white' : 'text-muted-foreground hover:text-foreground'}`}
               aria-label={t.nav.account}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-[18px] w-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <circle cx="12" cy="8" r="4" strokeWidth={1.5} />
                 <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" strokeWidth={1.5} strokeLinecap="round" />
               </svg>
@@ -116,10 +111,11 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
             {/* Cart */}
             <Link
               href={cartHref}
+              data-cart-anchor="true"
               className={`relative flex p-2 transition-colors ${isLanding ? 'text-white/60 hover:text-white' : 'text-muted-foreground hover:text-foreground'}`}
               aria-label={`${t.nav.cart} (${totalItems})`}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-[18px] w-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
                 <line x1="3" y1="6" x2="21" y2="6" strokeWidth={1.5} />
                 <path d="M16 10a4 4 0 01-8 0" strokeWidth={1.5} strokeLinecap="round" />
@@ -131,7 +127,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
                     initial={reduced ? { opacity: 0 } : { scale: 0, opacity: 0 }}
                     animate={reduced ? { opacity: 1 } : { scale: 1, opacity: 1 }}
                     exit={reduced ? { opacity: 0 } : { scale: 0, opacity: 0 }}
-                    className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-accent text-accent-foreground text-[11px] font-mono-label flex items-center justify-center"
+                    className="absolute -right-1 -top-1 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-accent font-mono-label text-[11px] text-accent-foreground"
                   >
                     {totalItems}
                   </motion.span>

@@ -1,21 +1,14 @@
 import { endpoints } from "@/config/endpoints";
 import {
   apiClient,
-  clearAuthTokens,
-  getAuthTokens,
-  getRefreshToken,
-  setAuthTokens,
-  type AuthTokens,
+  clearLegacyAuthTokens,
 } from "@/config/api";
 import type {
-  AuthTokenResponse,
+  AuthSessionResponse,
   RequestOtpPayload,
   RequestOtpResponse,
   VerifyOtpPayload,
 } from "@/types/auth";
-
-export { clearAuthTokens, getAuthTokens, getRefreshToken, setAuthTokens };
-export type { AuthTokens };
 
 export const authService = {
   async requestOtp(payload: RequestOtpPayload) {
@@ -27,39 +20,28 @@ export const authService = {
   },
 
   async verifyOtp(payload: VerifyOtpPayload) {
-    const response = await apiClient.post<AuthTokenResponse>(endpoints.auth.verifyOtp, {
+    const response = await apiClient.post<AuthSessionResponse>(endpoints.auth.verifyOtp, {
       email: payload.email,
       code: payload.code,
     });
 
-    setAuthTokens(response.data);
     return response.data;
   },
 
-  async refresh(refreshToken = getRefreshToken()) {
-    if (!refreshToken) throw new Error("Missing refresh token.");
-
-    const response = await apiClient.post<AuthTokenResponse>(endpoints.auth.refresh, {
-      refresh_token: refreshToken,
-    });
-
-    setAuthTokens(response.data);
+  async refresh() {
+    const response = await apiClient.post<AuthSessionResponse>(endpoints.auth.refresh);
     return response.data;
   },
 
-  async logout(refreshToken = getRefreshToken()) {
+  async logout() {
     try {
-      if (refreshToken) {
-        await apiClient.post<void>(endpoints.auth.logout, {
-          refresh_token: refreshToken,
-        });
-      }
+      await apiClient.post<void>(endpoints.auth.logout);
     } finally {
-      clearAuthTokens();
+      clearLegacyAuthTokens();
     }
   },
 
   clearSession() {
-    clearAuthTokens();
+    clearLegacyAuthTokens();
   },
 };

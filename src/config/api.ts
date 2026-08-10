@@ -1,10 +1,9 @@
 import axios from "axios";
 import { env } from "@/config/env";
 import { endpoints } from "@/config/endpoints";
-import type { AuthTokenResponse } from "@/types/auth";
 
-const ACCESS_TOKEN_KEY = "tony_access_token";
-const REFRESH_TOKEN_KEY = "tony_refresh_token";
+const LEGACY_ACCESS_TOKEN_KEY = "tony_access_token";
+const LEGACY_REFRESH_TOKEN_KEY = "tony_refresh_token";
 
 interface BackendValidationDetail {
   msg?: unknown;
@@ -23,17 +22,12 @@ export class ApiError extends Error {
   }
 }
 
-export interface AuthTokens {
-  accessToken: string;
-  refreshToken: string;
-}
-
 interface RetriableRequestConfig {
   _retry?: boolean;
   headers?: Record<string, unknown>;
 }
 
-let refreshPromise: Promise<AuthTokenResponse> | null = null;
+let refreshPromise: Promise<unknown> | null = null;
 
 function isBrowser() {
   return typeof window !== "undefined";
@@ -51,48 +45,16 @@ function getDetailMessage(detail: unknown) {
   return null;
 }
 
-export function getAccessToken() {
-  if (!isBrowser()) return null;
-  return window.localStorage.getItem(ACCESS_TOKEN_KEY);
-}
-
-export function getRefreshToken() {
-  if (!isBrowser()) return null;
-  return window.localStorage.getItem(REFRESH_TOKEN_KEY);
-}
-
-export function getAuthTokens(): AuthTokens | null {
-  const accessToken = getAccessToken();
-  const refreshToken = getRefreshToken();
-
-  if (!accessToken || !refreshToken) return null;
-  return { accessToken, refreshToken };
-}
-
-export function setAuthTokens(tokens: AuthTokenResponse) {
+export function clearLegacyAuthTokens() {
   if (!isBrowser()) return;
-  window.localStorage.setItem(ACCESS_TOKEN_KEY, tokens.access_token);
-  window.localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refresh_token);
-}
-
-export function clearAuthTokens() {
-  if (!isBrowser()) return;
-  window.localStorage.removeItem(ACCESS_TOKEN_KEY);
-  window.localStorage.removeItem(REFRESH_TOKEN_KEY);
+  window.localStorage.removeItem(LEGACY_ACCESS_TOKEN_KEY);
+  window.localStorage.removeItem(LEGACY_REFRESH_TOKEN_KEY);
 }
 
 async function refreshAccessToken() {
-  const refreshToken = getRefreshToken();
-  if (!refreshToken) throw new ApiError("Missing refresh token.", 401);
-
   refreshPromise ??= axios
-    .post<AuthTokenResponse>(`${env.apiBaseUrl}${endpoints.auth.refresh}`, {
-      refresh_token: refreshToken,
-    })
-    .then((response) => {
-      setAuthTokens(response.data);
-      return response.data;
-    })
+    .post(`${env.apiBaseUrl}${endpoints.auth.refresh}`, null, { withCredentials: true })
+    .then((response) => response.data)
     .finally(() => {
       refreshPromise = null;
     });
@@ -130,16 +92,7 @@ export function getApiErrorMessage(error: unknown, fallback = "Something went wr
 export const apiClient = axios.create({
   baseURL: env.apiBaseUrl,
   headers: { "Content-Type": "application/json" },
-});
-
-apiClient.interceptors.request.use((config) => {
-  const accessToken = getAccessToken();
-
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-
-  return config;
+  withCredentials: true,
 });
 
 apiClient.interceptors.response.use(
@@ -148,18 +101,18 @@ apiClient.interceptors.response.use(
     if (axios.isAxiosError(error) && error.response?.status === 401 && error.config) {
       const config = error.config as typeof error.config & RetriableRequestConfig;
       const requestUrl = config.url ?? "";
+      const isAuthMeRequest = requestUrl.includes(endpoints.auth.me);
       const isAuthRefreshRequest = requestUrl.includes(endpoints.auth.refresh);
       const isAuthLogoutRequest = requestUrl.includes(endpoints.auth.logout);
 
-      if (!config._retry && !isAuthRefreshRequest && !isAuthLogoutRequest && getRefreshToken()) {
+      if (!config._retry && !isAuthMeRequest && !isAuthRefreshRequest && !isAuthLogoutRequest) {
         config._retry = true;
 
         try {
-          const tokens = await refreshAccessToken();
-          config.headers.set("Authorization", `Bearer ${tokens.access_token}`);
+          await refreshAccessToken();
           return apiClient(config);
         } catch {
-          clearAuthTokens();
+          clearLegacyAuthTokens();
         }
       }
     }

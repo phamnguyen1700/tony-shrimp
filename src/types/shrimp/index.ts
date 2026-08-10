@@ -38,6 +38,17 @@ export interface ShopFilters {
   availability: string[];
 }
 
+export interface AdminShrimpFilters {
+  search: string;
+  catalog_status: "" | CatalogStatus;
+  type: string;
+  color: string;
+  grade: string;
+  rarity: string;
+  trait: string;
+  availability: "" | "in_stock" | "out_of_stock";
+}
+
 export interface OwnerShrimpListQuery extends ShrimpListQuery {
   catalog_status?: CatalogStatus;
 }
@@ -58,6 +69,8 @@ export interface ShrimpListItem {
   min_price: string | null;
   total_stock: number;
   primary_image_url: string | null;
+  first_variant?: ShrimpVariant | null;
+  variants?: ShrimpVariant[];
 }
 
 export interface ShrimpVariant {

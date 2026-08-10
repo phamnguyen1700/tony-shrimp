@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
-import { useCatalogOptions, useShrimpList } from "@/hooks/shrimp";
+import PageHero from "@/components/common/layout/PageHero";
+import toast from "react-hot-toast";
+import { getApiErrorMessage } from "@/config/api";
+import { useCatalogOptions, useFetchShrimpDetail, useShrimpList } from "@/hooks/shrimp";
 import { fadeUp, staggerContainer } from "@/lib/motionVariants";
 import { activeShopFilterCount, emptyShopFilters, filterShrimpProducts } from "@/lib/shrimpFilters";
 import { useAppRuntime } from "@/providers/AppProviders";
@@ -12,7 +15,6 @@ import { useShrimpOptionsStore } from "@/store/shrimpStore";
 import type { CatalogOptions, ShopFilters, ShrimpListItem } from "@/types/shrimp";
 import ShopEmptyState from "./components/ShopEmptyState";
 import ShopFilterPanel from "./components/ShopFilterPanel";
-import ShopHero from "./components/ShopHero";
 import ShopMobileFilterBar from "./components/ShopMobileFilterBar";
 import ShopMobileFilterSheet from "./components/ShopMobileFilterSheet";
 import ShopProductCard from "./components/ShopProductCard";
@@ -33,6 +35,7 @@ export default function ShopFeature() {
   const searchParams = useSearchParams();
   const reduced = useReducedMotion();
   const { addItem } = useCart();
+  const fetchShrimpDetail = useFetchShrimpDetail();
   const catalogOptionsQuery = useCatalogOptions();
   const storedOptions = useShrimpOptionsStore((state) => state.catalogOptions);
   const search = searchParams.get("search")?.trim() ?? "";
@@ -59,29 +62,40 @@ export default function ShopFeature() {
     setFilters(emptyShopFilters);
   }
 
-  function addProductToCart(product: ShrimpListItem) {
+  async function addProductToCart(product: ShrimpListItem) {
     if (!product.is_available) return;
 
-    addItem({
-      productId: product.id,
-      name: product.name,
-      grade: product.grade ?? undefined,
-      imageUrl: product.primary_image_url ?? undefined,
-      price: Number(product.min_price ?? 0),
-    });
+    try {
+      const detail = await fetchShrimpDetail(product.id);
+      const activeVariants = detail.variants.filter((variant) => variant.is_active);
+      const firstVariant = activeVariants[0] ?? detail.variants[0];
+      if (!firstVariant) return;
+      const imageUrl =
+        detail.images.find((image) => image.is_primary)?.url ??
+        detail.images[0]?.url ??
+        product.primary_image_url ??
+        undefined;
+
+      addItem({
+        productId: detail.id,
+        variantId: firstVariant.id,
+        name: detail.name,
+        variantName: firstVariant.name,
+        grade: detail.grade ?? undefined,
+        imageUrl,
+        price: Number(firstVariant.price),
+        saleUnit: firstVariant.sale_unit,
+        saleQuantity: firstVariant.sale_quantity,
+      });
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Could not add shrimp to cart."));
+    }
   }
 
   return (
     <div className="min-h-screen bg-background pt-14">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-        <motion.div
-          className="py-10 md:py-14"
-          initial={reduced ? false : { opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <ShopHero title={t.shop.title} />
-        </motion.div>
+        <PageHero title={t.shop.title} reduced={reduced} className="py-10 md:py-14" />
 
         <ShopMobileFilterBar
           t={t}

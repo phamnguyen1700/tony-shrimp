@@ -88,6 +88,16 @@ export function useShrimpDetail(shrimpId: string) {
   });
 }
 
+export function useFetchShrimpDetail() {
+  const queryClient = useQueryClient();
+
+  return (shrimpId: string) =>
+    queryClient.fetchQuery({
+      queryKey: shrimpQueryKeys.publicDetail(shrimpId),
+      queryFn: () => shrimpService.getShrimpDetail(validateId(shrimpId)),
+    });
+}
+
 export function useOwnerShrimpList(params?: OwnerShrimpListQuery) {
   const validParams = ownerShrimpListQuerySchema.parse(params ?? {});
 

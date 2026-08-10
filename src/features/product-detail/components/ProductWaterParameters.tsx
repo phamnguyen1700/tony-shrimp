@@ -1,6 +1,6 @@
 import type { Translations } from "@/i18n";
 import type { ShrimpDetail } from "@/types/shrimp";
-import Badge from "@/shared/ui/Badge";
+import Badge from "@/components/ui/Badge";
 
 interface ProductWaterParametersProps {
   t: Translations;

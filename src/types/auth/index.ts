@@ -1,3 +1,5 @@
+import type { AuthUser } from "@/types/user";
+
 export interface RequestOtpPayload {
   email: string;
 }
@@ -11,17 +13,7 @@ export interface VerifyOtpPayload {
   code: string;
 }
 
-export interface AuthTokenResponse {
-  access_token: string;
-  refresh_token: string;
-  token_type: "bearer";
-}
-
-export interface RefreshTokenPayload {
-  refresh_token: string;
-}
-
-export interface LogoutPayload {
-  refresh_token: string;
+export interface AuthSessionResponse {
+  user: AuthUser;
 }
 

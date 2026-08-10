@@ -1,9 +1,9 @@
 import type { FieldErrors, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import type { Translations } from "@/i18n";
 import type { AdminShrimpCareDraft, AdminShrimpFormInput, CatalogOptions, CareLevel } from "@/types/shrimp";
-import Dialog from "@/shared/ui/Dialog";
-import Input from "@/shared/ui/Input";
-import Select from "@/shared/ui/Select";
+import Dialog from "@/components/ui/Dialog";
+import Input from "@/components/ui/Input";
+import Select from "@/components/ui/Select";
 import MotionButton from "@/components/common/motion/MotionButton";
 import { badgeValues } from "@/lib/shrimpBadgeStyles";
 import { splitTraits } from "@/lib/shrimpAdminUtils";

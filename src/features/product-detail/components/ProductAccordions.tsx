@@ -8,8 +8,16 @@ interface ProductAccordionsProps {
   product: ShrimpDetail;
 }
 
-function AccordionSection({ title, children }: { title: string; children: ReactNode }) {
-  const [open, setOpen] = useState(false);
+function AccordionSection({
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
 
   return (
     <div className="accordion-row">
@@ -17,7 +25,7 @@ function AccordionSection({ title, children }: { title: string; children: ReactN
         <span className="accordion-title">{title}</span>
         <span className="accordion-symbol">{open ? "-" : "+"}</span>
       </button>
-      <AnimatePresence initial={false}>
+      <AnimatePresence>
         {open && (
           <motion.div
             key="content"
@@ -40,7 +48,7 @@ function AccordionSection({ title, children }: { title: string; children: ReactN
 export default function ProductAccordions({ t, product }: ProductAccordionsProps) {
   return (
     <div className="space-y-0">
-      <AccordionSection title={t.product.description}>
+      <AccordionSection title={t.product.description} defaultOpen>
         <p>{product.description ?? "N/A"}</p>
         {product.traits.length > 0 && (
           <ul className="mt-3 list-inside list-disc space-y-1">
