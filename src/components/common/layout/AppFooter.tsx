@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Translations } from "@/i18n";
+import BrandMark from "./BrandMark";
 
 interface AppFooterProps {
   t: Translations;
@@ -24,9 +25,9 @@ export default function AppFooter({ t }: AppFooterProps) {
       <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-10 md:py-20">
         <div className="grid gap-12 md:grid-cols-2 md:gap-20">
           <div>
-            <h2 className="mb-3 font-display text-3xl font-semibold italic text-[#f7f3ea] md:text-4xl">
-              Tony Shrimp Australia
-            </h2>
+            <div className="mb-5">
+              <BrandMark tagline={t.tagline} tone="light" size="footer" />
+            </div>
             <p className="max-w-sm font-body text-sm leading-relaxed text-[#b7b9b0]">
               Premium ornamental freshwater shrimp for aquascapers and shrimp
               keepers. Bred selectively for colour, pattern and vigour.
@@ -38,7 +39,7 @@ export default function AppFooter({ t }: AppFooterProps) {
                 className="inline-flex items-center gap-2 bg-[#f2f0eb] px-5 py-2.5 font-mono-label text-xs uppercase tracking-widest text-[#080b08] transition-colors hover:bg-white"
                 style={{ borderRadius: "var(--radius)" }}
               >
-                {t.nav.shop}
+                Victoria · {t.tagline}
               </Link>
             </div>
           </div>

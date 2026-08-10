@@ -12,8 +12,8 @@ interface CartState {
   clearCart: () => void;
 }
 
-function getCartLineId(item: Pick<CartItem, "productId"> & Partial<Pick<CartItem, "variantId">>) {
-  return item.variantId ? `${item.productId}:${item.variantId}` : item.productId;
+function getCartLineId(item: Pick<CartItem, "productId" | "variantId">) {
+  return `${item.productId}:${item.variantId}`;
 }
 
 const legacyCompatibleStorage: StateStorage = {

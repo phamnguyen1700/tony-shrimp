@@ -1,9 +1,18 @@
 "use client";
 
+import { useOwnerOrders } from "@/hooks/order";
 import { useAppRuntime } from "@/providers/AppProviders";
-import DashboardScreen from "./components/DashboardScreen";
+import Dashboard from "./components/Dashboard";
 
 export default function AdminDashboardFeature() {
   const { t } = useAppRuntime();
-  return <DashboardScreen t={t} />;
+  const ordersQuery = useOwnerOrders({ limit: 5, offset: 0 });
+
+  return (
+    <Dashboard
+      t={t}
+      orders={ordersQuery.data?.items ?? []}
+      isOrdersLoading={ordersQuery.isLoading}
+    />
+  );
 }

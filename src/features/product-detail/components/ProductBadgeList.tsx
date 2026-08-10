@@ -1,4 +1,4 @@
-import Badge from "@/shared/ui/Badge";
+import Badge from "@/components/ui/Badge";
 import { rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
 import type { ShrimpDetail } from "@/types/shrimp";
 

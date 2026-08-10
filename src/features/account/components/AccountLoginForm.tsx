@@ -8,8 +8,8 @@ import {
   type LoginCodeFormValues,
   type LoginEmailFormValues,
 } from "@/schema/auth";
-import Input from "@/shared/ui/Input";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/shared/ui/InputOTP";
+import Input from "@/components/ui/Input";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/InputOTP";
 import MotionButton from "@/components/common/motion/MotionButton";
 import AccountHeader from "./AccountHeader";
 

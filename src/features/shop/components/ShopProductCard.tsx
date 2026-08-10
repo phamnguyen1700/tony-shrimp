@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
+import AddToCartMotion from "@/components/common/motion/AddToCartMotion";
 import type { Translations } from "@/i18n";
 import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
-import Badge, { StatusDot } from "@/shared/ui/Badge";
+import { getShrimpListPrice } from "@/lib/shrimpVariantPricing";
+import Badge, { StatusDot } from "@/components/ui/Badge";
 import type { ShrimpListItem } from "@/types/shrimp";
 
 interface ShopProductCardProps {
@@ -20,7 +22,7 @@ export default function ShopProductCard({
   onHover,
   onAddToCart,
 }: ShopProductCardProps) {
-  const price = Number(product.min_price ?? 0);
+  const price = getShrimpListPrice(product);
   const speciesAndType = [product.species, product.type].filter(Boolean);
 
   return (
@@ -51,18 +53,28 @@ export default function ShopProductCard({
                 exit={{ opacity: 0, y: 4 }}
                 transition={{ duration: 0.18 }}
               >
-                <button
-                  onClick={(event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    onAddToCart(product);
-                  }}
+                <AddToCartMotion
+                  className="w-full"
                   disabled={!product.is_available}
-                  className="w-full bg-accent py-2 font-mono-label text-[11px] uppercase tracking-[0.16em] text-accent-foreground transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-40"
-                  style={{ borderRadius: "var(--radius)" }}
+                  imageUrl={product.primary_image_url}
+                  label={product.name}
+                  onAddToCart={() => onAddToCart(product)}
                 >
-                  {t.product.addToCart}
-                </button>
+                  {({ disabled, onClick }) => (
+                    <button
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        void onClick();
+                      }}
+                      disabled={disabled}
+                      className="w-full bg-accent py-2 font-mono-label text-[11px] uppercase tracking-[0.16em] text-accent-foreground transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-40"
+                      style={{ borderRadius: "var(--radius)" }}
+                    >
+                      {t.product.addToCart}
+                    </button>
+                  )}
+                </AddToCartMotion>
               </motion.div>
             )}
           </AnimatePresence>
@@ -76,13 +88,13 @@ export default function ShopProductCard({
           <div className="flex flex-wrap items-center gap-1.5 font-mono-label text-[11px] uppercase tracking-widest text-muted-foreground">
             {speciesAndType.map((item, index) => (
               <span key={item} className="inline-flex items-center gap-1.5">
-                {index > 0 && <span aria-hidden>•</span>}
+                {index > 0 && <span aria-hidden>&bull;</span>}
                 <span>{item}</span>
               </span>
             ))}
             {product.grade && (
               <>
-                {speciesAndType.length > 0 && <span aria-hidden>•</span>}
+                {speciesAndType.length > 0 && <span aria-hidden>&bull;</span>}
                 <Badge variant="accent" className={gradeBadgeClass(product.grade)}>
                   {product.grade}
                 </Badge>
@@ -100,14 +112,11 @@ export default function ShopProductCard({
                 {trait}
               </Badge>
             ))}
-            {product.colors.map((color) => (
-              <Badge key={color} variant="muted">
-                {color}
-              </Badge>
-            ))}
           </div>
           <div className="flex items-center justify-between">
-            <p className="font-display text-sm font-medium text-foreground">A${price}</p>
+            <p className="font-display text-sm font-medium text-foreground">
+              {t.landing.from} A${price}
+            </p>
             <span className="flex items-center gap-1">
               <StatusDot status={product.is_available ? "in-stock" : "out-of-stock"} />
               <Badge variant={product.is_available ? "inStock" : "outOfStock"}>

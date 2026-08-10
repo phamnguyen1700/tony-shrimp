@@ -1,9 +1,9 @@
 import { useState, type ReactNode } from "react";
 import type { Translations } from "@/i18n";
 import type { SaleUnit, ShrimpListItem, ShrimpVariant, ShrimpVariantPayload } from "@/types/shrimp";
-import Dialog from "@/shared/ui/Dialog";
-import Input from "@/shared/ui/Input";
-import Select from "@/shared/ui/Select";
+import Dialog from "@/components/ui/Dialog";
+import Input from "@/components/ui/Input";
+import Select from "@/components/ui/Select";
 import MotionButton from "@/components/common/motion/MotionButton";
 import { saleQuantityOptions, saleUnitOptions } from "../selectorElements";
 import {

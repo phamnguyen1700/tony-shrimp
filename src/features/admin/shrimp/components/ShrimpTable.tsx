@@ -1,6 +1,8 @@
+import type { ReactNode } from "react";
+import AdminDataTable, { type AdminDataTableColumn } from "@/components/common/table/AdminDataTable";
 import type { Translations } from "@/i18n";
 import type { ShrimpDetail, ShrimpImage, ShrimpListItem } from "@/types/shrimp";
-import Badge from "@/shared/ui/Badge";
+import Badge from "@/components/ui/Badge";
 import MotionButton from "@/components/common/motion/MotionButton";
 import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
 import { statusVariant } from "@/lib/shrimpAdminUtils";
@@ -12,6 +14,7 @@ interface ShrimpTableProps {
   imagePendingById: Record<string, boolean>;
   t: Translations;
   isLoading: boolean;
+  filtersSlot?: ReactNode;
   onEdit: (product: ShrimpListItem) => void;
   onAdd: () => void;
   onViewVariants: (product: ShrimpListItem) => void;
@@ -29,6 +32,7 @@ export default function ShrimpTable({
   imagePendingById,
   t,
   isLoading,
+  filtersSlot,
   onEdit,
   onAdd,
   onViewVariants,
@@ -42,6 +46,111 @@ export default function ShrimpTable({
   const table = t.admin.table;
   const formLabels = t.admin.form;
   const actions = t.admin.actions;
+  const columns: AdminDataTableColumn<ShrimpListItem>[] = [
+    {
+      key: "name",
+      header: table.name,
+      className: "admin-data-name-cell",
+      render: (product) => (
+        <>
+          <div className="text-sm font-body text-foreground">{product.name}</div>
+          <div className="mt-0.5 font-mono-label text-xs text-muted-foreground">{product.species ?? "N/A"}</div>
+        </>
+      ),
+    },
+    {
+      key: "type",
+      header: table.type,
+      align: "center",
+      className: "admin-data-type-cell",
+      render: (product) => product.type,
+    },
+    {
+      key: "badges",
+      header: table.badges,
+      className: "admin-data-badge-cell",
+      render: (product) => (
+        <div className="flex flex-wrap gap-1.5">
+          {product.grade && <Badge variant="accent" className={gradeBadgeClass(product.grade)}>{product.grade}</Badge>}
+          {product.rarity && <Badge variant="muted" className={rarityBadgeClass(product.rarity)}>{product.rarity}</Badge>}
+          {product.traits.map((trait) => (
+            <Badge key={trait} variant="muted" className={traitBadgeClass(trait)}>{trait}</Badge>
+          ))}
+        </div>
+      ),
+    },
+    {
+      key: "price",
+      header: table.price,
+      align: "center",
+      className: "min-w-[130px]",
+      render: (product) => (
+        <button onClick={() => onViewVariants(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">
+          {actions.viewVariants}
+        </button>
+      ),
+    },
+    {
+      key: "available",
+      header: table.available,
+      align: "center",
+      className: "min-w-[110px]",
+      render: (product) => (
+        <Badge variant={product.is_available ? "inStock" : "outOfStock"}>
+          {product.is_available ? actions.yes : actions.no}
+        </Badge>
+      ),
+    },
+    {
+      key: "status",
+      header: table.status,
+      align: "center",
+      className: "min-w-[120px]",
+      render: (product) => <Badge variant={statusVariant(product.catalog_status)}>{product.catalog_status}</Badge>,
+    },
+    {
+      key: "actions",
+      header: table.actions,
+      align: "center",
+      className: "admin-data-action-cell",
+      render: (product) => (
+        <div className="flex items-center justify-center gap-3">
+          <button onClick={() => onEdit(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">
+            {t.admin.editShrimp}
+          </button>
+          {product.catalog_status === "active" ? (
+            <button onClick={() => onDeactivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500 hover:underline">
+              {actions.deactivate}
+            </button>
+          ) : (
+            <>
+              <button onClick={() => onActivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">
+                {actions.activate}
+              </button>
+              <button onClick={() => onHardDelete(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500 hover:underline">
+                {actions.hardDelete}
+              </button>
+            </>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: "images",
+      header: formLabels.primaryImage,
+      align: "center",
+      className: "admin-data-image-cell",
+      render: (product) => (
+        <ShrimpImageSlots
+          images={detailById.get(product.id)?.images ?? []}
+          disabled={Boolean(imagePendingById[product.id])}
+          onUpload={(file, index) => onUploadImage(product, file, index)}
+          onDelete={(imageId) => onDeleteImage(product, imageId)}
+          onReorder={(images) => onReorderImages(product, images)}
+        />
+      ),
+    },
+  ];
 
   return (
     <div className="w-full p-6 md:p-8">
@@ -52,96 +161,19 @@ export default function ShrimpTable({
         </MotionButton>
       </div>
 
-      <div className="hidden w-full overflow-x-auto border border-border bg-card md:block" style={{ borderRadius: "var(--radius)" }}>
-        <table className="admin-data-table">
-          <thead>
-            <tr className="border-b border-border">
-              {[
-                { label: table.name, align: "text-left" },
-                { label: table.type, align: "text-center" },
-                { label: table.badges, align: "text-left" },
-                { label: table.price, align: "text-center" },
-                { label: table.available, align: "text-center" },
-                { label: table.status, align: "text-center" },
-                { label: table.actions, align: "text-center" },
-                { label: formLabels.primaryImage, align: "text-center" },
-              ].map((heading) => (
-                <th key={heading.label} className={`admin-data-th ${heading.align}`}>
-                  {heading.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr
-                key={product.id}
-                className="admin-data-row"
-              >
-                <td className="admin-data-cell admin-data-name-cell">
-                  <div className="text-sm font-body text-foreground">{product.name}</div>
-                  <div className="mt-0.5 font-mono-label text-xs text-muted-foreground">{product.species ?? "N/A"}</div>
-                </td>
-                <td className="admin-data-cell admin-data-type-cell">{product.type}</td>
-                <td className="admin-data-cell admin-data-badge-cell">
-                  <div className="flex flex-wrap gap-1.5">
-                    {product.grade && <Badge variant="accent" className={gradeBadgeClass(product.grade)}>{product.grade}</Badge>}
-                    {product.rarity && <Badge variant="muted" className={rarityBadgeClass(product.rarity)}>{product.rarity}</Badge>}
-                    {product.traits.map((trait) => (
-                      <Badge key={trait} variant="muted" className={traitBadgeClass(trait)}>{trait}</Badge>
-                    ))}
-                    {product.colors.map((color) => (
-                      <Badge key={color} variant="muted">{color}</Badge>
-                    ))}
-                  </div>
-                </td>
-                <td className="admin-data-cell min-w-[130px] text-center">
-                  <button onClick={() => onViewVariants(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">
-                    {actions.viewVariants}
-                  </button>
-                </td>
-                <td className="admin-data-cell min-w-[110px] text-center">
-                  <Badge variant={product.is_available ? "inStock" : "outOfStock"}>
-                    {product.is_available ? actions.yes : actions.no}
-                  </Badge>
-                </td>
-                <td className="admin-data-cell min-w-[120px] text-center">
-                  <Badge variant={statusVariant(product.catalog_status)}>{product.catalog_status}</Badge>
-                </td>
-                <td className="admin-data-cell admin-data-action-cell">
-                  <div className="flex items-center justify-center gap-3">
-                    <button onClick={() => onEdit(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">
-                      {t.admin.editShrimp}
-                    </button>
-                    {product.catalog_status === "active" ? (
-                      <button onClick={() => onDeactivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500 hover:underline">
-                        {actions.deactivate}
-                      </button>
-                    ) : (
-                      <>
-                        <button onClick={() => onActivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">
-                          {actions.activate}
-                        </button>
-                        <button onClick={() => onHardDelete(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500 hover:underline">
-                          {actions.hardDelete}
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </td>
-                <td className="admin-data-cell admin-data-image-cell">
-                  <ShrimpImageSlots
-                    images={detailById.get(product.id)?.images ?? []}
-                    disabled={Boolean(imagePendingById[product.id])}
-                    onUpload={(file, index) => onUploadImage(product, file, index)}
-                    onDelete={(imageId) => onDeleteImage(product, imageId)}
-                    onReorder={(images) => onReorderImages(product, images)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {filtersSlot}
+
+      <div className="hidden md:block">
+        <AdminDataTable
+          rows={products}
+          columns={columns}
+          getRowKey={(product) => product.id}
+          emptyText="No shrimp found."
+          loadingText={actions.loadingShrimp}
+          isLoading={isLoading}
+          pageSize={10}
+          minWidth="1480px"
+        />
       </div>
 
       <div className="space-y-3 md:hidden">
@@ -185,7 +217,7 @@ export default function ShrimpTable({
         ))}
       </div>
 
-      {isLoading && (
+      {isLoading && products.length === 0 && (
         <div className="py-12">
           <p className="mono-section-label">{actions.loadingShrimp}</p>
         </div>

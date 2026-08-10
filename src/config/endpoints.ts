@@ -7,6 +7,15 @@ export const endpoints = {
     refresh: "/auth/refresh",
     logout: "/auth/logout",
   },
+  user: {
+    me: "/user/me",
+    addressOptions: "/user/address-options",
+    addressSuburbs: "/user/address-suburbs",
+    checkAddressLocality: "/user/address-locality/check",
+    addresses: "/user/addresses",
+    address: (addressId: string) => `/user/addresses/${addressId}`,
+    setDefaultAddress: (addressId: string) => `/user/addresses/${addressId}/default`,
+  },
   catalog: {
     options: "/catalog/options",
     shrimp: "/catalog/shrimp",
@@ -28,6 +37,28 @@ export const endpoints = {
     image: (shrimpId: string, imageId: string) =>
       `/owner/catalog/shrimp/${shrimpId}/images/${imageId}`,
   },
+  ownerUsers: {
+    users: "/owner/users",
+    user: (userId: string) => `/owner/users/${userId}`,
+    activate: (userId: string) => `/owner/users/${userId}/activate`,
+    deactivate: (userId: string) => `/owner/users/${userId}/deactivate`,
+    role: (userId: string) => `/owner/users/${userId}/role`,
+  },
+  orders: {
+    orders: "/orders",
+    order: (orderId: string) => `/orders/${orderId}`,
+  },
+  ownerOrders: {
+    orders: "/owner/orders",
+    order: (orderId: string) => `/owner/orders/${orderId}`,
+    status: (orderId: string) => `/owner/orders/${orderId}/status`,
+    tracking: (orderId: string) => `/owner/orders/${orderId}/tracking`,
+  },
+  ownerNotifications: {
+    notifications: "/owner/notifications",
+    read: (notificationId: string) => `/owner/notifications/${notificationId}/read`,
+    readAll: "/owner/notifications/read-all",
+    ws: "/owner/notifications/ws",
+  },
   products: "/products",
-  orders: "/orders",
 } as const;

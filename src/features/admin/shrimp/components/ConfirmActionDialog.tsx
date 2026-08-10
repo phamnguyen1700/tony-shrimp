@@ -1,5 +1,4 @@
-import Dialog from "@/shared/ui/Dialog";
-import MotionButton from "@/components/common/motion/MotionButton";
+import ConfirmDialog from "@/components/common/dialogs/ConfirmDialog";
 
 interface ConfirmActionDialogProps {
   open: boolean;
@@ -23,16 +22,15 @@ export default function ConfirmActionDialog({
   onClose,
 }: ConfirmActionDialogProps) {
   return (
-    <Dialog open={open} onClose={onClose} title={title} maxWidth="max-w-sm">
-      <p className="mb-6 text-sm text-muted-foreground">{message}</p>
-      <div className="flex gap-3">
-        <MotionButton variant="primary" size="sm" onClick={onConfirm} className={dangerClassName}>
-          {confirmLabel}
-        </MotionButton>
-        <MotionButton variant="ghost" size="sm" onClick={onClose}>
-          {cancelLabel}
-        </MotionButton>
-      </div>
-    </Dialog>
+    <ConfirmDialog
+      open={open}
+      title={title}
+      description={message}
+      confirmLabel={confirmLabel}
+      cancelLabel={cancelLabel}
+      tone={dangerClassName.includes("red") ? "alert" : "warning"}
+      onConfirm={onConfirm}
+      onClose={onClose}
+    />
   );
 }

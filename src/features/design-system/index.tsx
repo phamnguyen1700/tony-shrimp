@@ -1,9 +1,9 @@
 "use client";
 
 import { useAppRuntime } from "@/providers/AppProviders";
-import DesignSystemScreen from "./components/DesignSystemScreen";
+import DesignSystem from "./components/DesignSystem";
 
 export default function DesignSystemFeature() {
   const { t, theme, setTheme, lang, setLang } = useAppRuntime();
-  return <DesignSystemScreen t={t} theme={theme} setTheme={setTheme} lang={lang} setLang={setLang} />;
+  return <DesignSystem t={t} theme={theme} setTheme={setTheme} lang={lang} setLang={setLang} />;
 }

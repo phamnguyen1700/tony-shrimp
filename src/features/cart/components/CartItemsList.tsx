@@ -54,7 +54,7 @@ export default function CartItemsList({
           href={returnProduct?.href ?? "/shop"}
           className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground"
         >
-          ← {returnProduct ? `Back to ${returnProduct.name}` : t.cart.continueShopping}
+          &larr; {returnProduct ? `Back to ${returnProduct.name}` : t.cart.continueShopping}
         </Link>
       </div>
     </motion.div>

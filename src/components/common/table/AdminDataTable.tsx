@@ -1,0 +1,138 @@
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+
+export interface AdminDataTableColumn<T> {
+  key: string;
+  header: ReactNode;
+  align?: "left" | "center" | "right";
+  className?: string;
+  render: (row: T) => ReactNode;
+}
+
+interface AdminDataTableProps<T> {
+  rows: T[];
+  columns: AdminDataTableColumn<T>[];
+  getRowKey: (row: T) => string;
+  emptyText: string;
+  loadingText?: string;
+  isLoading?: boolean;
+  pageSize?: number;
+  minWidth?: string;
+  className?: string;
+}
+
+const alignClassName = {
+  left: "text-left",
+  center: "text-center",
+  right: "text-right",
+};
+
+export default function AdminDataTable<T>({
+  rows,
+  columns,
+  getRowKey,
+  emptyText,
+  loadingText = "Loading...",
+  isLoading = false,
+  pageSize = 10,
+  minWidth = "920px",
+  className = "",
+}: AdminDataTableProps<T>) {
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+
+  useEffect(() => {
+    setPage(1);
+  }, [rows.length, pageSize]);
+
+  useEffect(() => {
+    setPage((current) => Math.min(current, totalPages));
+  }, [totalPages]);
+
+  const paginatedRows = useMemo(
+    () => rows.slice((page - 1) * pageSize, page * pageSize),
+    [page, pageSize, rows],
+  );
+
+  const from = rows.length === 0 ? 0 : (page - 1) * pageSize + 1;
+  const to = Math.min(page * pageSize, rows.length);
+
+  return (
+    <div className={className}>
+      <div className="ui-radius overflow-x-auto border border-border bg-card">
+        <table className="w-full" style={{ minWidth }}>
+          <thead>
+            <tr className="border-b border-border">
+              {columns.map((column) => (
+                <th
+                  key={column.key}
+                  className={`admin-data-th ${alignClassName[column.align ?? "left"]}`}
+                >
+                  {column.header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedRows.map((row, index) => (
+              <tr
+                key={getRowKey(row)}
+                className={`admin-data-row ${
+                  index % 2 === 0 ? "admin-data-row-even" : "admin-data-row-odd"
+                }`}
+              >
+                {columns.map((column) => (
+                  <td
+                    key={column.key}
+                    className={`admin-data-cell ${alignClassName[column.align ?? "left"]} ${column.className ?? ""}`}
+                  >
+                    {column.render(row)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+            {(isLoading || paginatedRows.length === 0) && (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="px-4 py-10 text-center font-mono-label text-xs uppercase tracking-widest text-muted-foreground"
+                >
+                  {isLoading ? loadingText : emptyText}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {rows.length > 0 && (
+        <div className="mt-4 flex items-center justify-between gap-4">
+          <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
+            Showing {from}-{to} of {rows.length}
+          </p>
+          {totalPages > 1 && (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setPage((current) => Math.max(1, current - 1))}
+                disabled={page === 1}
+                className="ui-radius-sm border border-border px-3 py-1.5 font-mono-label text-xs uppercase tracking-widest text-foreground transition-colors hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Prev
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setPage((current) => Math.min(totalPages, current + 1))
+                }
+                disabled={page === totalPages}
+                className="ui-radius-sm border border-border px-3 py-1.5 font-mono-label text-xs uppercase tracking-widest text-foreground transition-colors hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

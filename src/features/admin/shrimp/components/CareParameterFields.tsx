@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import type { Translations } from "@/i18n";
 import type { CareLevel } from "@/types/shrimp";
-import Input from "@/shared/ui/Input";
-import Select from "@/shared/ui/Select";
+import Input from "@/components/ui/Input";
+import Select from "@/components/ui/Select";
 import { careLevelOptions } from "../selectorElements";
 import type { AdminShrimpCareDraft } from "@/types/shrimp";
 

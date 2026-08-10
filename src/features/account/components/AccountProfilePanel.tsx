@@ -1,60 +1,64 @@
-import { motion } from "motion/react";
-import Input from "@/shared/ui/Input";
+import Input from "@/components/ui/Input";
 import MotionButton from "@/components/common/motion/MotionButton";
+import { formatAustralianPhoneInput } from "@/lib/australianPhone";
+import type { Translations } from "@/i18n";
 
 interface AccountProfilePanelProps {
-  reduced: boolean | null;
+  t: Translations;
   profileName: string;
   profileEmail: string;
   profilePhone: string;
   onProfileNameChange: (value: string) => void;
-  onProfileEmailChange: (value: string) => void;
   onProfilePhoneChange: (value: string) => void;
+  onSaveProfile: () => void;
+  isSaving: boolean;
+  isDirty: boolean;
 }
 
 export default function AccountProfilePanel({
-  reduced,
+  t,
   profileName,
   profileEmail,
   profilePhone,
   onProfileNameChange,
-  onProfileEmailChange,
   onProfilePhoneChange,
+  onSaveProfile,
+  isSaving,
+  isDirty,
 }: AccountProfilePanelProps) {
+  const labels = t.account.profileFields;
+
   return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={reduced ? undefined : { opacity: 0, y: -6 }}
-      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-      className="max-w-md"
-    >
+    <section>
+      <h2 className="mb-5 font-mono-label text-xs uppercase tracking-[0.18em] text-foreground">
+        {t.account.profile}
+      </h2>
       <div className="space-y-5">
         <Input
-          label="Full Name"
+          label={labels.fullName}
           value={profileName}
           onChange={(event) => onProfileNameChange(event.target.value)}
           placeholder="Your name"
         />
         <Input
-          label="Email"
+          label={labels.email}
           type="email"
           value={profileEmail}
-          onChange={(event) => onProfileEmailChange(event.target.value)}
           placeholder="you@example.com"
+          readOnly
         />
         <Input
-          label="Phone"
+          label={labels.phone}
           type="tel"
           value={profilePhone}
-          onChange={(event) => onProfilePhoneChange(event.target.value)}
+          onChange={(event) => onProfilePhoneChange(formatAustralianPhoneInput(event.target.value))}
           placeholder="+61 400 000 000"
         />
-        <MotionButton variant="accent" size="md">
-          SAVE CHANGES
+        <MotionButton variant="accent" size="md" onClick={onSaveProfile} disabled={isSaving || !isDirty}>
+          {labels.save}
         </MotionButton>
       </div>
-    </motion.div>
+    </section>
   );
 }
 

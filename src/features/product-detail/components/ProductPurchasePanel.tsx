@@ -1,6 +1,7 @@
 import type { Translations } from "@/i18n";
+import AddToCartMotion from "@/components/common/motion/AddToCartMotion";
 import MotionButton from "@/components/common/motion/MotionButton";
-import Badge, { StatusDot } from "@/shared/ui/Badge";
+import Badge, { StatusDot } from "@/components/ui/Badge";
 import type { ShrimpDetail, ShrimpVariant } from "@/types/shrimp";
 
 interface ProductPurchasePanelProps {
@@ -8,6 +9,7 @@ interface ProductPurchasePanelProps {
   product: ShrimpDetail;
   selectedVariant?: ShrimpVariant;
   selectedVariantId: string;
+  imageUrl?: string;
   qty: number;
   onAddToCart: () => void;
   onDecreaseQty: () => void;
@@ -20,6 +22,7 @@ export default function ProductPurchasePanel({
   product,
   selectedVariant,
   selectedVariantId,
+  imageUrl,
   qty,
   onAddToCart,
   onDecreaseQty,
@@ -70,15 +73,24 @@ export default function ProductPurchasePanel({
             </button>
           </div>
         </div>
-        <MotionButton
-          variant="accent"
-          size="lg"
-          className="w-full"
+        <AddToCartMotion
           disabled={!isAvailable}
-          onClick={onAddToCart}
+          imageUrl={imageUrl}
+          label={product.name}
+          onAddToCart={onAddToCart}
         >
-          {t.product.addToCart}
-        </MotionButton>
+          {({ disabled, onClick }) => (
+            <MotionButton
+              variant="accent"
+              size="lg"
+              className="w-full"
+              disabled={disabled}
+              onClick={() => void onClick()}
+            >
+              {t.product.addToCart}
+            </MotionButton>
+          )}
+        </AddToCartMotion>
       </div>
     </>
   );

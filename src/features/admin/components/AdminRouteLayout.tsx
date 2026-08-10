@@ -7,7 +7,7 @@ import PageTransition from "@/components/common/motion/PageTransition";
 import { routes } from "@/config/routes";
 import { canAccessAdmin } from "@/lib/authAccess";
 import { useCurrentUser } from "@/hooks/user";
-import { getAuthTokens } from "@/services/auth";
+import { useOwnerNotificationStream } from "@/hooks/notification";
 import { useAppRuntime } from "@/providers/AppProviders";
 import { useAuthStore } from "@/store/authStore";
 import AdminLayout from "./AdminLayout";
@@ -15,6 +15,7 @@ import AdminLayout from "./AdminLayout";
 function getActiveRoute(pathname: string) {
   if (pathname.startsWith("/admin/orders")) return "/admin/orders";
   if (pathname.startsWith("/admin/shrimp")) return "/admin/shrimp";
+  if (pathname.startsWith("/admin/customers")) return "/admin/customers";
   return "/admin";
 }
 
@@ -25,10 +26,11 @@ export default function AdminRouteLayout({ children }: { children: ReactNode }) 
   const user = useAuthStore((state) => state.user);
   const isHydrated = useAuthStore((state) => state.isHydrated);
   const currentUserQuery = useCurrentUser();
-  const hasTokens = Boolean(getAuthTokens());
-  const isRestoringUser = hasTokens && !user && currentUserQuery.isLoading;
-  const isLoadingAuth = !isHydrated || isRestoringUser;
-  const canViewAdmin = canAccessAdmin(user);
+  const effectiveUser = currentUserQuery.data ?? user;
+  const isLoadingAuth = !isHydrated || currentUserQuery.isLoading;
+  const canViewAdmin = canAccessAdmin(effectiveUser);
+
+  useOwnerNotificationStream(canViewAdmin);
 
   useEffect(() => {
     if (isLoadingAuth) return;

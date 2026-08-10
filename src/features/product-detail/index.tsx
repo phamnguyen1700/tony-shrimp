@@ -122,6 +122,7 @@ export default function ProductDetailFeature({ id }: { id: string }) {
               product={product}
               selectedVariant={selectedVariant}
               selectedVariantId={selectedVariant?.id ?? ""}
+              imageUrl={imageUrl}
               qty={qty}
               onAddToCart={handleAddToCart}
               onDecreaseQty={() => setQty((value) => Math.max(1, value - 1))}
