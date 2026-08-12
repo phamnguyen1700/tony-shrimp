@@ -23,12 +23,10 @@ export default function AdminRouteLayout({ children }: { children: ReactNode }) 
   const pathname = usePathname();
   const router = useRouter();
   const { t } = useAppRuntime();
-  const user = useAuthStore((state) => state.user);
   const isHydrated = useAuthStore((state) => state.isHydrated);
   const currentUserQuery = useCurrentUser();
-  const effectiveUser = currentUserQuery.data ?? user;
   const isLoadingAuth = !isHydrated || currentUserQuery.isLoading;
-  const canViewAdmin = canAccessAdmin(effectiveUser);
+  const canViewAdmin = canAccessAdmin(currentUserQuery.data ?? null);
 
   useOwnerNotificationStream(canViewAdmin);
 

@@ -12,15 +12,25 @@ interface Props {
   setLang: (l: Lang) => void
   theme: ThemeMode
   setTheme: (m: ThemeMode) => void
+  showOrdersLink?: boolean
 }
 
-export default function MobileDrawer({ open, onClose, t, lang, setLang, theme, setTheme }: Props) {
+export default function MobileDrawer({
+  open,
+  onClose,
+  t,
+  lang,
+  setLang,
+  theme,
+  setTheme,
+  showOrdersLink = false,
+}: Props) {
   const reduced = useReducedMotion()
 
   const navLinks = [
     { to: '/shop', label: t.nav.shop },
     { to: '/about', label: t.nav.about },
-    { to: '/orders', label: t.nav.myOrders },
+    ...(showOrdersLink ? [{ to: '/orders', label: t.nav.myOrders }] : []),
     { to: '/account', label: t.nav.account },
   ]
 
