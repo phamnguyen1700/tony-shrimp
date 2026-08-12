@@ -28,6 +28,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
   const user = useAuthStore((state) => state.user)
   const isLanding = pathname === '/'
   const canGoAdmin = canAccessAdmin(user)
+  const showOrdersLink = Boolean(user)
   const totalItems = cartItems.reduce((s, i) => s + i.quantity, 0)
   const cartHref = pathname.startsWith('/products/') ? '/cart?fromLastViewed=1' : '/cart'
 
@@ -56,7 +57,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
             {[
               { to: '/shop', label: t.nav.shop },
               { to: '/about', label: t.nav.about },
-              { to: '/orders', label: t.nav.myOrders },
+              ...(showOrdersLink ? [{ to: '/orders', label: t.nav.myOrders }] : []),
             ].map(({ to, label }) => (
               <Link
                 key={to}
@@ -157,6 +158,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
         setLang={setLang}
         theme={theme}
         setTheme={setTheme}
+        showOrdersLink={showOrdersLink}
       />
     </>
   )
