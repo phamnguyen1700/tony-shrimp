@@ -30,9 +30,3 @@ export const updateOwnerOrderStatusSchema = z.object({
   message: z.string().trim().max(1000).nullable().optional(),
   status_at: z.string().datetime().nullable().optional(),
 });
-
-export const updateOwnerOrderTrackingSchema = z.object({
-  carrier: z.string().trim().nullable().optional(),
-  tracking_number: z.string().trim().nullable().optional(),
-  tracking_url: z.string().trim().url().nullable().optional(),
-});

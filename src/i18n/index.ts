@@ -27,7 +27,7 @@ const translations = {
       title: "SHOP",
       filters: "Filters",
       clearAll: "Clear all",
-      type: "TYPE",
+      type: "LINE",
       colour: "COLOUR",
       grade: "GRADE",
       rarity: "RARITY",
@@ -146,7 +146,7 @@ const translations = {
       deleteShrimp: "Delete",
       table: {
         name: "Name",
-        type: "Type",
+        type: "Line",
         badges: "Badges",
         price: "Price",
         carePara: "Care Para",
@@ -157,7 +157,7 @@ const translations = {
       form: {
         name: "Name",
         species: "Species",
-        type: "Type",
+        type: "Line",
         color: "Color",
         grade: "Grade",
         rarity: "Rarity",
@@ -263,7 +263,7 @@ const translations = {
       title: "CỬA HÀNG",
       filters: "Lọc",
       clearAll: "Xóa tất cả",
-      type: "LOẠI",
+      type: "DÒNG",
       colour: "MÀU SẮC",
       grade: "GRADE",
       rarity: "ĐỘ HIẾM",
@@ -380,7 +380,7 @@ const translations = {
       deleteShrimp: "Xóa",
       table: {
         name: "Tên",
-        type: "Loại",
+        type: "Dòng",
         badges: "Nhãn",
         price: "Giá",
         carePara: "Môi trường sống",
@@ -391,7 +391,7 @@ const translations = {
       form: {
         name: "Tên",
         species: "Loài",
-        type: "Loại",
+        type: "Dòng",
         color: "Màu sắc",
         grade: "Grade",
         rarity: "Độ hiếm",

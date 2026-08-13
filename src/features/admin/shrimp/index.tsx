@@ -38,6 +38,10 @@ import type {
 } from "@/types/shrimp";
 import { fadeUp, staggerContainer } from "@/lib/motionVariants";
 import {
+  descriptionDraftToMarkdown,
+  markdownToDescriptionDraft,
+} from "@/lib/shrimpDescription";
+import {
   careParameterPayloadFromDraft,
   emptyAdminShrimpCareDraft,
   emptyAdminShrimpForm,
@@ -57,7 +61,7 @@ import VariantManagerDialog from "./components/VariantManagerDialog";
 const emptyAdminShrimpFilters: AdminShrimpFilters = {
   search: "",
   catalog_status: "",
-  type: "",
+  line: "",
   color: "",
   grade: "",
   rarity: "",
@@ -76,7 +80,7 @@ export default function AdminShrimpFeature() {
     limit: 100,
     ...(debouncedSearch ? { search: debouncedSearch } : {}),
     ...(filters.catalog_status ? { catalog_status: filters.catalog_status } : {}),
-    ...(filters.type ? { type: filters.type } : {}),
+    ...(filters.line ? { line: filters.line } : {}),
     ...(filters.color ? { color: filters.color } : {}),
     ...(filters.grade ? { grade: filters.grade } : {}),
     ...(filters.rarity ? { rarity: filters.rarity } : {}),
@@ -141,7 +145,7 @@ export default function AdminShrimpFeature() {
   );
 
   const watchedSpecies = watch("species") ?? "";
-  const watchedType = watch("type") ?? "";
+  const watchedLine = watch("line") ?? "";
   const watchedColors = watch("colors") ?? "";
   const watchedGrade = watch("grade") ?? "";
   const watchedTraits = watch("traits") ?? "";
@@ -167,16 +171,22 @@ export default function AdminShrimpFeature() {
     if (editHydratedIdRef.current === editingId) return;
     const care = editingDetailQuery.data.care_parameter;
     const detail = editingDetailQuery.data;
+    const descriptionDraft = markdownToDescriptionDraft(detail.description);
 
     reset({
       ...emptyAdminShrimpForm,
       name: detail.name,
       species: detail.species ?? "",
-      type: detail.type,
+      slug: detail.slug,
+      line: detail.line,
       colors: detail.colors.join(", "),
       grade: detail.grade ?? "",
       rarity: normalizeRarityValue(detail.rarity),
       description: detail.description ?? "",
+      description_title: descriptionDraft.title,
+      description_overview: descriptionDraft.overview,
+      description_highlights: descriptionDraft.highlights,
+      description_care_notes: descriptionDraft.careNotes,
       catalog_status: detail.catalog_status,
       traits: detail.traits.join(", "),
     });
@@ -205,6 +215,8 @@ export default function AdminShrimpFeature() {
   }
 
   function openEdit(product: ShrimpListItem) {
+    const descriptionDraft = markdownToDescriptionDraft(detailById.get(product.id)?.description);
+
     setEditingId(product.id);
     editHydratedIdRef.current = null;
     setCareDraft(emptyAdminShrimpCareDraft);
@@ -212,10 +224,15 @@ export default function AdminShrimpFeature() {
       ...emptyAdminShrimpForm,
       name: product.name,
       species: product.species ?? "",
-      type: product.type,
+      slug: product.slug,
+      line: product.line,
       colors: product.colors.join(", "),
       grade: product.grade ?? "",
       rarity: normalizeRarityValue(product.rarity),
+      description_title: descriptionDraft.title,
+      description_overview: descriptionDraft.overview,
+      description_highlights: descriptionDraft.highlights,
+      description_care_notes: descriptionDraft.careNotes,
       catalog_status: product.catalog_status,
       traits: product.traits.join(", "),
     });
@@ -237,14 +254,21 @@ export default function AdminShrimpFeature() {
     }
 
     const form = parsed.data;
+    const description = descriptionDraftToMarkdown({
+      title: form.description_title ?? "",
+      overview: form.description_overview ?? form.description ?? "",
+      highlights: form.description_highlights ?? "",
+      careNotes: form.description_care_notes ?? "",
+    });
     const basePayload = {
       name: form.name,
       species: toNullableString(form.species),
-      type: form.type,
+      slug: toNullableString(form.slug),
+      line: form.line,
       colors: splitTraits(form.colors),
       grade: toNullableString(form.grade),
       rarity: toNullableString(form.rarity),
-      description: toNullableString(form.description),
+      description: toNullableString(description),
       catalog_status: form.catalog_status,
       traits: splitTraits(form.traits),
     };
@@ -385,7 +409,7 @@ export default function AdminShrimpFeature() {
         errors={errors}
         careDraft={careDraft}
         watchedSpecies={watchedSpecies}
-        watchedType={watchedType}
+        watchedLine={watchedLine}
         watchedColors={watchedColors}
         watchedGrade={watchedGrade}
         watchedTraits={watchedTraits}

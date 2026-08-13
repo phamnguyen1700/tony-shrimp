@@ -4,6 +4,7 @@ import type { Translations } from "@/i18n";
 import type { ShrimpDetail, ShrimpImage, ShrimpListItem } from "@/types/shrimp";
 import Badge from "@/components/ui/Badge";
 import MotionButton from "@/components/common/motion/MotionButton";
+import { isVideoMediaUrl } from "@/lib/media";
 import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
 import { statusVariant } from "@/lib/shrimpAdminUtils";
 import ShrimpImageSlots from "./ShrimpImageSlots";
@@ -59,11 +60,11 @@ export default function ShrimpTable({
       ),
     },
     {
-      key: "type",
+      key: "line",
       header: table.type,
       align: "center",
       className: "admin-data-type-cell",
-      render: (product) => product.type,
+      render: (product) => product.line,
     },
     {
       key: "badges",
@@ -180,13 +181,17 @@ export default function ShrimpTable({
         {products.map((product) => (
           <div key={product.id} className="flex gap-3 border border-border bg-card p-4" style={{ borderRadius: "var(--radius)" }}>
             <div className="h-14 w-14 shrink-0 overflow-hidden bg-[#080b08]" style={{ borderRadius: "var(--radius-sm)" }}>
-              {product.primary_image_url ? <img src={product.primary_image_url} alt={product.name} className="h-full w-full object-cover" /> : null}
+              {product.primary_image_url && isVideoMediaUrl(product.primary_image_url) ? (
+                <video src={product.primary_image_url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
+              ) : product.primary_image_url ? (
+                <img src={product.primary_image_url} alt={product.name} className="h-full w-full object-cover" />
+              ) : null}
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <div className="text-sm font-body text-foreground">{product.name}</div>
-                  <div className="mt-0.5 font-mono-label text-xs text-muted-foreground">{product.type}</div>
+                  <div className="mt-0.5 font-mono-label text-xs text-muted-foreground">{product.line}</div>
                 </div>
                 <Badge variant={statusVariant(product.catalog_status)}>{product.catalog_status}</Badge>
               </div>

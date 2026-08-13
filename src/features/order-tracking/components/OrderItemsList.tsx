@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { isVideoMediaUrl } from "@/lib/media";
 import { formatOrderMoney } from "@/lib/orderFormat";
 import type { OrderDetail } from "@/types/order";
 
@@ -21,9 +22,11 @@ export default function OrderItemsList({ order, reduced }: OrderItemsListProps) 
       {order.items.map((item) => (
         <div key={item.id} className="flex items-center gap-4 border-b border-border py-3">
           <div className="ui-radius h-14 w-14 shrink-0 bg-[#080b08]">
-            {item.image_url && (
+            {item.image_url && isVideoMediaUrl(item.image_url) ? (
+              <video src={item.image_url} className="h-full w-full object-contain" muted playsInline preload="metadata" />
+            ) : item.image_url ? (
               <img src={item.image_url} alt={item.shrimp_name} className="h-full w-full object-contain" />
-            )}
+            ) : null}
           </div>
           <div className="min-w-0 flex-1">
             <p className="font-display text-sm font-semibold italic text-foreground">{item.shrimp_name}</p>

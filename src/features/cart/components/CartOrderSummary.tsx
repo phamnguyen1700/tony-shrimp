@@ -7,13 +7,15 @@ import type {
   AddressSuburbSuggestion,
   UserAddress,
 } from "@/types/user";
-import CartOrderPanel from "./CartOrderPanel";
+import type { CartItem } from "@/types/cart";
+import CartOrderPanel from "./CartOrderPanelView";
 
 interface CartOrderSummaryProps {
   t: Translations;
   subtotal: number;
   shipping: number;
   total: number;
+  items: CartItem[];
   reduced: boolean | null;
   orderPanelOpen: boolean;
   addresses: UserAddress[];
@@ -46,6 +48,7 @@ export default function CartOrderSummary({
   subtotal,
   shipping,
   total,
+  items,
   reduced,
   orderPanelOpen,
   addresses,
@@ -141,6 +144,9 @@ export default function CartOrderSummary({
           isValidating={isAddressValidating}
           isMutating={isAddressMutating}
           confirmOpen={confirmOrderOpen}
+          items={items}
+          subtotal={subtotal}
+          shipping={shipping}
           total={total}
           onSelectAddress={onSelectAddress}
           onCustomerNoteChange={onCustomerNoteChange}

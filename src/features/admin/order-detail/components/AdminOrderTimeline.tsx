@@ -67,7 +67,10 @@ export default function AdminOrderTimeline({
             const state = stepState(step);
             const historyEntry = historyByStatus[step];
             const timelineMessage = getTimelineMessage(order, step, historyEntry?.message ?? null);
-            const showMarkShipped = step === "processing" && order.status === "processing";
+            const showMarkShipped =
+              step === "processing" &&
+              order.status === "processing" &&
+              order.payment_status === "paid";
 
             return (
               <motion.div

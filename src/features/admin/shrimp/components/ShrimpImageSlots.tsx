@@ -15,6 +15,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { isVideoMediaUrl } from "@/lib/media";
 import type { ShrimpImage } from "@/types/shrimp";
 
 interface ShrimpImageSlotsProps {
@@ -106,7 +107,15 @@ function SortableImageSlot({
       {...attributes}
       {...listeners}
     >
-      {image.url ? (
+      {image.url && isVideoMediaUrl(image.url) ? (
+        <video
+          src={image.url}
+          className="h-full w-full object-cover"
+          muted
+          playsInline
+          preload="metadata"
+        />
+      ) : image.url ? (
         <img src={image.url} alt={image.alt_text ?? `Shrimp image ${index + 1}`} className="h-full w-full object-cover" />
       ) : (
         <div className="flex h-full w-full items-center justify-center">
@@ -144,7 +153,7 @@ function EmptyImageSlot({
       +
       <input
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"
         className="sr-only"
         disabled={disabled}
         onChange={(event) => {

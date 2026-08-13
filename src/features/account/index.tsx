@@ -39,7 +39,7 @@ const emptyAddressDraft: AccountAddressDraft = {
   address_line1: "",
   address_line2: "",
   suburb: "",
-  state: "VIC",
+  state: "",
   postcode: "",
   is_default: false,
 };
@@ -171,7 +171,6 @@ export default function AccountFeature() {
       ...emptyAddressDraft,
       recipient_name: profileName,
       recipient_phone: normalizeAustralianPhone(profilePhone),
-      state: addressOptionsQuery.data?.states[0] ?? "VIC",
       is_default: (addressesQuery.data ?? []).length === 0,
     });
     setAddressFormOpen(true);

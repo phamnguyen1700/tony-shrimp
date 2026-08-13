@@ -1,18 +1,18 @@
 import { apiClient } from "@/config/api";
 import { endpoints } from "@/config/endpoints";
 import type {
+  CheckoutOrderResponse,
   CreateOrderPayload,
   OrderDetail,
   OrderListQuery,
   OrderListResponse,
   OwnerOrderListQuery,
   UpdateOwnerOrderStatusPayload,
-  UpdateOwnerOrderTrackingPayload,
 } from "@/types/order";
 
 export const orderService = {
   async createOrder(payload: CreateOrderPayload) {
-    const response = await apiClient.post<OrderDetail>(endpoints.orders.orders, payload);
+    const response = await apiClient.post<CheckoutOrderResponse>(endpoints.orders.checkout, payload);
     return response.data;
   },
 
@@ -44,11 +44,4 @@ export const orderService = {
     return response.data;
   },
 
-  async updateOwnerOrderTracking(orderId: string, payload: UpdateOwnerOrderTrackingPayload) {
-    const response = await apiClient.patch<OrderDetail>(
-      endpoints.ownerOrders.tracking(orderId),
-      payload,
-    );
-    return response.data;
-  },
 };

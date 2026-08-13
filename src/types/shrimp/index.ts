@@ -1,6 +1,12 @@
 export type CatalogStatus = "active" | "inactive";
 export type CareLevel = "beginner" | "intermediate" | "advanced";
-export type ImageContentType = "image/jpeg" | "image/png" | "image/webp";
+export type ImageContentType =
+  | "image/jpeg"
+  | "image/png"
+  | "image/webp"
+  | "video/mp4"
+  | "video/webm"
+  | "video/quicktime";
 export type SaleUnit = "each" | "pack";
 export type ShrimpType = "Caridina" | "Neocaridina" | string;
 
@@ -8,7 +14,7 @@ export interface CatalogOptions {
   species?: string[];
   catalog_statuses: CatalogStatus[];
   sale_units: SaleUnit[];
-  types: string[];
+  lines: string[];
   colors: string[];
   grades: string[];
   rarities: string[];
@@ -17,7 +23,7 @@ export interface CatalogOptions {
 
 export interface ShrimpListQuery {
   search?: string;
-  type?: string;
+  line?: string;
   color?: string;
   grade?: string;
   rarity?: string;
@@ -30,7 +36,7 @@ export interface ShrimpListQuery {
 }
 
 export interface ShopFilters {
-  types: string[];
+  lines: string[];
   colors: string[];
   grades: string[];
   rarities: string[];
@@ -41,7 +47,7 @@ export interface ShopFilters {
 export interface AdminShrimpFilters {
   search: string;
   catalog_status: "" | CatalogStatus;
-  type: string;
+  line: string;
   color: string;
   grade: string;
   rarity: string;
@@ -56,8 +62,9 @@ export interface OwnerShrimpListQuery extends ShrimpListQuery {
 export interface ShrimpListItem {
   id: string;
   name: string;
+  slug: string;
   species: string | null;
-  type: string;
+  line: string;
   colors: string[];
   grade: string | null;
   rarity: string | null;
@@ -158,6 +165,7 @@ export type UpdateShrimpImagePayload = Partial<Pick<ShrimpImagePayload, "alt_tex
 export interface PresignShrimpImageUploadPayload {
   filename: string;
   content_type: ImageContentType;
+  file_size_bytes?: number;
 }
 
 export interface PresignShrimpImageUploadResponse {
@@ -178,8 +186,9 @@ export interface UploadShrimpImagePayload {
 
 export interface CreateShrimpPayload {
   name: string;
+  slug?: string | null;
   species?: string | null;
-  type: string;
+  line: string;
   colors?: string[];
   grade?: string | null;
   rarity?: string | null;
@@ -194,18 +203,23 @@ export interface CreateShrimpPayload {
 export type UpdateShrimpPayload = Partial<
   Pick<
     CreateShrimpPayload,
-    "name" | "species" | "type" | "colors" | "grade" | "rarity" | "description" | "catalog_status" | "traits"
+    "name" | "slug" | "species" | "line" | "colors" | "grade" | "rarity" | "description" | "catalog_status" | "traits"
   >
 >;
 
 export interface AdminShrimpFormInput {
   name: string;
+  slug?: string;
   species?: string;
-  type: string;
+  line: string;
   colors?: string;
   grade?: string;
   rarity?: string;
   description?: string;
+  description_title?: string;
+  description_overview?: string;
+  description_highlights?: string;
+  description_care_notes?: string;
   catalog_status: CatalogStatus;
   traits?: string;
   variant_name?: string;

@@ -27,11 +27,11 @@ export default function AdminOrderTable({ orders, isLoading }: AdminOrderTablePr
       ),
     },
     {
-      key: "tracking",
-      header: "Tracking",
+      key: "payment",
+      header: "Payment",
       align: "center",
       className: "font-mono-label text-xs text-muted-foreground",
-      render: (order) => order.tracking_number ?? "N/A",
+      render: (order) => order.payment_status,
     },
     {
       key: "date",

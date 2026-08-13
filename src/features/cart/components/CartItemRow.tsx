@@ -2,6 +2,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import type { Translations } from "@/i18n";
 import type { CartItem } from "@/types/cart";
+import { isVideoMediaUrl } from "@/lib/media";
 import { fadeUp } from "@/lib/motionVariants";
 
 interface CartItemRowProps {
@@ -61,7 +62,15 @@ export default function CartItemRow({
       className="grid grid-cols-[70px_1fr] items-center gap-4 border-b border-border py-5 md:grid-cols-[70px_1fr_auto_auto_auto] md:gap-6"
     >
       <div className="ui-radius h-[70px] w-[70px] shrink-0 overflow-hidden bg-[#080b08]">
-        {item.imageUrl ? (
+        {item.imageUrl && isVideoMediaUrl(item.imageUrl) ? (
+          <video
+            src={item.imageUrl}
+            className="h-full w-full object-contain"
+            muted
+            playsInline
+            preload="metadata"
+          />
+        ) : item.imageUrl ? (
           <img
             src={item.imageUrl}
             alt={item.name}
@@ -76,7 +85,7 @@ export default function CartItemRow({
 
       <div className="min-w-0">
         <Link
-          href={`/products/${item.productId}`}
+          href={`/products/${item.productSlug ?? item.productId}`}
           className="block font-display text-sm font-semibold italic leading-snug text-foreground transition-colors hover:text-accent"
         >
           {item.name}

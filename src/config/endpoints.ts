@@ -20,6 +20,7 @@ export const endpoints = {
     options: "/catalog/options",
     shrimp: "/catalog/shrimp",
     shrimpDetail: (shrimpId: string) => `/catalog/shrimp/${shrimpId}`,
+    shrimpDetailBySlug: (slug: string) => `/catalog/shrimp/slug/${slug}`,
   },
   ownerCatalog: {
     options: "/owner/catalog/options",
@@ -46,13 +47,13 @@ export const endpoints = {
   },
   orders: {
     orders: "/orders",
+    checkout: "/orders/checkout",
     order: (orderId: string) => `/orders/${orderId}`,
   },
   ownerOrders: {
     orders: "/owner/orders",
     order: (orderId: string) => `/owner/orders/${orderId}`,
     status: (orderId: string) => `/owner/orders/${orderId}/status`,
-    tracking: (orderId: string) => `/owner/orders/${orderId}/tracking`,
   },
   ownerNotifications: {
     notifications: "/owner/notifications",

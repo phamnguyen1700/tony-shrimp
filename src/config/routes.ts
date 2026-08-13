@@ -3,7 +3,7 @@ export const routes = {
   shop: "/shop",
   cart: "/cart",
   account: "/account",
-  product: (id: string) => `/products/${id}`,
+  product: (slug: string) => `/products/${slug}`,
   order: (id: string) => `/orders/${id}`,
   admin: {
     dashboard: "/admin",

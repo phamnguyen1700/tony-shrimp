@@ -50,10 +50,10 @@ export default function OrderPushCard({ t, order, index }: Props) {
           </div>
           <div>
             <p className="font-mono-label text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
-              Tracking
+              Payment
             </p>
             <p className="mt-0.5 truncate font-mono-label text-[11px] text-foreground">
-              {order.tracking_number ?? "N/A"}
+              {order.payment_status}
             </p>
           </div>
           <div>

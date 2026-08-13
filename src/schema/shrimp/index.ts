@@ -11,7 +11,14 @@ const optionalTrimmedString = (max: number) =>
 
 export const catalogStatusSchema = z.enum(["active", "inactive"]);
 export const careLevelSchema = z.enum(["beginner", "intermediate", "advanced"]);
-export const imageContentTypeSchema = z.enum(["image/jpeg", "image/png", "image/webp"]);
+export const imageContentTypeSchema = z.enum([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+]);
 export const saleUnitSchema = z.enum(["each", "pack"]);
 export const saleQuantitySchema = z.union([z.literal(1), z.literal(5), z.literal(10)]);
 export const moneyStringSchema = z
@@ -23,7 +30,7 @@ export const uuidSchema = z.string().uuid("Invalid shrimp id.");
 export const shrimpListQuerySchema = z
   .object({
     search: z.string().trim().optional(),
-    type: z.string().trim().optional(),
+    line: z.string().trim().optional(),
     color: z.string().trim().optional(),
     grade: z.string().trim().optional(),
     rarity: z.string().trim().optional(),
@@ -83,12 +90,20 @@ export const updateShrimpImageSchema = shrimpImageSchema
 export const presignShrimpImageUploadSchema = z.object({
   filename: z.string().trim().min(1).max(255),
   content_type: imageContentTypeSchema,
+  file_size_bytes: z.number().int().positive().optional(),
 });
 
 export const createShrimpSchema = z.object({
   name: z.string().trim().min(1).max(255),
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, numbers, and hyphens.")
+    .optional()
+    .nullable()
+    .transform((value) => (value === "" ? null : value)),
   species: optionalTrimmedString(255),
-  type: z.string().trim().min(1).max(64),
+  line: z.string().trim().min(1).max(64),
   colors: z.array(z.string().trim().min(1).max(64)).max(10).optional(),
   grade: optionalTrimmedString(64),
   rarity: optionalTrimmedString(64),
@@ -103,8 +118,9 @@ export const createShrimpSchema = z.object({
 export const updateShrimpSchema = createShrimpSchema
   .pick({
     name: true,
+    slug: true,
     species: true,
-    type: true,
+    line: true,
     colors: true,
     grade: true,
     rarity: true,
@@ -116,12 +132,22 @@ export const updateShrimpSchema = createShrimpSchema
 
 export const adminShrimpFormSchema = z.object({
   name: z.string().trim().min(1, "Product name is required"),
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, numbers, and hyphens.")
+    .optional()
+    .or(z.literal("")),
   species: z.string().trim().optional(),
-  type: z.string().trim().min(1, "Type is required"),
+  line: z.string().trim().min(1, "Line is required"),
   colors: z.string().trim().optional(),
   grade: z.string().trim().optional(),
   rarity: z.string().trim().optional(),
   description: z.string().trim().optional(),
+  description_title: z.string().trim().optional(),
+  description_overview: z.string().trim().optional(),
+  description_highlights: z.string().trim().optional(),
+  description_care_notes: z.string().trim().optional(),
   catalog_status: catalogStatusSchema,
   traits: z.string().trim().optional(),
   variant_name: z.string().trim().optional(),

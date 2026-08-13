@@ -6,7 +6,6 @@ import {
   orderListQuerySchema,
   ownerOrderListQuerySchema,
   updateOwnerOrderStatusSchema,
-  updateOwnerOrderTrackingSchema,
 } from "@/schema/order";
 import { orderService } from "@/services/order";
 import type {
@@ -14,7 +13,6 @@ import type {
   OrderListQuery,
   OwnerOrderListQuery,
   UpdateOwnerOrderStatusPayload,
-  UpdateOwnerOrderTrackingPayload,
 } from "@/types/order";
 
 export const orderQueryKeys = {
@@ -30,9 +28,9 @@ export function useCreateOrder() {
   return useMutation({
     mutationFn: (payload: CreateOrderPayload) =>
       orderService.createOrder(createOrderSchema.parse(payload)),
-    onSuccess: (order) => {
-      toast.success("Order placed.");
-      queryClient.setQueryData(orderQueryKeys.customerDetail(order.id), order);
+    onSuccess: (checkout) => {
+      toast.success("Checkout created.");
+      queryClient.setQueryData(orderQueryKeys.customerDetail(checkout.order.id), checkout.order);
       void queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
     onError: (error) => toast.error(getApiErrorMessage(error, "Could not place order.")),
@@ -80,15 +78,6 @@ export function useUpdateOwnerOrderStatus(orderId: string) {
       orderService.updateOwnerOrderStatus(orderId, updateOwnerOrderStatusSchema.parse(payload)),
     "Order status updated.",
     "Could not update order status.",
-  );
-}
-
-export function useUpdateOwnerOrderTracking(orderId: string) {
-  return useOwnerOrderMutation(
-    (payload: UpdateOwnerOrderTrackingPayload) =>
-      orderService.updateOwnerOrderTracking(orderId, updateOwnerOrderTrackingSchema.parse(payload)),
-    "Tracking updated.",
-    "Could not update tracking.",
   );
 }
 

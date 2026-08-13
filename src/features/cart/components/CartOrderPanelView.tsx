@@ -1,9 +1,11 @@
 import { AnimatePresence, motion } from "motion/react";
 import AddressForm, { type AccountAddressDraft } from "@/components/common/address/AddressForm";
-import ConfirmDialog from "@/components/common/dialogs/ConfirmDialog";
 import MotionButton from "@/components/common/motion/MotionButton";
+import Dialog from "@/components/ui/Dialog";
 import Badge from "@/components/ui/Badge";
+import { isVideoMediaUrl } from "@/lib/media";
 import type { Translations } from "@/i18n";
+import type { CartItem } from "@/types/cart";
 import type { AddressLocalityCheckResponse, AddressSuburbSuggestion, UserAddress } from "@/types/user";
 
 interface CartOrderPanelProps {
@@ -24,6 +26,9 @@ interface CartOrderPanelProps {
   isValidating: boolean;
   isMutating: boolean;
   confirmOpen: boolean;
+  items: CartItem[];
+  subtotal: number;
+  shipping: number;
   total: number;
   onSelectAddress: (addressId: string) => void;
   onCustomerNoteChange: (note: string) => void;
@@ -53,6 +58,9 @@ export default function CartOrderPanel({
   isValidating,
   isMutating,
   confirmOpen,
+  items,
+  subtotal,
+  shipping,
   total,
   onSelectAddress,
   onCustomerNoteChange,
@@ -66,12 +74,12 @@ export default function CartOrderPanel({
   const labels = t.cart.orderForm;
   const addressLabels = t.account.addressFields;
   const isEnglish = t.cart.title === "CART";
-  const customerNoteLabel = labels.customerNote ?? (isEnglish ? "Customer note" : "Ghi chú của khách");
+  const customerNoteLabel = labels.customerNote ?? (isEnglish ? "Customer note" : "Ghi chu cua khach");
   const customerNotePlaceholder =
     labels.customerNotePlaceholder ??
     (isEnglish
       ? "Delivery notes, preferred time, or anything we should know..."
-      : "Ghi chú giao hàng, thời gian mong muốn hoặc thông tin cần lưu ý...");
+      : "Ghi chu giao hang, thoi gian mong muon hoac thong tin can luu y...");
   const canPlaceOrder = addressFormOpen ? canSaveAddress : Boolean(selectedAddressId);
   const showSavedAddresses = !isLoading && addresses.length > 0 && !addressFormOpen;
   const showAddressForm = !isLoading && (addresses.length === 0 || addressFormOpen);
@@ -265,17 +273,181 @@ export default function CartOrderPanel({
         )}
       </AnimatePresence>
 
-      <ConfirmDialog
+      <OrderInvoiceDialog
         open={confirmOpen}
+        t={t}
         title={labels.confirmTitle}
-        description={`${labels.confirmDescription} A$${total}.`}
         confirmLabel={labels.confirm}
         cancelLabel={addressLabels.cancel}
-        tone="confirm"
+        items={items}
+        selectedAddress={addresses.find((address) => address.id === selectedAddressId) ?? null}
+        addressDraft={addressDraft}
+        addressFormOpen={addressFormOpen}
+        customerNote={customerNote}
+        subtotal={subtotal}
+        shipping={shipping}
+        total={total}
         isConfirming={isMutating}
         onConfirm={onConfirmPlaceOrder}
         onClose={onCloseConfirm}
       />
     </>
+  );
+}
+
+function OrderInvoiceDialog({
+  open,
+  t,
+  title,
+  confirmLabel,
+  cancelLabel,
+  items,
+  selectedAddress,
+  addressDraft,
+  addressFormOpen,
+  customerNote,
+  subtotal,
+  shipping,
+  total,
+  isConfirming,
+  onConfirm,
+  onClose,
+}: {
+  open: boolean;
+  t: Translations;
+  title: string;
+  confirmLabel: string;
+  cancelLabel: string;
+  items: CartItem[];
+  selectedAddress: UserAddress | null;
+  addressDraft: AccountAddressDraft;
+  addressFormOpen: boolean;
+  customerNote: string;
+  subtotal: number;
+  shipping: number;
+  total: number;
+  isConfirming: boolean;
+  onConfirm: () => void;
+  onClose: () => void;
+}) {
+  const address = addressFormOpen
+    ? {
+        recipient_name: addressDraft.recipient_name,
+        recipient_phone: addressDraft.recipient_phone,
+        address_line1: addressDraft.address_line1,
+        address_line2: addressDraft.address_line2,
+        suburb: addressDraft.suburb,
+        state: addressDraft.state,
+        postcode: addressDraft.postcode,
+      }
+    : selectedAddress;
+
+  return (
+    <Dialog open={open} onClose={onClose} title={title} maxWidth="max-w-2xl">
+      <div className="space-y-5">
+        <div className="border-b border-border pb-5">
+          <p className="font-mono-label text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+            Items
+          </p>
+          <div className="mt-3 max-h-[222px] space-y-3 overflow-y-auto pr-2">
+            {items.map((item) => (
+              <div key={item.lineId} className="grid grid-cols-[56px_minmax(0,1fr)] items-center gap-3">
+                <div className="h-14 w-14 overflow-hidden bg-[#080b08]" style={{ borderRadius: "var(--radius-sm)" }}>
+                  {item.imageUrl && isVideoMediaUrl(item.imageUrl) ? (
+                    <video src={item.imageUrl} className="h-full w-full object-contain" muted playsInline preload="metadata" />
+                  ) : item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.name} className="h-full w-full object-contain" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <span className="mono-meta uppercase">No image</span>
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <div className="flex min-w-0 items-baseline justify-between gap-3">
+                    <p className="truncate font-display text-sm font-semibold italic text-foreground">
+                      {item.name}
+                    </p>
+                    <p className="shrink-0 font-display text-sm font-medium text-foreground">
+                      A${item.price * item.quantity}
+                    </p>
+                  </div>
+                  <p className="mt-0.5 truncate font-mono-label text-[11px] uppercase tracking-widest text-muted-foreground">
+                    {item.variantName ?? "Each"} · x{item.quantity}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid gap-5 border-b border-border pb-5 md:grid-cols-[minmax(0,1fr)_minmax(240px,320px)]">
+          <div>
+            <p className="font-mono-label text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+              Ship to
+            </p>
+            {address ? (
+              <div className="mt-3 space-y-1 font-body text-sm leading-5 text-muted-foreground">
+                <p className="font-medium text-foreground">{address.recipient_name}</p>
+                <p>{address.recipient_phone}</p>
+                <p>
+                  {address.address_line1}
+                  {address.address_line2 ? `, ${address.address_line2}` : ""}
+                </p>
+                <p>
+                  {address.suburb} {address.state} {address.postcode}
+                </p>
+              </div>
+            ) : (
+              <p className="mt-3 font-body text-sm text-muted-foreground">No address selected.</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <InvoiceRow label={t.cart.subtotal} value={subtotal} />
+            <InvoiceRow label={t.cart.shipping} value={shipping} />
+            <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+              <p className="font-mono-label text-xs uppercase tracking-[0.16em] text-foreground">
+                {t.cart.total}
+              </p>
+              <p className="font-display text-2xl font-semibold text-foreground">A${total}</p>
+            </div>
+          </div>
+        </div>
+
+        {customerNote.trim() && (
+          <div className="border-b border-border pb-5">
+            <p className="font-mono-label text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+              Customer note
+            </p>
+            <p className="mt-2 font-body text-sm leading-6 text-muted-foreground">{customerNote}</p>
+          </div>
+        )}
+
+        <div className="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-end">
+          <MotionButton variant="ghost" size="sm" onClick={onClose} disabled={isConfirming}>
+            {cancelLabel}
+          </MotionButton>
+          <MotionButton
+            variant="accent"
+            size="md"
+            onClick={onConfirm}
+            disabled={isConfirming}
+            className="sm:min-w-44"
+          >
+            {confirmLabel}
+          </MotionButton>
+        </div>
+      </div>
+    </Dialog>
+  );
+}
+
+function InvoiceRow({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex items-center justify-between">
+      <p className="font-body text-sm text-muted-foreground">{label}</p>
+      <p className="font-display text-sm font-medium text-foreground">A${value}</p>
+    </div>
   );
 }

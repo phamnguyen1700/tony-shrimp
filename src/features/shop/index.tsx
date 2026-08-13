@@ -23,7 +23,7 @@ import ShopProductGrid from "./components/ShopProductGrid";
 const fallbackCatalogOptions: CatalogOptions = {
   catalog_statuses: [],
   sale_units: [],
-  types: [],
+  lines: [],
   colors: [],
   grades: [],
   rarities: [],
@@ -78,6 +78,7 @@ export default function ShopFeature() {
 
       addItem({
         productId: detail.id,
+        productSlug: detail.slug,
         variantId: firstVariant.id,
         name: detail.name,
         variantName: firstVariant.name,

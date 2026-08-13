@@ -9,7 +9,7 @@ interface ShopMobileFilterSheetProps {
   open: boolean;
   t: Translations;
   filters: ShopFilters;
-  options: Pick<CatalogOptions, "types" | "colors" | "grades" | "rarities" | "traits">;
+  options: Pick<CatalogOptions, "lines" | "colors" | "grades" | "rarities" | "traits">;
   filterCount: number;
   resultCount: number;
   onToggle: (key: keyof ShopFilters, value: string) => void;

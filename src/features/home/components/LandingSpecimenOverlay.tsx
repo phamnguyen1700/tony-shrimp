@@ -10,7 +10,7 @@ interface LandingSpecimenOverlayProps {
 }
 
 export default function LandingSpecimenOverlay({ t, active }: LandingSpecimenOverlayProps) {
-  const speciesAndType = [active.species, active.type].filter(Boolean);
+  const speciesAndType = [active.species, active.line].filter(Boolean);
 
   return (
     <div className="pointer-events-auto">
@@ -66,7 +66,7 @@ export default function LandingSpecimenOverlay({ t, active }: LandingSpecimenOve
           {t.landing.from} A${Number(active.min_price ?? 0)}
         </span>
         <Link
-          href={`/products/${active.id}`}
+          href={`/products/${active.slug}`}
           className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-white/60 hover:text-white transition-colors flex items-center gap-2 group"
         >
           {t.landing.viewShrimp}
