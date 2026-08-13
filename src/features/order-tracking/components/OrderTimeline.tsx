@@ -90,13 +90,18 @@ export default function OrderTimeline({ t, order, reduced }: OrderTimelineProps)
                 </div>
 
                 <div className="flex-1 pt-0.5">
-                  <p
-                    className={`font-mono-label text-xs uppercase tracking-[0.16em] ${
-                      state !== "future" ? "text-foreground" : "text-muted-foreground"
-                    }`}
-                  >
-                    {getOrderStatusLabel(step, t)}
-                  </p>
+                  <div className="flex items-start justify-between gap-4">
+                    <p
+                      className={`font-mono-label text-xs uppercase tracking-[0.16em] ${
+                        state !== "future" ? "text-foreground" : "text-muted-foreground"
+                      }`}
+                    >
+                      {getOrderStatusLabel(step, t)}
+                    </p>
+                    {step === "processing" && (
+                      <PaymentInlineStatus paymentStatus={order.payment_status} />
+                    )}
+                  </div>
                   {historyEntry && (
                     <>
                       <p className="mt-1 font-mono-label text-[11px] tracking-widest text-muted-foreground">
@@ -115,5 +120,29 @@ export default function OrderTimeline({ t, order, reduced }: OrderTimelineProps)
           })}
       </div>
     </div>
+  );
+}
+
+function PaymentInlineStatus({ paymentStatus }: { paymentStatus: OrderDetail["payment_status"] }) {
+  if (paymentStatus === "paid") {
+    return (
+      <p className="font-mono-label text-xs uppercase tracking-[0.16em] text-accent">
+        Paid / Đã thanh toán
+      </p>
+    );
+  }
+
+  if (paymentStatus === "pending") {
+    return (
+      <p className="max-w-[220px] text-right font-body text-xs leading-5 text-amber-600">
+        You have not completed payment yet / Bạn chưa hoàn tất thanh toán
+      </p>
+    );
+  }
+
+  return (
+    <p className="font-mono-label text-xs uppercase tracking-[0.16em] text-red-500">
+      {paymentStatus}
+    </p>
   );
 }

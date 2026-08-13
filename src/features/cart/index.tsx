@@ -17,6 +17,7 @@ import {
   useUserProfile,
 } from "@/hooks/user";
 import { normalizeAustralianPhone } from "@/lib/australianPhone";
+import { savePendingOrderId } from "@/lib/pendingOrder";
 import { createUserAddressSchema } from "@/schema/user";
 import { useAuthStore } from "@/store/authStore";
 import { useCart } from "@/store/cartStore";
@@ -46,7 +47,7 @@ export default function CartFeature() {
   const router = useRouter();
   const reduced = useReducedMotion();
   const searchParams = useSearchParams();
-  const { items, removeItem, updateQuantity, subtotal } = useCart();
+  const { items, removeItem, updateQuantity, clearCart, subtotal } = useCart();
   const user = useAuthStore((state) => state.user);
   const currentUserQuery = useCurrentUser();
   const profileQuery = useUserProfile();
@@ -174,6 +175,8 @@ export default function CartFeature() {
         customer_note: customerNote.trim() || null,
       });
 
+      savePendingOrderId(checkout.order.id);
+      clearCart();
       setConfirmOrderOpen(false);
       window.location.assign(checkout.checkout_url);
     } catch {

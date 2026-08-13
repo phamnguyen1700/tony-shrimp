@@ -49,6 +49,8 @@ export const endpoints = {
     orders: "/orders",
     checkout: "/orders/checkout",
     order: (orderId: string) => `/orders/${orderId}`,
+    continuePayment: (orderId: string) => `/orders/${orderId}/continue-payment`,
+    cancel: (orderId: string) => `/orders/${orderId}/cancel`,
   },
   ownerOrders: {
     orders: "/owner/orders",

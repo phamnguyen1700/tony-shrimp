@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { CheckCircle2, ClipboardList, PackageCheck, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
 import MotionButton from "@/components/common/motion/MotionButton";
+import { clearPendingOrderId } from "@/lib/pendingOrder";
 import { useAppRuntime } from "@/providers/AppProviders";
 import { useCart } from "@/store/cartStore";
 
@@ -12,6 +13,7 @@ export default function CheckoutSuccessFeature() {
   const { clearCart } = useCart();
 
   useEffect(() => {
+    clearPendingOrderId();
     clearCart();
   }, [clearCart]);
 
