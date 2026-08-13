@@ -6,7 +6,6 @@ import { useMyOrderDetail } from "@/hooks/order";
 import OrderDetailSummary from "./components/OrderDetailSummary";
 import OrderItemsList from "./components/OrderItemsList";
 import OrderShippingAddress from "./components/OrderShippingAddress";
-import OrderPaymentActions from "./components/OrderPaymentActions";
 import OrderTimeline from "./components/OrderTimeline";
 import OrderTrackingCard from "./components/OrderTrackingCard";
 import OrderTrackingHeader from "./components/OrderTrackingHeader";
@@ -61,7 +60,6 @@ export default function OrderTrackingFeature({ id }: { id: string }) {
           >
             <OrderDetailSummary t={t} order={order} />
             <OrderShippingAddress order={order} />
-            <OrderPaymentActions order={order} />
           </motion.div>
         </div>
       </div>

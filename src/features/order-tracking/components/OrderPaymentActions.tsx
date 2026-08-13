@@ -54,10 +54,10 @@ export default function OrderPaymentActions({ order }: OrderPaymentActionsProps)
           Payment pending
         </p>
         <p className="mt-2 font-body text-sm leading-6 text-muted-foreground">
-          You have not completed payment yet. Bạn chưa hoàn tất thanh toán.
+          You have not completed payment yet. Ban chua hoan tat thanh toan.
         </p>
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <MotionButton
           variant="accent"
           size="md"
@@ -65,7 +65,7 @@ export default function OrderPaymentActions({ order }: OrderPaymentActionsProps)
           disabled={continuePayment.isPending}
           className="w-full"
         >
-          Pay now / Thanh toán
+          Pay now / Thanh toan
         </MotionButton>
         <MotionButton
           variant="ghost"
