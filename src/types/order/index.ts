@@ -66,6 +66,8 @@ export interface OrderSummary {
   paid_at: string | null;
   payment_failed_at: string | null;
   cancelled_reason: string | null;
+  stripe_checkout_url?: string | null;
+  stripe_checkout_expires_at?: string | null;
 }
 
 export interface OrderDetail extends OrderSummary {
@@ -90,6 +92,7 @@ export interface CheckoutOrderResponse {
   order: OrderDetail;
   checkout_url: string;
   stripe_session_id: string;
+  stripe_checkout_expires_at: string;
   payment_status: PaymentStatus;
   payment_provider: PaymentProvider;
 }

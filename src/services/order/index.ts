@@ -26,6 +26,18 @@ export const orderService = {
     return response.data;
   },
 
+  async continuePayment(orderId: string) {
+    const response = await apiClient.post<CheckoutOrderResponse>(
+      endpoints.orders.continuePayment(orderId),
+    );
+    return response.data;
+  },
+
+  async cancelOrder(orderId: string) {
+    const response = await apiClient.post<OrderDetail>(endpoints.orders.cancel(orderId));
+    return response.data;
+  },
+
   async listOwnerOrders(params?: OwnerOrderListQuery) {
     const response = await apiClient.get<OrderListResponse>(endpoints.ownerOrders.orders, { params });
     return response.data;

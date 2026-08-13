@@ -55,6 +55,33 @@ export function useMyOrderDetail(orderId: string) {
   });
 }
 
+export function useContinuePayment(orderId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => orderService.continuePayment(orderId),
+    onSuccess: (checkout) => {
+      queryClient.setQueryData(orderQueryKeys.customerDetail(checkout.order.id), checkout.order);
+      void queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (error) => toast.error(getApiErrorMessage(error, "Could not continue payment.")),
+  });
+}
+
+export function useCancelOrder(orderId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => orderService.cancelOrder(orderId),
+    onSuccess: (order) => {
+      toast.success("Order cancelled.");
+      queryClient.setQueryData(orderQueryKeys.customerDetail(order.id), order);
+      void queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (error) => toast.error(getApiErrorMessage(error, "Could not cancel order.")),
+  });
+}
+
 export function useOwnerOrders(params?: OwnerOrderListQuery) {
   const validParams = ownerOrderListQuerySchema.parse(params ?? {});
 
