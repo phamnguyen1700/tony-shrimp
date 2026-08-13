@@ -1,8 +1,8 @@
 import { motion } from "motion/react";
 import type { Translations } from "@/i18n";
+import { isPendingPaymentOrder } from "@/lib/orderPayment";
 import { formatOrderDate } from "@/lib/orderFormat";
 import type { OrderDetail } from "@/types/order";
-import OrderPaymentActions from "./OrderPaymentActions";
 
 interface OrderTrackingCardProps {
   t: Translations;
@@ -12,7 +12,9 @@ interface OrderTrackingCardProps {
 
 export default function OrderTrackingCard({ order, reduced }: OrderTrackingCardProps) {
   const paymentDate = order.paid_at ?? order.payment_failed_at ?? null;
-  const isPendingPayment = order.status === "processing" && order.payment_status === "pending";
+  const isPendingPayment = isPendingPaymentOrder(order);
+
+  if (isPendingPayment) return null;
 
   return (
     <motion.div
@@ -21,10 +23,7 @@ export default function OrderTrackingCard({ order, reduced }: OrderTrackingCardP
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.3 }}
     >
-      {isPendingPayment ? (
-        <OrderPaymentActions order={order} />
-      ) : (
-        <div className="ui-radius space-y-3 border border-border p-5">
+      <div className="ui-radius space-y-3 border border-border p-5">
           <p className="font-mono-label text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
             PAYMENT
           </p>
@@ -56,8 +55,7 @@ export default function OrderTrackingCard({ order, reduced }: OrderTrackingCardP
               </div>
             )}
           </div>
-        </div>
-      )}
+      </div>
     </motion.div>
   );
 }

@@ -7,6 +7,7 @@ import OrderDetailSummary from "./components/OrderDetailSummary";
 import OrderItemsList from "./components/OrderItemsList";
 import OrderShippingAddress from "./components/OrderShippingAddress";
 import OrderTimeline from "./components/OrderTimeline";
+import OrderPaymentActions from "./components/OrderPaymentActions";
 import OrderTrackingCard from "./components/OrderTrackingCard";
 import OrderTrackingHeader from "./components/OrderTrackingHeader";
 
@@ -60,6 +61,7 @@ export default function OrderTrackingFeature({ id }: { id: string }) {
           >
             <OrderDetailSummary t={t} order={order} />
             <OrderShippingAddress order={order} />
+            <OrderPaymentActions order={order} />
           </motion.div>
         </div>
       </div>

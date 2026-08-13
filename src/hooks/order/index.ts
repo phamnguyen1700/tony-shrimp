@@ -18,6 +18,7 @@ import type {
 export const orderQueryKeys = {
   customerList: (params?: OrderListQuery) => ["orders", params ?? {}] as const,
   customerDetail: (orderId: string) => ["orders", orderId] as const,
+  paymentSession: (sessionId: string) => ["orders", "payment-session", sessionId] as const,
   ownerList: (params?: OwnerOrderListQuery) => ["owner", "orders", params ?? {}] as const,
   ownerDetail: (orderId: string) => ["owner", "orders", orderId] as const,
 };
@@ -52,6 +53,18 @@ export function useMyOrderDetail(orderId: string) {
     queryKey: orderQueryKeys.customerDetail(orderId),
     queryFn: () => orderService.getOrder(orderId),
     enabled: Boolean(orderId),
+  });
+}
+
+export function useOrderByPaymentSession(sessionId: string, enabled = true) {
+  return useQuery({
+    queryKey: orderQueryKeys.paymentSession(sessionId),
+    queryFn: () => orderService.getOrderByPaymentSession(sessionId),
+    enabled: Boolean(sessionId) && enabled,
+    refetchInterval: (query) => {
+      const order = query.state.data;
+      return order?.status === "processing" && order.payment_status === "pending" ? 3000 : false;
+    },
   });
 }
 

@@ -48,6 +48,7 @@ export const endpoints = {
   orders: {
     orders: "/orders",
     checkout: "/orders/checkout",
+    paymentSession: (sessionId: string) => `/orders/payment-session/${sessionId}`,
     order: (orderId: string) => `/orders/${orderId}`,
     continuePayment: (orderId: string) => `/orders/${orderId}/continue-payment`,
     cancel: (orderId: string) => `/orders/${orderId}/cancel`,

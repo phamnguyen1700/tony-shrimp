@@ -2,7 +2,9 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import MotionButton from "@/components/common/motion/MotionButton";
 import { useCancelOrder, useContinuePayment } from "@/hooks/order";
+import { getPendingPaymentCopy, isPendingPaymentOrder } from "@/lib/orderPayment";
 import { clearPendingOrderId } from "@/lib/pendingOrder";
+import { useAppRuntime } from "@/providers/AppProviders";
 import { useCart } from "@/store/cartStore";
 import type { OrderDetail } from "@/types/order";
 
@@ -12,10 +14,12 @@ interface OrderPaymentActionsProps {
 
 export default function OrderPaymentActions({ order }: OrderPaymentActionsProps) {
   const router = useRouter();
+  const { lang } = useAppRuntime();
   const { addItem, clearCart } = useCart();
   const continuePayment = useContinuePayment(order.id);
   const cancelOrder = useCancelOrder(order.id);
-  const isPendingPayment = order.status === "processing" && order.payment_status === "pending";
+  const isPendingPayment = isPendingPaymentOrder(order);
+  const copy = getPendingPaymentCopy(lang);
 
   if (!isPendingPayment) return null;
 
@@ -43,38 +47,38 @@ export default function OrderPaymentActions({ order }: OrderPaymentActionsProps)
         item.quantity,
       );
     });
-    toast.success("Cart restored.");
+    toast.success(copy.restored);
     router.push("/cart");
   }
 
   return (
-    <div className="ui-radius space-y-4 border border-amber-500/40 bg-amber-500/5 p-5">
+    <div className="ui-radius space-y-4 border border-red-500/35 bg-red-500/5 p-5">
       <div>
-        <p className="font-mono-label text-[11px] uppercase tracking-[0.16em] text-amber-600">
-          Payment pending
+        <p className="font-mono-label text-[11px] uppercase tracking-[0.16em] text-red-500">
+          {copy.title}
         </p>
         <p className="mt-2 font-body text-sm leading-6 text-muted-foreground">
-          You have not completed payment yet. Ban chua hoan tat thanh toan.
+          {copy.message}
         </p>
       </div>
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <MotionButton
-          variant="accent"
-          size="md"
-          onClick={() => void payNow()}
-          disabled={continuePayment.isPending}
-          className="w-full"
-        >
-          Pay now / Thanh toan
-        </MotionButton>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <MotionButton
           variant="ghost"
           size="sm"
           onClick={() => void cancelAndRestore()}
           disabled={cancelOrder.isPending || continuePayment.isPending}
-          className="w-full"
+          className="justify-self-start whitespace-nowrap text-red-500 hover:bg-red-500/10 hover:text-red-500"
         >
-          Cancel order and restore cart
+          {copy.cancel}
+        </MotionButton>
+        <MotionButton
+          variant="accent"
+          size="md"
+          onClick={() => void payNow()}
+          disabled={continuePayment.isPending}
+          className="shrink-0 whitespace-nowrap"
+        >
+          {copy.pay}
         </MotionButton>
       </div>
     </div>

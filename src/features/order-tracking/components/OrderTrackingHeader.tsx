@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { motion } from "motion/react";
-import Badge from "@/components/ui/Badge";
 import type { Translations } from "@/i18n";
-import { formatOrderDate, getOrderStatusLabel } from "@/lib/orderFormat";
 import type { OrderDetail } from "@/types/order";
 
 interface OrderTrackingHeaderProps {
@@ -38,15 +36,9 @@ export default function OrderTrackingHeader({ t, order, reduced }: OrderTracking
         <p className="mb-2 font-mono-label text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           {t.order.orderNumber}
         </p>
-        <h1 className="font-display text-4xl font-semibold italic leading-none text-foreground md:text-6xl">
+        <h1 className="font-display text-5xl font-semibold italic leading-none text-foreground md:text-7xl">
           {order.order_number}
         </h1>
-        <div className="mt-4 flex items-center gap-3">
-          <Badge variant={order.status}>{getOrderStatusLabel(order.status, t)}</Badge>
-          <span className="font-mono-label text-[11px] tracking-widest text-muted-foreground">
-            {formatOrderDate(order.created_at)}
-          </span>
-        </div>
       </motion.div>
     </>
   );

@@ -26,6 +26,11 @@ export const orderService = {
     return response.data;
   },
 
+  async getOrderByPaymentSession(sessionId: string) {
+    const response = await apiClient.get<OrderDetail>(endpoints.orders.paymentSession(sessionId));
+    return response.data;
+  },
+
   async continuePayment(orderId: string) {
     const response = await apiClient.post<CheckoutOrderResponse>(
       endpoints.orders.continuePayment(orderId),

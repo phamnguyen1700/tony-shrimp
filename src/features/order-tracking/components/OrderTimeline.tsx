@@ -1,6 +1,9 @@
 import { motion } from "motion/react";
+import Badge from "@/components/ui/Badge";
 import type { Translations } from "@/i18n";
+import { getPaymentStatusLabel, isPaidOrder } from "@/lib/orderPayment";
 import { formatOrderDateTime, getOrderStatusLabel } from "@/lib/orderFormat";
+import { useAppRuntime } from "@/providers/AppProviders";
 import type { OrderDetail, OrderStatus } from "@/types/order";
 
 interface OrderTimelineProps {
@@ -17,6 +20,7 @@ function getTimelineMessage(order: OrderDetail, step: OrderStatus, fallback: str
 }
 
 export default function OrderTimeline({ t, order, reduced }: OrderTimelineProps) {
+  const { lang } = useAppRuntime();
   const statusIndex = statusSteps.indexOf(order.status);
   const isCancelled = order.status === "cancelled";
   const historyByStatus = Object.fromEntries(
@@ -86,7 +90,9 @@ export default function OrderTimeline({ t, order, reduced }: OrderTimelineProps)
                       />
                     </svg>
                   )}
-                  {state === "active" && <span className="h-2 w-2 rounded-full bg-accent-foreground" />}
+                  {state === "active" && (
+                    <span className="h-2 w-2 rounded-full bg-accent-foreground" />
+                  )}
                 </div>
 
                 <div className="flex-1 pt-0.5">
@@ -98,9 +104,7 @@ export default function OrderTimeline({ t, order, reduced }: OrderTimelineProps)
                     >
                       {getOrderStatusLabel(step, t)}
                     </p>
-                    {step === "processing" && (
-                      <PaymentInlineStatus paymentStatus={order.payment_status} />
-                    )}
+                    {step === "processing" && <PaymentInlineStatus order={order} lang={lang} />}
                   </div>
                   {historyEntry && (
                     <>
@@ -123,26 +127,29 @@ export default function OrderTimeline({ t, order, reduced }: OrderTimelineProps)
   );
 }
 
-function PaymentInlineStatus({ paymentStatus }: { paymentStatus: OrderDetail["payment_status"] }) {
-  if (paymentStatus === "paid") {
+function PaymentInlineStatus({ order, lang }: { order: OrderDetail; lang: "en" | "vi" }) {
+  const paymentStatus = String(order.payment_status).toLowerCase();
+  const label = getPaymentStatusLabel(order, lang);
+
+  if (isPaidOrder(order)) {
     return (
-      <p className="font-mono-label text-xs uppercase tracking-[0.16em] text-accent">
-        Paid / Đã thanh toán
-      </p>
+      <Badge variant="accent">
+        {label}
+      </Badge>
     );
   }
 
   if (paymentStatus === "pending") {
     return (
-      <p className="max-w-[220px] text-right font-body text-xs leading-5 text-amber-600">
-        You have not completed payment yet / Bạn chưa hoàn tất thanh toán
-      </p>
+      <Badge variant="cancelled" className="text-red-500">
+        {label}
+      </Badge>
     );
   }
 
   return (
-    <p className="font-mono-label text-xs uppercase tracking-[0.16em] text-red-500">
+    <Badge variant="cancelled" className="text-red-500">
       {paymentStatus}
-    </p>
+    </Badge>
   );
 }
