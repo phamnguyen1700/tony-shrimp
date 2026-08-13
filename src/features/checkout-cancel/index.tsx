@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, type ReactNode } from "react";
 import toast from "react-hot-toast";
-import { AlertCircle, CreditCard, Loader2, PackageCheck, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
+import { AlertCircle, ClipboardList, CreditCard, Loader2, PackageCheck, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
 import MotionButton from "@/components/common/motion/MotionButton";
 import { useCancelOrder, useContinuePayment, useOrderByPaymentSession } from "@/hooks/order";
 import { clearPendingOrderId } from "@/lib/pendingOrder";
@@ -114,6 +114,12 @@ function PendingPaymentActions({ order }: { order: OrderDetail }) {
       </p>
       <div className="mt-8 border-t border-border pt-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Link href={`/orders/${order.id}`} className="w-full sm:w-auto">
+            <MotionButton variant="secondary" size="md" className="w-full sm:min-w-56">
+              <ClipboardList className="h-4 w-4" aria-hidden="true" />
+              View order
+            </MotionButton>
+          </Link>
           <MotionButton
             variant="accent"
             size="md"
@@ -124,23 +130,15 @@ function PendingPaymentActions({ order }: { order: OrderDetail }) {
             <CreditCard className="h-4 w-4" aria-hidden="true" />
             Continue payment
           </MotionButton>
-          <MotionButton
-            variant="secondary"
-            size="md"
-            onClick={() => void cancelAndRestore()}
-            disabled={cancelOrder.isPending || continuePayment.isPending}
-            className="w-full text-red-500 hover:bg-red-500/10 hover:text-red-500 sm:min-w-56"
-          >
-            <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-            Cancel & restore
-          </MotionButton>
         </div>
-        <Link
-          href={`/orders/${order.id}`}
-          className="mt-5 inline-block font-mono-label text-[11px] uppercase tracking-[0.16em] text-accent transition-colors hover:text-accent/80"
+        <button
+          type="button"
+          onClick={() => void cancelAndRestore()}
+          disabled={cancelOrder.isPending || continuePayment.isPending}
+          className="mt-5 font-mono-label text-[11px] uppercase tracking-[0.16em] text-red-500 transition-colors hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-40"
         >
-          View order -&gt;
-        </Link>
+          Cancel order and restore cart
+        </button>
       </div>
     </>
   );
