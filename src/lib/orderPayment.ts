@@ -30,7 +30,7 @@ export function getPendingPaymentCopy(lang: Lang) {
       title: "Tiếp tục thanh toán đơn hàng",
       message: "Bạn chưa hoàn tất thanh toán.",
       pay: "Thanh toán",
-      cancel: "Hủy & khôi phục giỏ",
+      cancel: "Hủy & khôi phục",
       restored: "Đã khôi phục giỏ hàng.",
     };
   }
@@ -39,7 +39,7 @@ export function getPendingPaymentCopy(lang: Lang) {
     title: "Continue to your payment",
     message: "You have not completed payment yet.",
     pay: "Pay now",
-    cancel: "Cancel & restore cart",
+    cancel: "Cancel & restore",
     restored: "Cart restored.",
   };
 }

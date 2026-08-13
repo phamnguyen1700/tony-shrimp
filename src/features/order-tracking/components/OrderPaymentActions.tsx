@@ -67,13 +67,13 @@ export default function OrderPaymentActions({ order }: OrderPaymentActionsProps)
           size="sm"
           onClick={() => void cancelAndRestore()}
           disabled={cancelOrder.isPending || continuePayment.isPending}
-          className="justify-self-start whitespace-nowrap text-red-500 hover:bg-red-500/10 hover:text-red-500"
+          className="justify-self-start whitespace-nowrap px-2 text-[10px] tracking-[0.12em] text-red-500 hover:bg-red-500/10 hover:text-red-500"
         >
           {copy.cancel}
         </MotionButton>
         <MotionButton
           variant="accent"
-          size="md"
+          size="sm"
           onClick={() => void payNow()}
           disabled={continuePayment.isPending}
           className="shrink-0 whitespace-nowrap"

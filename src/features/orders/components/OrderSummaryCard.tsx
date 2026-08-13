@@ -139,7 +139,7 @@ export default function OrderSummaryCard({ t, reduced, order, index }: OrderSumm
                 size="sm"
                 onClick={(event) => void cancelAndRestore(event)}
                 disabled={cancelOrder.isPending || continuePayment.isPending}
-                className="justify-self-end whitespace-nowrap text-red-500 hover:bg-red-500/10 hover:text-red-500"
+                className="justify-self-end whitespace-nowrap px-2 text-[10px] tracking-[0.12em] text-red-500 hover:bg-red-500/10 hover:text-red-500"
               >
                 {copy.cancel}
               </MotionButton>

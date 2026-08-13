@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, type ReactNode } from "react";
 import toast from "react-hot-toast";
-import { AlertCircle, ClipboardList, Loader2, PackageCheck, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
+import { AlertCircle, CreditCard, Loader2, PackageCheck, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
 import MotionButton from "@/components/common/motion/MotionButton";
 import { useCancelOrder, useContinuePayment, useOrderByPaymentSession } from "@/hooks/order";
 import { clearPendingOrderId } from "@/lib/pendingOrder";
@@ -113,24 +113,26 @@ function PendingPaymentActions({ order }: { order: OrderDetail }) {
         Continue payment with the same order, or cancel it and restore your cart.
       </p>
       <div className="mt-8 border-t border-border pt-6">
-        <div className="mx-auto grid max-w-lg grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-          <MotionButton
-            variant="ghost"
-            size="sm"
-            onClick={() => void cancelAndRestore()}
-            disabled={cancelOrder.isPending || continuePayment.isPending}
-            className="justify-self-end whitespace-nowrap text-red-500 hover:bg-red-500/10 hover:text-red-500"
-          >
-            Cancel & restore cart
-          </MotionButton>
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
           <MotionButton
             variant="accent"
             size="md"
             onClick={() => void payNow()}
             disabled={continuePayment.isPending}
-            className="whitespace-nowrap"
+            className="w-full sm:min-w-56"
           >
+            <CreditCard className="h-4 w-4" aria-hidden="true" />
             Continue payment
+          </MotionButton>
+          <MotionButton
+            variant="secondary"
+            size="md"
+            onClick={() => void cancelAndRestore()}
+            disabled={cancelOrder.isPending || continuePayment.isPending}
+            className="w-full text-red-500 hover:bg-red-500/10 hover:text-red-500 sm:min-w-56"
+          >
+            <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+            Cancel & restore
           </MotionButton>
         </div>
         <Link
