@@ -113,9 +113,9 @@ function PendingPaymentActions({ order }: { order: OrderDetail }) {
         Continue payment with the same order, or cancel it and restore your cart.
       </p>
       <div className="mt-8 border-t border-border pt-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link href={`/orders/${order.id}`} className="w-full sm:w-auto">
-            <MotionButton variant="secondary" size="md" className="w-full sm:min-w-56">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Link href={`/orders/${order.id}`} className="w-full">
+            <MotionButton variant="secondary" size="md" className="w-full">
               <ClipboardList className="h-4 w-4" aria-hidden="true" />
               View order
             </MotionButton>
@@ -125,7 +125,7 @@ function PendingPaymentActions({ order }: { order: OrderDetail }) {
             size="md"
             onClick={() => void payNow()}
             disabled={continuePayment.isPending}
-            className="w-full sm:min-w-56"
+            className="w-full"
           >
             <CreditCard className="h-4 w-4" aria-hidden="true" />
             Continue payment
