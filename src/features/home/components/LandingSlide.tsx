@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { springGentle } from "@/lib/motionVariants";
+import { isVideoMediaUrl } from "@/lib/media";
 import type { ShrimpListItem } from "@/types/shrimp";
 
 interface LandingSlideProps {
@@ -10,6 +11,8 @@ interface LandingSlideProps {
 }
 
 export default function LandingSlide({ specimen, index, isActive, reduced }: LandingSlideProps) {
+  const isVideo = isVideoMediaUrl(specimen.primary_image_url);
+
   return (
     <div
       data-landing-slide={index}
@@ -27,7 +30,38 @@ export default function LandingSlide({ specimen, index, isActive, reduced }: Lan
         }
         transition={springGentle}
       >
-        {specimen.primary_image_url ? (
+        {specimen.primary_image_url && isVideo ? (
+          <motion.video
+            src={specimen.primary_image_url}
+            className="h-[52vh] w-auto max-w-[80vw] object-contain md:h-[65vh] md:max-w-[70vw]"
+            style={{ filter: "drop-shadow(0 0 60px rgba(0,0,0,0.8))" }}
+            autoPlay={isActive}
+            muted
+            loop
+            playsInline
+            preload={isActive ? "auto" : "metadata"}
+            animate={
+              reduced
+                ? {}
+                : isActive
+                  ? {
+                      y: [0, -10, -3, -12, 0],
+                      rotate: [0, 0.6, -0.4, 0.9, 0],
+                    }
+                  : {}
+            }
+            transition={
+              isActive
+                ? {
+                    duration: 9,
+                    ease: "easeInOut",
+                    repeat: Infinity,
+                    repeatType: "loop",
+                  }
+                : {}
+            }
+          />
+        ) : specimen.primary_image_url ? (
           <motion.img
             src={specimen.primary_image_url}
             alt={specimen.name}

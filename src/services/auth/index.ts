@@ -36,6 +36,8 @@ export const authService = {
   async logout() {
     try {
       await apiClient.post<void>(endpoints.auth.logout);
+    } catch {
+      // Logout is best-effort: local session must be cleared even if the API is offline.
     } finally {
       clearLegacyAuthTokens();
     }

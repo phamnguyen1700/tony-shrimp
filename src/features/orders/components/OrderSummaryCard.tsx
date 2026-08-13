@@ -29,11 +29,9 @@ export default function OrderSummaryCard({ t, reduced, order, index }: OrderSumm
             <Badge variant={order.status}>{getOrderStatusLabel(order.status, t)}</Badge>
           </div>
           <p className="mono-meta mt-1 uppercase">{formatOrderDate(order.created_at)}</p>
-          {order.tracking_number && (
-            <p className="mt-2 font-body text-sm text-muted-foreground">
-              {order.carrier ?? "Tracking"}: {order.tracking_number}
-            </p>
-          )}
+          <p className="mt-2 font-body text-sm text-muted-foreground">
+            Payment: {order.payment_status}
+          </p>
         </div>
         <div className="shrink-0 text-right">
           <p className="font-display text-lg font-semibold text-foreground">

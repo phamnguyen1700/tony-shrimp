@@ -1,7 +1,6 @@
 import type { Translations } from "@/i18n";
 import type { CareLevel, SaleUnit } from "@/types/shrimp";
 
-export const fallbackShrimpTypes = ["Caridina", "Neocaridina"];
 export const fallbackSaleUnits: SaleUnit[] = ["each", "pack"];
 
 export const saleQuantityOptions = [
@@ -71,8 +70,8 @@ export function normalizeRarityValue(value?: string | null) {
   return value?.trim() ?? "";
 }
 
-export function typeSuggestions(values?: string[]) {
-  return values?.length ? values : fallbackShrimpTypes;
+export function lineSuggestions(values?: string[]) {
+  return values ?? [];
 }
 
 export function saleUnitOptions(values?: SaleUnit[]) {

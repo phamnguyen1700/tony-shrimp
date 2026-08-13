@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import AddToCartMotion from "@/components/common/motion/AddToCartMotion";
 import type { Translations } from "@/i18n";
+import { isVideoMediaUrl } from "@/lib/media";
 import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
 import { getShrimpListPrice } from "@/lib/shrimpVariantPricing";
 import Badge, { StatusDot } from "@/components/ui/Badge";
@@ -23,7 +24,7 @@ export default function ShopProductCard({
   onAddToCart,
 }: ShopProductCardProps) {
   const price = getShrimpListPrice(product);
-  const speciesAndType = [product.species, product.type].filter(Boolean);
+  const speciesAndType = [product.species, product.line].filter(Boolean);
 
   return (
     <div
@@ -31,9 +32,18 @@ export default function ShopProductCard({
       onMouseEnter={() => onHover(product.id)}
       onMouseLeave={() => onHover(null)}
     >
-      <Link href={`/products/${product.id}`} className="block">
+      <Link href={`/products/${product.slug}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-[#080b08]">
-          {product.primary_image_url ? (
+          {product.primary_image_url && isVideoMediaUrl(product.primary_image_url) ? (
+            <video
+              src={product.primary_image_url}
+              className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            />
+          ) : product.primary_image_url ? (
             <img
               src={product.primary_image_url}
               alt={product.name}

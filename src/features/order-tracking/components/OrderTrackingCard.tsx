@@ -9,10 +9,8 @@ interface OrderTrackingCardProps {
   reduced: boolean | null;
 }
 
-export default function OrderTrackingCard({ t, order, reduced }: OrderTrackingCardProps) {
-  if ((order.status !== "shipped" && order.status !== "delivered") || !order.carrier) {
-    return null;
-  }
+export default function OrderTrackingCard({ order, reduced }: OrderTrackingCardProps) {
+  const paymentDate = order.paid_at ?? order.payment_failed_at ?? null;
 
   return (
     <motion.div
@@ -22,40 +20,34 @@ export default function OrderTrackingCard({ t, order, reduced }: OrderTrackingCa
       transition={{ duration: 0.35, delay: 0.3 }}
     >
       <p className="font-mono-label text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-        TRACKING
+        PAYMENT
       </p>
       <div className="grid grid-cols-2 gap-4">
         <div>
           <p className="font-mono-label text-[11px] uppercase tracking-widest text-muted-foreground">
-            {t.order.carrier}
+            Provider
           </p>
-          <p className="mt-0.5 font-body text-sm text-foreground">{order.carrier}</p>
+          <p className="mt-0.5 font-body text-sm text-foreground">
+            {order.payment_provider ?? "stripe"}
+          </p>
         </div>
         <div>
           <p className="font-mono-label text-[11px] uppercase tracking-widest text-muted-foreground">
-            {t.order.trackingNumber}
+            Status
           </p>
-          <p className="mt-0.5 font-mono-label text-xs text-foreground">{order.tracking_number}</p>
+          <p className="mt-0.5 font-mono-label text-xs uppercase text-foreground">
+            {order.payment_status}
+          </p>
         </div>
-        {order.shipped_at && (
+        {paymentDate && (
           <div>
             <p className="font-mono-label text-[11px] uppercase tracking-widest text-muted-foreground">
-              {t.order.shippedDate}
+              Updated
             </p>
-            <p className="mt-0.5 font-body text-sm text-foreground">{formatOrderDate(order.shipped_at)}</p>
+            <p className="mt-0.5 font-body text-sm text-foreground">{formatOrderDate(paymentDate)}</p>
           </div>
         )}
       </div>
-      {order.tracking_url && (
-        <a
-          href={order.tracking_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block font-mono-label text-xs uppercase tracking-[0.16em] text-accent transition-colors hover:text-accent/80"
-        >
-          {t.order.trackPackage}
-        </a>
-      )}
     </motion.div>
   );
 }

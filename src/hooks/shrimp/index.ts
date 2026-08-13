@@ -33,6 +33,7 @@ export const shrimpQueryKeys = {
   ownerCatalogOptions: ["owner", "catalog", "options"] as const,
   publicList: (params?: ShrimpListQuery) => ["catalog", "shrimp", params ?? {}] as const,
   publicDetail: (shrimpId: string) => ["catalog", "shrimp", shrimpId] as const,
+  publicDetailBySlug: (slug: string) => ["catalog", "shrimp", "slug", slug] as const,
   ownerList: (params?: OwnerShrimpListQuery) => ["owner", "catalog", "shrimp", params ?? {}] as const,
   ownerDetail: (shrimpId: string) => ["owner", "catalog", "shrimp", shrimpId] as const,
 };
@@ -88,6 +89,14 @@ export function useShrimpDetail(shrimpId: string) {
   });
 }
 
+export function useShrimpDetailBySlug(slug: string) {
+  return useQuery({
+    queryKey: shrimpQueryKeys.publicDetailBySlug(slug),
+    queryFn: () => shrimpService.getShrimpDetailBySlug(slug),
+    enabled: Boolean(slug),
+  });
+}
+
 export function useFetchShrimpDetail() {
   const queryClient = useQueryClient();
 
@@ -95,6 +104,16 @@ export function useFetchShrimpDetail() {
     queryClient.fetchQuery({
       queryKey: shrimpQueryKeys.publicDetail(shrimpId),
       queryFn: () => shrimpService.getShrimpDetail(validateId(shrimpId)),
+    });
+}
+
+export function useFetchShrimpDetailBySlug() {
+  const queryClient = useQueryClient();
+
+  return (slug: string) =>
+    queryClient.fetchQuery({
+      queryKey: shrimpQueryKeys.publicDetailBySlug(slug),
+      queryFn: () => shrimpService.getShrimpDetailBySlug(slug),
     });
 }
 
@@ -260,6 +279,7 @@ export function useUploadShrimpImage(shrimpId?: string) {
       const presignPayload = presignShrimpImageUploadSchema.parse({
         filename: payload.file.name,
         content_type: payload.file.type,
+        file_size_bytes: payload.file.size,
       });
       const presigned = await shrimpService.presignImageUpload(targetShrimpId, presignPayload);
       await shrimpService.uploadImageToR2(presigned.upload_url, payload.file, presigned.headers);

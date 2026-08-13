@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { motion } from "motion/react";
+import { isVideoMediaUrl } from "@/lib/media";
 import type { ShrimpDetail } from "@/types/shrimp";
 
 interface ProductMediaGalleryProps {
@@ -16,6 +17,7 @@ export default function ProductMediaGallery({ product }: ProductMediaGalleryProp
   const [activeImageIndex, setActiveImageIndex] = useState(primaryIndex);
   const activeImage = sortedImages[activeImageIndex] ?? sortedImages[0];
   const hasMultipleImages = sortedImages.length > 1;
+  const selectorImages = sortedImages.slice(0, 4);
 
   function showPreviousImage() {
     setActiveImageIndex((index) => (index - 1 + sortedImages.length) % sortedImages.length);
@@ -27,7 +29,19 @@ export default function ProductMediaGallery({ product }: ProductMediaGalleryProp
 
   return (
     <div className="shrimp-image-frame relative">
-      {activeImage?.url ? (
+      {activeImage?.url && isVideoMediaUrl(activeImage.url) ? (
+        <video
+          key={activeImage.id}
+          src={activeImage.url}
+          className="h-full w-full object-contain"
+          autoPlay
+          controls
+          loop
+          muted
+          playsInline
+          preload="auto"
+        />
+      ) : activeImage?.url ? (
         <img
           src={activeImage.url}
           alt={activeImage.alt_text ?? product.name}
@@ -60,21 +74,72 @@ export default function ProductMediaGallery({ product }: ProductMediaGalleryProp
           >
             <ChevronRight className="h-4 w-4" aria-hidden="true" />
           </motion.button>
-          <div className="absolute inset-x-4 bottom-4 flex justify-center gap-2">
-            {sortedImages.map((image, index) => (
-              <button
+          <div className="absolute left-3 top-3 flex flex-col gap-2 sm:left-4 sm:top-4">
+            {selectorImages.map((image, index) => (
+              <MediaThumb
                 key={image.id}
-                type="button"
+                image={image}
+                index={index}
+                name={product.name}
+                isActive={index === activeImageIndex}
                 onClick={() => setActiveImageIndex(index)}
-                className={`h-2 w-2 rounded-full transition-colors ${
-                  index === activeImageIndex ? "bg-white" : "bg-white/30 hover:bg-white/60"
-                }`}
-                aria-label={`View image ${index + 1}`}
               />
             ))}
           </div>
         </>
       )}
     </div>
+  );
+}
+
+function MediaThumb({
+  image,
+  index,
+  name,
+  isActive,
+  onClick,
+}: {
+  image: ShrimpDetail["images"][number];
+  index: number;
+  name: string;
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  const isVideo = isVideoMediaUrl(image.url);
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative h-14 w-14 overflow-hidden border bg-black/40 transition-colors sm:h-16 sm:w-16 ${
+        isActive ? "border-white" : "border-white/25 hover:border-white/60"
+      }`}
+      aria-label={`View media ${index + 1}`}
+    >
+      {image.url && isVideo ? (
+        <>
+          <video
+            src={image.url}
+            className="h-full w-full object-cover"
+            muted
+            playsInline
+            preload="metadata"
+          />
+          <span className="absolute inset-0 flex items-center justify-center bg-black/20 text-white">
+            <Play className="h-4 w-4 fill-current" aria-hidden="true" />
+          </span>
+        </>
+      ) : image.url ? (
+        <img
+          src={image.url}
+          alt={image.alt_text ?? name}
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <span className="flex h-full w-full items-center justify-center font-mono-label text-[10px] uppercase text-white/45">
+          Empty
+        </span>
+      )}
+    </button>
   );
 }

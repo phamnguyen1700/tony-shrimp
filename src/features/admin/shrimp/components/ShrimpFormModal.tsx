@@ -9,10 +9,10 @@ import { badgeValues } from "@/lib/shrimpBadgeStyles";
 import { splitTraits } from "@/lib/shrimpAdminUtils";
 import {
   catalogStatusOptions,
+  lineSuggestions,
   rarityOptions,
   saleQuantityOptions,
   saleUnitOptions,
-  typeSuggestions,
 } from "../selectorElements";
 import CareParameterFields from "./CareParameterFields";
 import { BadgeInputBox, ComboboxInput } from "./FormControls";
@@ -28,7 +28,7 @@ interface ShrimpFormModalProps {
   errors: FieldErrors<AdminShrimpFormInput>;
   careDraft: AdminShrimpCareDraft;
   watchedSpecies: string;
-  watchedType: string;
+  watchedLine: string;
   watchedColors: string;
   watchedGrade: string;
   watchedTraits: string;
@@ -50,7 +50,7 @@ export default function ShrimpFormModal({
   errors,
   careDraft,
   watchedSpecies,
-  watchedType,
+  watchedLine,
   watchedColors,
   watchedGrade,
   watchedTraits,
@@ -88,11 +88,12 @@ export default function ShrimpFormModal({
                 />
                 <ComboboxInput
                   label={formLabels.type}
-                  value={watchedType}
-                  suggestions={typeSuggestions(options?.types)}
-                  error={errors.type?.message}
-                  onChange={(value) => setValue("type", value, { shouldDirty: true, shouldValidate: true })}
+                  value={watchedLine}
+                  suggestions={lineSuggestions(options?.lines)}
+                  error={errors.line?.message}
+                  onChange={(value) => setValue("line", value, { shouldDirty: true, shouldValidate: true })}
                 />
+                <Input label="Slug" error={errors.slug?.message} {...register("slug")} />
                 <Select
                   label={formLabels.catalogStatus}
                   {...register("catalog_status")}
@@ -128,13 +129,39 @@ export default function ShrimpFormModal({
                 />
               </div>
 
-              <div className="mt-3 flex flex-col gap-1.5">
-                <label className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">{formLabels.description}</label>
-                <textarea
-                  {...register("description")}
-                  rows={4}
-                  className="ui-radius w-full resize-none border border-border bg-card px-3 py-2.5 text-sm font-body text-foreground placeholder:text-muted-foreground transition-colors duration-150 focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
-                />
+              <div className="mt-3 space-y-3">
+                <Input label="Description title" {...register("description_title")} />
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
+                    Overview
+                  </label>
+                  <textarea
+                    {...register("description_overview")}
+                    rows={4}
+                    className="ui-radius w-full resize-none border border-border bg-card px-3 py-2.5 text-sm font-body text-foreground placeholder:text-muted-foreground transition-colors duration-150 focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
+                    Highlights
+                  </label>
+                  <textarea
+                    {...register("description_highlights")}
+                    rows={3}
+                    placeholder="One highlight per line"
+                    className="ui-radius w-full resize-none border border-border bg-card px-3 py-2.5 text-sm font-body text-foreground placeholder:text-muted-foreground transition-colors duration-150 focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
+                    Care notes
+                  </label>
+                  <textarea
+                    {...register("description_care_notes")}
+                    rows={3}
+                    className="ui-radius w-full resize-none border border-border bg-card px-3 py-2.5 text-sm font-body text-foreground placeholder:text-muted-foreground transition-colors duration-150 focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                  />
+                </div>
               </div>
             </div>
 

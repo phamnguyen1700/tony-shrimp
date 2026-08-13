@@ -13,7 +13,7 @@ function getNameParts(name: string) {
 }
 
 export default function ProductInfoHeader({ product, productIndex, totalProducts }: ProductInfoHeaderProps) {
-  const speciesAndType = [product.species, product.type].filter(Boolean);
+  const speciesAndType = [product.species, product.line].filter(Boolean);
 
   return (
     <div>

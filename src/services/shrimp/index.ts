@@ -39,6 +39,11 @@ export const shrimpService = {
     return response.data;
   },
 
+  async getShrimpDetailBySlug(slug: string) {
+    const response = await apiClient.get<ShrimpDetail>(endpoints.catalog.shrimpDetailBySlug(slug));
+    return response.data;
+  },
+
   async listOwnerShrimp(params?: OwnerShrimpListQuery) {
     const response = await apiClient.get<ShrimpListItem[]>(endpoints.ownerCatalog.shrimp, {
       params,

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import AppBreadcrumb from "@/components/common/navigation/AppBreadcrumb";
-import { useShrimpDetail, useShrimpList } from "@/hooks/shrimp";
+import { useShrimpDetailBySlug, useShrimpList } from "@/hooks/shrimp";
 import { fadeIn, fadeUp, staggerContainer } from "@/lib/motionVariants";
 import { useAppRuntime } from "@/providers/AppProviders";
 import { useCart } from "@/store/cartStore";
@@ -17,13 +17,13 @@ import ProductNotFound from "./components/ProductNotFound";
 import ProductPurchasePanel from "./components/ProductPurchasePanel";
 import ProductWaterParameters from "./components/ProductWaterParameters";
 
-export default function ProductDetailFeature({ id }: { id: string }) {
+export default function ProductDetailFeature({ slug }: { slug: string }) {
   const { t } = useAppRuntime();
   const reduced = useReducedMotion();
   const { addItem } = useCart();
   const [qty, setQty] = useState(1);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
-  const detailQuery = useShrimpDetail(id);
+  const detailQuery = useShrimpDetailBySlug(slug);
   const listQuery = useShrimpList({ limit: 100 });
 
   const product = detailQuery.data;
@@ -34,7 +34,7 @@ export default function ProductDetailFeature({ id }: { id: string }) {
     sessionStorage.setItem(
       "tony-last-viewed-product",
       JSON.stringify({
-        href: `/products/${product.id}`,
+        href: `/products/${product.slug}`,
         name: product.name,
       }),
     );
@@ -54,7 +54,7 @@ export default function ProductDetailFeature({ id }: { id: string }) {
   const imageUrl =
     product.images.find((image) => image.is_primary)?.url ?? product.images[0]?.url ?? undefined;
   const products = listQuery.data ?? [];
-  const productIndex = products.findIndex((item) => item.id === id);
+  const productIndex = products.findIndex((item) => item.slug === product.slug);
 
   function handleAddToCart() {
     if (!product || !selectedVariant) return;
@@ -62,6 +62,7 @@ export default function ProductDetailFeature({ id }: { id: string }) {
     addItem(
       {
         productId: product.id,
+        productSlug: product.slug,
         variantId: selectedVariant.id,
         name: product.name,
         variantName: selectedVariant.name,

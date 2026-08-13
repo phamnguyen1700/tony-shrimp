@@ -6,13 +6,13 @@ import ShopFilterSection from "./ShopFilterSection";
 interface ShopFilterPanelProps {
   filters: ShopFilters;
   t: Translations;
-  options: Pick<CatalogOptions, "types" | "colors" | "grades" | "rarities" | "traits">;
+  options: Pick<CatalogOptions, "lines" | "colors" | "grades" | "rarities" | "traits">;
   onToggle: (key: keyof ShopFilters, value: string) => void;
 }
 
 export default function ShopFilterPanel({ filters, t, options, onToggle }: ShopFilterPanelProps) {
   const groups = [
-    { key: "types", title: t.shop.type, values: options.types },
+    { key: "lines", title: t.shop.type, values: options.lines },
     { key: "colors", title: t.shop.colour, values: options.colors },
     { key: "grades", title: t.shop.grade, values: options.grades },
     { key: "rarities", title: t.shop.rarity, values: options.rarities },

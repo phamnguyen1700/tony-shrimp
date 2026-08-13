@@ -1,4 +1,6 @@
 export type OrderStatus = "processing" | "shipped" | "delivered" | "cancelled";
+export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
+export type PaymentProvider = "stripe";
 
 export interface CreateOrderItemPayload {
   variant_id: string;
@@ -49,19 +51,21 @@ export interface OrderSummary {
   order_number: string;
   user_id: string;
   status: OrderStatus;
+  payment_status: PaymentStatus;
+  payment_provider: PaymentProvider;
   subtotal_amount: string;
   shipping_amount: string;
   total_amount: string;
   currency: string;
   customer_note: string | null;
-  carrier: string | null;
-  tracking_number: string | null;
-  tracking_url: string | null;
   created_at: string;
   updated_at: string;
   shipped_at: string | null;
   delivered_at: string | null;
   cancelled_at: string | null;
+  paid_at: string | null;
+  payment_failed_at: string | null;
+  cancelled_reason: string | null;
 }
 
 export interface OrderDetail extends OrderSummary {
@@ -82,6 +86,14 @@ export interface OrderListQuery {
   offset?: number;
 }
 
+export interface CheckoutOrderResponse {
+  order: OrderDetail;
+  checkout_url: string;
+  stripe_session_id: string;
+  payment_status: PaymentStatus;
+  payment_provider: PaymentProvider;
+}
+
 export interface OwnerOrderListQuery extends OrderListQuery {
   status?: OrderStatus;
   search?: string;
@@ -91,10 +103,4 @@ export interface UpdateOwnerOrderStatusPayload {
   status: OrderStatus;
   message?: string | null;
   status_at?: string | null;
-}
-
-export interface UpdateOwnerOrderTrackingPayload {
-  carrier?: string | null;
-  tracking_number?: string | null;
-  tracking_url?: string | null;
 }

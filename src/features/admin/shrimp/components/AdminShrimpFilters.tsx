@@ -30,7 +30,7 @@ export default function AdminShrimpFilters({
           <input
             value={filters.search}
             onChange={(event) => updateFilter("search", event.target.value)}
-            placeholder="Name, species, type..."
+            placeholder="Name, species, line..."
             className="admin-filter-control"
           />
         </label>
@@ -42,10 +42,10 @@ export default function AdminShrimpFilters({
           onChange={(value) => updateFilter("catalog_status", value as AdminShrimpFiltersValue["catalog_status"])}
         />
         <AdminFilterSelect
-          label="Type"
-          value={filters.type}
-          options={options?.types ?? []}
-          onChange={(value) => updateFilter("type", value)}
+          label="Line"
+          value={filters.line}
+          options={options?.lines ?? []}
+          onChange={(value) => updateFilter("line", value)}
         />
         <AdminFilterSelect
           label="Color"

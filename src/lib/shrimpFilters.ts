@@ -1,7 +1,7 @@
 import type { ShopFilters, ShrimpListItem } from "@/types/shrimp";
 
 export const emptyShopFilters: ShopFilters = {
-  types: [],
+  lines: [],
   colors: [],
   grades: [],
   rarities: [],
@@ -15,7 +15,7 @@ export function activeShopFilterCount(filters: ShopFilters) {
 
 export function filterShrimpProducts(products: ShrimpListItem[], filters: ShopFilters) {
   return products.filter((product) => {
-    if (filters.types.length && !filters.types.includes(product.type)) return false;
+    if (filters.lines.length && !filters.lines.includes(product.line)) return false;
     if (filters.colors.length && !product.colors.some((color) => filters.colors.includes(color))) return false;
     if (filters.grades.length && (!product.grade || !filters.grades.includes(product.grade))) return false;
     if (filters.rarities.length && (!product.rarity || !filters.rarities.includes(product.rarity))) return false;

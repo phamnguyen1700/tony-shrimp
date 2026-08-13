@@ -104,7 +104,7 @@ export default function AddressForm({
           label={labels.state}
           value={draft.state}
           suggestions={states.map((state) => ({ suburb: state, state, postcode: "" }))}
-          placeholder="VIC"
+          placeholder="State"
           error={errors.state}
           onChange={(value) => setField("state", value.toUpperCase())}
         />

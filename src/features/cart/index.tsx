@@ -36,7 +36,7 @@ const emptyAddressDraft: AccountAddressDraft = {
   address_line1: "",
   address_line2: "",
   suburb: "",
-  state: "VIC",
+  state: "",
   postcode: "",
   is_default: false,
 };
@@ -46,7 +46,7 @@ export default function CartFeature() {
   const router = useRouter();
   const reduced = useReducedMotion();
   const searchParams = useSearchParams();
-  const { items, removeItem, updateQuantity, clearCart, subtotal } = useCart();
+  const { items, removeItem, updateQuantity, subtotal } = useCart();
   const user = useAuthStore((state) => state.user);
   const currentUserQuery = useCurrentUser();
   const profileQuery = useUserProfile();
@@ -65,13 +65,13 @@ export default function CartFeature() {
   const [confirmOrderOpen, setConfirmOrderOpen] = useState(false);
   const [customerNote, setCustomerNote] = useState("");
 
-  const fromProductId = searchParams.get("fromProductId");
+  const fromProductSlug = searchParams.get("fromProductSlug") ?? searchParams.get("fromProductId");
   const fromProductName = searchParams.get("fromProductName");
   const shouldUseLastViewed = searchParams.get("fromLastViewed") === "1";
   const queryReturnProduct =
-    fromProductId && fromProductName
+    fromProductSlug && fromProductName
       ? {
-          href: `/products/${fromProductId}`,
+          href: `/products/${fromProductSlug}`,
           name: fromProductName,
         }
       : null;
@@ -123,7 +123,6 @@ export default function CartFeature() {
       ...emptyAddressDraft,
       recipient_name: profileQuery.data?.full_name ?? "",
       recipient_phone: profileQuery.data?.phone ? normalizeAustralianPhone(profileQuery.data.phone) : "",
-      state: addressOptionsQuery.data?.states[0] ?? "VIC",
       is_default: addresses.length === 0,
     });
     setAddressFormOpen(true);
@@ -166,7 +165,7 @@ export default function CartFeature() {
 
       if (!shippingAddressId) return;
 
-      const order = await createOrderMutation.mutateAsync({
+      const checkout = await createOrderMutation.mutateAsync({
         shipping_address_id: shippingAddressId,
         items: items.map((item) => ({
           variant_id: item.variantId,
@@ -175,9 +174,8 @@ export default function CartFeature() {
         customer_note: customerNote.trim() || null,
       });
 
-      clearCart();
       setConfirmOrderOpen(false);
-      router.push(`/orders/${order.id}`);
+      window.location.assign(checkout.checkout_url);
     } catch {
       // Mutation hooks own the toast messages.
     }
@@ -258,6 +256,7 @@ export default function CartFeature() {
               subtotal={subtotal}
               shipping={shipping}
               total={total}
+              items={items}
               reduced={reduced}
               orderPanelOpen={orderPanelOpen}
               addresses={addresses}
