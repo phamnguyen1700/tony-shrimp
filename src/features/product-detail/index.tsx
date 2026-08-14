@@ -46,7 +46,7 @@ export default function ProductDetailFeature({ slug }: { slug: string }) {
   }
 
   if (!product || detailQuery.isError) {
-    return <ProductNotFound />;
+    return <ProductNotFound t={t} />;
   }
 
   const activeVariants = product.variants.filter((variant) => variant.is_active);

@@ -1,7 +1,7 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { getApiErrorMessage } from "@/config/api";
+import { ApiError, getApiErrorMessage } from "@/config/api";
 import {
   createShrimpSchema,
   ownerShrimpListQuerySchema,
@@ -94,6 +94,8 @@ export function useShrimpDetailBySlug(slug: string) {
     queryKey: shrimpQueryKeys.publicDetailBySlug(slug),
     queryFn: () => shrimpService.getShrimpDetailBySlug(slug),
     enabled: Boolean(slug),
+    retry: (failureCount, error) =>
+      !(error instanceof ApiError && error.status === 404) && failureCount < 3,
   });
 }
 

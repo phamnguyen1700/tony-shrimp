@@ -57,6 +57,10 @@ const translations = {
       shipping: "Shipping",
       doaPolicy: "Live Arrival / DOA Policy",
       from: "From A$",
+      notFoundTitle: "Product not found",
+      notFoundDescription:
+        "The product you are looking for may have been updated or removed.",
+      findSimilar: "Find similar products -> Aquarium Shrimp",
     },
     cart: {
       title: "CART",
@@ -313,6 +317,10 @@ const translations = {
       shipping: "Vận chuyển",
       doaPolicy: "Chính sách DOA",
       from: "Từ A$",
+      notFoundTitle: "Không tìm thấy sản phẩm",
+      notFoundDescription:
+        "Sản phẩm bạn tìm kiếm có thể đã được chỉnh sửa hoặc bị gỡ.",
+      findSimilar: "Tìm sản phẩm tương tự -> Tép thủy sinh",
     },
     cart: {
       title: "GIỎ HÀNG",
