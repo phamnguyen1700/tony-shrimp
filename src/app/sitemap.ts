@@ -3,7 +3,7 @@ import { shrimpService } from "@/services/shrimp";
 import { routes } from "@/config/routes";
 import { absoluteUrl } from "@/lib/seo";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -28,15 +28,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const shrimp = await shrimpService.listShrimp({ limit: 500 });
 
     console.log("[SITEMAP] fetched:", shrimp.length);
-
-    console.log(
-      "[SITEMAP] products:",
-      shrimp.map((item) => ({
-        name: item.name,
-        slug: item.slug,
-        status: item.catalog_status,
-      })),
-    );
 
     const activeShrimp = shrimp.filter(
       (item) => item.catalog_status === "active",
