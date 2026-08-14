@@ -27,18 +27,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const shrimp = await shrimpService.listShrimp({ limit: 500 });
 
-    const productRoutes: MetadataRoute.Sitemap = shrimp
-      .filter((item) => item.catalog_status === "active")
-      .map((item) => ({
-        url: absoluteUrl(routes.product(item.slug)),
-        ...(item.updated_at ? { lastModified: new Date(item.updated_at) } : {}),
-        changeFrequency: "weekly",
-        priority: 0.7,
-      }));
+    console.log("[SITEMAP] fetched:", shrimp.length);
+
+    console.log(
+      "[SITEMAP] products:",
+      shrimp.map((item) => ({
+        name: item.name,
+        slug: item.slug,
+        status: item.catalog_status,
+      })),
+    );
+
+    const activeShrimp = shrimp.filter(
+      (item) => item.catalog_status === "active",
+    );
+
+    console.log("[SITEMAP] active:", activeShrimp.length);
+
+    const productRoutes: MetadataRoute.Sitemap = activeShrimp.map((item) => ({
+      url: absoluteUrl(routes.product(item.slug)),
+      ...(item.updated_at ? { lastModified: new Date(item.updated_at) } : {}),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    }));
 
     return [...staticRoutes, ...productRoutes];
   } catch (error) {
-    console.error("[sitemap] Failed to load shrimp catalog:", error);
+    console.error("[SITEMAP] FAILED:", error);
 
     return staticRoutes;
   }
