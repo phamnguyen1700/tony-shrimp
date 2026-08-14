@@ -3,6 +3,8 @@ import { shrimpService } from "@/services/shrimp";
 import { routes } from "@/config/routes";
 import { absoluteUrl } from "@/lib/seo";
 
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     {
