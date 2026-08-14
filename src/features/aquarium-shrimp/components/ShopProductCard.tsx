@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import AddToCartMotion from "@/components/common/motion/AddToCartMotion";
+import FallbackImage from "@/components/common/images/FallbackImage";
+import { routes } from "@/config/routes";
 import type { Translations } from "@/i18n";
 import { isVideoMediaUrl } from "@/lib/media";
 import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
@@ -32,7 +34,7 @@ export default function ShopProductCard({
       onMouseEnter={() => onHover(product.id)}
       onMouseLeave={() => onHover(null)}
     >
-      <Link href={`/products/${product.slug}`} className="block">
+      <Link href={routes.product(product.slug)} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-[#080b08]">
           {product.primary_image_url && isVideoMediaUrl(product.primary_image_url) ? (
             <video
@@ -43,16 +45,12 @@ export default function ShopProductCard({
               playsInline
               preload="metadata"
             />
-          ) : product.primary_image_url ? (
-            <img
+          ) : (
+            <FallbackImage
               src={product.primary_image_url}
               alt={product.name}
               className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
             />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <p className="mono-meta uppercase">No image</p>
-            </div>
           )}
           <AnimatePresence>
             {hovered && (

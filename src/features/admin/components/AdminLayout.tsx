@@ -2,7 +2,9 @@ import { ReactNode, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { Translations } from "@/i18n";
+import { routes } from "@/config/routes";
 import { drawerSlide } from "@/lib/motionVariants";
+import AdminNotificationsPanel from "./notifications/AdminNotificationsPanel";
 
 interface Props {
   children: ReactNode;
@@ -74,10 +76,10 @@ function NavContent({
   return (
     <>
       <div className="border-b border-border px-5 py-5">
-        <Link href="/shop" className="block" onClick={onClose}>
+        <Link href={routes.shop} className="block" onClick={onClose}>
           <div className="font-display text-base font-semibold leading-none text-foreground">TONY SHRIMP</div>
           <div className="mt-0.5 font-mono-label text-[11px] tracking-widest text-muted-foreground">
-            AUSTRALIA - SHOP
+            AUSTRALIA - AQUARIUM SHRIMP
           </div>
         </Link>
       </div>
@@ -184,7 +186,12 @@ export default function AdminLayout({
         )}
       </AnimatePresence>
 
-      <main className="ml-0 min-h-screen pt-14 md:ml-56 md:pt-0">{children}</main>
+      <main className="ml-0 min-h-screen pt-14 md:ml-56 md:pt-0">
+        <div className="grid min-h-screen items-start xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
+          <section className="min-w-0">{children}</section>
+          <AdminNotificationsPanel />
+        </div>
+      </main>
     </div>
   );
 }

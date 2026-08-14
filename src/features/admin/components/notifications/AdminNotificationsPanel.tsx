@@ -1,21 +1,16 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import useSound from "use-sound";
 import LivePushFeed from "@/components/common/motion/LivePushFeed";
-import type { OwnerNotification } from "@/types/notification";
-import OrderNotificationBell from "./OrderNotificationBell";
-import OrderNotificationCard from "./OrderNotificationCard";
+import { useMarkOwnerNotificationRead, useOwnerNotifications } from "@/hooks/notification";
+import AdminNotificationBell from "./AdminNotificationBell";
+import AdminNotificationCard from "./AdminNotificationCard";
 
-interface OrderNotificationsFeedProps {
-  notifications: OwnerNotification[];
-  isLoading: boolean;
-  onMarkRead: (notificationId: string) => void;
-}
-
-export default function OrderNotificationsFeed({
-  notifications,
-  isLoading,
-  onMarkRead,
-}: OrderNotificationsFeedProps) {
+export default function AdminNotificationsPanel() {
+  const notificationsQuery = useOwnerNotifications({ unread_only: true, limit: 8, offset: 0 });
+  const markNotificationReadMutation = useMarkOwnerNotificationRead();
+  const notifications = notificationsQuery.data?.items ?? [];
   const [playNotificationBell] = useSound("/sounds/notification.wav", {
     interrupt: true,
     soundEnabled: true,
@@ -53,7 +48,7 @@ export default function OrderNotificationsFeed({
   }, [notifications, playNotificationBell]);
 
   return (
-    <section className="border-t border-border pt-6 xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0">
+    <aside className="border-t border-border p-6 md:p-8 xl:sticky xl:top-0 xl:min-h-screen xl:border-l xl:border-t-0">
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <p className="font-mono-label text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -63,7 +58,7 @@ export default function OrderNotificationsFeed({
             Unread order alerts stay here until you read them.
           </p>
         </div>
-        <OrderNotificationBell
+        <AdminNotificationBell
           unreadCount={notifications.length}
           pulseKey={bellPulse}
           onPlay={() => {
@@ -73,7 +68,7 @@ export default function OrderNotificationsFeed({
         />
       </div>
 
-      {isLoading ? (
+      {notificationsQuery.isLoading ? (
         <p className="py-10 text-center font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
           Loading notifications...
         </p>
@@ -84,10 +79,10 @@ export default function OrderNotificationsFeed({
           gap={8}
           animation="scale"
           renderItem={(notification, index) => (
-            <OrderNotificationCard
+            <AdminNotificationCard
               notification={notification}
               index={index}
-              onRead={onMarkRead}
+              onRead={(notificationId) => markNotificationReadMutation.mutate(notificationId)}
             />
           )}
         />
@@ -96,6 +91,6 @@ export default function OrderNotificationsFeed({
           No unread order notifications.
         </p>
       )}
-    </section>
+    </aside>
   );
 }

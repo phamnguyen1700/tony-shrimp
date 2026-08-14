@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { routes } from "@/config/routes";
 import type { Translations } from "@/i18n";
 import BrandMark from "./BrandMark";
 
@@ -8,7 +9,7 @@ interface AppFooterProps {
 
 export default function AppFooter({ t }: AppFooterProps) {
   const storeLinks = [
-    { label: t.nav.shop, href: "/shop" },
+    { label: t.nav.shop, href: routes.shop },
     { label: "Order Tracking", href: "/account" },
   ];
 
@@ -35,7 +36,7 @@ export default function AppFooter({ t }: AppFooterProps) {
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/shop"
+                href={routes.shop}
                 className="inline-flex items-center gap-2 bg-[#f2f0eb] px-5 py-2.5 font-mono-label text-xs uppercase tracking-widest text-[#080b08] transition-colors hover:bg-white"
                 style={{ borderRadius: "var(--radius)" }}
               >

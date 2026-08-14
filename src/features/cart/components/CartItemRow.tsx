@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { motion } from "motion/react";
+import FallbackImage from "@/components/common/images/FallbackImage";
 import type { Translations } from "@/i18n";
 import type { CartItem } from "@/types/cart";
+import { routes } from "@/config/routes";
 import { isVideoMediaUrl } from "@/lib/media";
 import { fadeUp } from "@/lib/motionVariants";
 
@@ -70,22 +72,18 @@ export default function CartItemRow({
             playsInline
             preload="metadata"
           />
-        ) : item.imageUrl ? (
-          <img
+        ) : (
+          <FallbackImage
             src={item.imageUrl}
             alt={item.name}
             className="h-full w-full object-contain"
           />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <span className="mono-meta uppercase">No image</span>
-          </div>
         )}
       </div>
 
       <div className="min-w-0">
         <Link
-          href={`/products/${item.productSlug ?? item.productId}`}
+          href={routes.product(item.productSlug ?? item.productId)}
           className="block font-display text-sm font-semibold italic leading-snug text-foreground transition-colors hover:text-accent"
         >
           {item.name}

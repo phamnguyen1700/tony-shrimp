@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import AddressForm, { type AccountAddressDraft } from "@/components/common/address/AddressForm";
+import FallbackImage from "@/components/common/images/FallbackImage";
 import MotionButton from "@/components/common/motion/MotionButton";
 import Dialog from "@/components/ui/Dialog";
 import Badge from "@/components/ui/Badge";
@@ -355,12 +356,8 @@ function OrderInvoiceDialog({
                 <div className="h-14 w-14 overflow-hidden bg-[#080b08]" style={{ borderRadius: "var(--radius-sm)" }}>
                   {item.imageUrl && isVideoMediaUrl(item.imageUrl) ? (
                     <video src={item.imageUrl} className="h-full w-full object-contain" muted playsInline preload="metadata" />
-                  ) : item.imageUrl ? (
-                    <img src={item.imageUrl} alt={item.name} className="h-full w-full object-contain" />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <span className="mono-meta uppercase">No image</span>
-                    </div>
+                    <FallbackImage src={item.imageUrl} alt={item.name} className="h-full w-full object-contain" />
                   )}
                 </div>
                 <div className="min-w-0">

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2, ClipboardList, Loader2, PackageCheck, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
 import MotionButton from "@/components/common/motion/MotionButton";
+import { routes } from "@/config/routes";
 import { useOrderByPaymentSession } from "@/hooks/order";
 import { clearPendingOrderId } from "@/lib/pendingOrder";
 import { useAppRuntime } from "@/providers/AppProviders";
@@ -153,7 +154,7 @@ function SuccessActions() {
               {t.nav.myOrders}
             </MotionButton>
           </Link>
-          <Link href="/shop">
+          <Link href={routes.shop}>
             <MotionButton variant="secondary" size="md" className="w-full sm:min-w-52">
               <ShoppingBag className="h-4 w-4" aria-hidden="true" />
               Continue shopping

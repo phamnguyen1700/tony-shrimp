@@ -6,13 +6,25 @@ import { motion, useReducedMotion } from "motion/react";
 import PageHero from "@/components/common/layout/PageHero";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "@/config/api";
-import { useCatalogOptions, useFetchShrimpDetail, useShrimpList } from "@/hooks/shrimp";
+import {
+  useCatalogOptions,
+  useFetchShrimpDetail,
+  useShrimpList,
+} from "@/hooks/shrimp";
 import { fadeUp, staggerContainer } from "@/lib/motionVariants";
-import { activeShopFilterCount, emptyShopFilters, filterShrimpProducts } from "@/lib/shrimpFilters";
+import {
+  activeShopFilterCount,
+  emptyShopFilters,
+  filterShrimpProducts,
+} from "@/lib/shrimpFilters";
 import { useAppRuntime } from "@/providers/AppProviders";
 import { useCart } from "@/store/cartStore";
 import { useShrimpOptionsStore } from "@/store/shrimpStore";
-import type { CatalogOptions, ShopFilters, ShrimpListItem } from "@/types/shrimp";
+import type {
+  CatalogOptions,
+  ShopFilters,
+  ShrimpListItem,
+} from "@/types/shrimp";
 import ShopEmptyState from "./components/ShopEmptyState";
 import ShopFilterPanel from "./components/ShopFilterPanel";
 import ShopMobileFilterBar from "./components/ShopMobileFilterBar";
@@ -30,7 +42,7 @@ const fallbackCatalogOptions: CatalogOptions = {
   traits: [],
 };
 
-export default function ShopFeature() {
+export default function AquariumShrimpFeature() {
   const { t } = useAppRuntime();
   const searchParams = useSearchParams();
   const reduced = useReducedMotion();
@@ -39,12 +51,16 @@ export default function ShopFeature() {
   const catalogOptionsQuery = useCatalogOptions();
   const storedOptions = useShrimpOptionsStore((state) => state.catalogOptions);
   const search = searchParams.get("search")?.trim() ?? "";
-  const shrimpQuery = useShrimpList({ limit: 100, ...(search ? { search } : {}) });
+  const shrimpQuery = useShrimpList({
+    limit: 100,
+    ...(search ? { search } : {}),
+  });
   const [filters, setFilters] = useState<ShopFilters>(emptyShopFilters);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  const options = catalogOptionsQuery.data ?? storedOptions ?? fallbackCatalogOptions;
+  const options =
+    catalogOptionsQuery.data ?? storedOptions ?? fallbackCatalogOptions;
   const products = shrimpQuery.data ?? [];
   const filteredProducts = filterShrimpProducts(products, filters);
   const filterCount = activeShopFilterCount(filters);
@@ -67,7 +83,9 @@ export default function ShopFeature() {
 
     try {
       const detail = await fetchShrimpDetail(product.id);
-      const activeVariants = detail.variants.filter((variant) => variant.is_active);
+      const activeVariants = detail.variants.filter(
+        (variant) => variant.is_active,
+      );
       const firstVariant = activeVariants[0] ?? detail.variants[0];
       if (!firstVariant) return;
       const imageUrl =
@@ -96,7 +114,11 @@ export default function ShopFeature() {
   return (
     <div className="min-h-screen bg-background pt-14">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-        <PageHero title={t.shop.title} reduced={reduced} className="py-10 md:py-14" />
+        <PageHero
+          title={t.shop.title}
+          reduced={reduced}
+          className="py-10 md:py-14"
+        />
 
         <ShopMobileFilterBar
           t={t}
@@ -108,7 +130,12 @@ export default function ShopFeature() {
         <div className="grid gap-8 py-8 md:grid-cols-[220px_minmax(0,1fr)] lg:grid-cols-[240px_minmax(0,1fr)]">
           <aside className="hidden md:block">
             <div className="sticky top-24 space-y-5 border-r border-border pr-6">
-              <ShopFilterPanel filters={filters} t={t} options={options} onToggle={toggleFilter} />
+              <ShopFilterPanel
+                filters={filters}
+                t={t}
+                options={options}
+                onToggle={toggleFilter}
+              />
               {filterCount > 0 && (
                 <button
                   onClick={clearFilters}
@@ -127,7 +154,11 @@ export default function ShopFeature() {
           >
             <ShopProductGrid>
               {filteredProducts.map((product) => (
-                <motion.div key={product.id} variants={reduced ? undefined : fadeUp} layout>
+                <motion.div
+                  key={product.id}
+                  variants={reduced ? undefined : fadeUp}
+                  layout
+                >
                   <ShopProductCard
                     product={product}
                     t={t}
@@ -141,7 +172,10 @@ export default function ShopFeature() {
           </motion.div>
         </div>
 
-        <ShopEmptyState isLoading={shrimpQuery.isLoading} isEmpty={!shrimpQuery.isLoading && filteredProducts.length === 0} />
+        <ShopEmptyState
+          isLoading={shrimpQuery.isLoading}
+          isEmpty={!shrimpQuery.isLoading && filteredProducts.length === 0}
+        />
       </div>
 
       <ShopMobileFilterSheet

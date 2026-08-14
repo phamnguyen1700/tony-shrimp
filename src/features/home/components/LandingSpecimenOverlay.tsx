@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { routes } from "@/config/routes";
 import type { Translations } from "@/i18n";
 import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
 import Badge from "@/components/ui/Badge";
@@ -66,7 +67,7 @@ export default function LandingSpecimenOverlay({ t, active }: LandingSpecimenOve
           {t.landing.from} A${Number(active.min_price ?? 0)}
         </span>
         <Link
-          href={`/products/${active.slug}`}
+          href={routes.product(active.slug)}
           className="font-mono-label text-[11px] tracking-[0.16em] uppercase text-white/60 hover:text-white transition-colors flex items-center gap-2 group"
         >
           {t.landing.viewShrimp}

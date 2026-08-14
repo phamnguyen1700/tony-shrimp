@@ -61,12 +61,15 @@ export default function LandingSlide({ specimen, index, isActive, reduced }: Lan
                 : {}
             }
           />
-        ) : specimen.primary_image_url ? (
+        ) : (
           <motion.img
-            src={specimen.primary_image_url}
+            src={specimen.primary_image_url || "/coming-soon/comming-soon.png"}
             alt={specimen.name}
             className="w-auto h-[52vh] md:h-[65vh] max-w-[80vw] md:max-w-[70vw] object-contain"
             style={{ filter: "drop-shadow(0 0 60px rgba(0,0,0,0.8))" }}
+            onError={(event) => {
+              event.currentTarget.src = "/coming-soon/comming-soon.png";
+            }}
             animate={
               reduced
                 ? {}
@@ -89,10 +92,6 @@ export default function LandingSlide({ specimen, index, isActive, reduced }: Lan
             }
             draggable={false}
           />
-        ) : (
-          <p className="font-mono-label text-xs uppercase tracking-widest text-white/35">
-            No image
-          </p>
         )}
       </motion.div>
     </div>

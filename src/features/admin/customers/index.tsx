@@ -12,10 +12,10 @@ import {
   useUpdateOwnerUserRole,
 } from "@/hooks/customer";
 import { useAppRuntime } from "@/providers/AppProviders";
-import AdminUsersBox from "./components/AdminUsersBox";
 import CustomerAddressDialog from "./components/CustomerAddressDialog";
 import CustomerFilters from "./components/CustomerFilters";
 import CustomerTable from "./components/CustomerTable";
+import CustomerTabs, { type CustomerTab } from "./components/CustomerTabs";
 import EditUserRoleDialog from "./components/EditUserRoleDialog";
 import type { ManagedUserRole, OwnerUserListItem } from "@/types/customer";
 
@@ -32,6 +32,7 @@ export default function AdminCustomersFeature() {
   const [addressUserId, setAddressUserId] = useState<string | null>(null);
   const [roleUser, setRoleUser] = useState<OwnerUserListItem | null>(null);
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
+  const [activeTab, setActiveTab] = useState<CustomerTab>("active");
   const usersQuery = useOwnerUsers({
     search: search.trim() || undefined,
     limit: 100,
@@ -45,17 +46,41 @@ export default function AdminCustomersFeature() {
 
   const users = usersQuery.data?.items ?? [];
   const activeCustomerUsers = useMemo(
-    () => users.filter((user) => user.role === "customer" && user.status === "active"),
+    () =>
+      users.filter(
+        (user) => user.role === "customer" && user.status === "active",
+      ),
     [users],
   );
   const inactiveCustomerUsers = useMemo(
-    () => users.filter((user) => user.role === "customer" && user.status === "inactive"),
+    () =>
+      users.filter(
+        (user) => user.role === "customer" && user.status === "inactive",
+      ),
     [users],
   );
   const adminUsers = useMemo(
-    () => users.filter((user) => user.role === "admin" || user.role === "owner"),
+    () =>
+      users.filter((user) => user.role === "admin" || user.role === "owner"),
     [users],
   );
+  const tabCounts = {
+    active: activeCustomerUsers.length,
+    inactive: inactiveCustomerUsers.length,
+    admin: adminUsers.length,
+  };
+  const visibleUsers =
+    activeTab === "active"
+      ? activeCustomerUsers
+      : activeTab === "inactive"
+        ? inactiveCustomerUsers
+        : adminUsers;
+  const emptyText =
+    activeTab === "active"
+      ? "No active customers found."
+      : activeTab === "inactive"
+        ? "No inactive customers found."
+        : "No admin users found.";
   const isMutating =
     activateUserMutation.isPending ||
     deactivateUserMutation.isPending ||
@@ -82,7 +107,10 @@ export default function AdminCustomersFeature() {
 
   async function saveRole(role: ManagedUserRole) {
     if (!roleUser) return;
-    await updateRoleMutation.mutateAsync({ userId: roleUser.id, payload: { role } });
+    await updateRoleMutation.mutateAsync({
+      userId: roleUser.id,
+      payload: { role },
+    });
     setRoleUser(null);
   }
 
@@ -94,45 +122,37 @@ export default function AdminCustomersFeature() {
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
     >
       <div>
-        <h1 className="font-display text-2xl font-semibold text-foreground md:text-3xl">{t.admin.customers}</h1>
-        <p className="mt-2 max-w-2xl font-body text-sm text-muted-foreground">
-          Manage users by role, status, and saved delivery addresses.
-        </p>
+        <h1 className="font-display text-2xl font-semibold text-foreground md:text-3xl">
+          {t.admin.customers}
+        </h1>
       </div>
 
-      <CustomerFilters search={search} onSearchChange={setSearch} onClear={() => setSearch("")} />
+      <CustomerFilters
+        search={search}
+        onSearchChange={setSearch}
+        onClear={() => setSearch("")}
+      />
 
-      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="space-y-8">
-          <CustomerTable
-            title="Active Customers"
-            users={activeCustomerUsers}
-            emptyText="No active customers found."
-            mode="active"
-            isLoading={usersQuery.isLoading}
-            onViewAddresses={(user) => setAddressUserId(user.id)}
-            onEditRole={setRoleUser}
-            onActivate={(user) => setPendingAction({ type: "activate", user })}
-            onDeactivate={(user) => setPendingAction({ type: "deactivate", user })}
-            onDelete={(user) => setPendingAction({ type: "delete", user })}
-          />
-
-          <CustomerTable
-            title="Inactive Customers"
-            users={inactiveCustomerUsers}
-            emptyText="No inactive customers found."
-            mode="inactive"
-            isLoading={usersQuery.isLoading}
-            onViewAddresses={(user) => setAddressUserId(user.id)}
-            onEditRole={setRoleUser}
-            onActivate={(user) => setPendingAction({ type: "activate", user })}
-            onDeactivate={(user) => setPendingAction({ type: "deactivate", user })}
-            onDelete={(user) => setPendingAction({ type: "delete", user })}
-          />
-        </div>
-
-        <AdminUsersBox users={adminUsers} isLoading={usersQuery.isLoading} />
-      </div>
+      <section className="space-y-4">
+        <CustomerTabs
+          activeTab={activeTab}
+          counts={tabCounts}
+          onTabChange={setActiveTab}
+        />
+        <CustomerTable
+          users={visibleUsers}
+          emptyText={emptyText}
+          mode={activeTab}
+          isLoading={usersQuery.isLoading}
+          onViewAddresses={(user) => setAddressUserId(user.id)}
+          onEditRole={setRoleUser}
+          onActivate={(user) => setPendingAction({ type: "activate", user })}
+          onDeactivate={(user) =>
+            setPendingAction({ type: "deactivate", user })
+          }
+          onDelete={(user) => setPendingAction({ type: "delete", user })}
+        />
+      </section>
 
       <CustomerAddressDialog
         open={Boolean(addressUserId)}
@@ -148,11 +168,18 @@ export default function AdminCustomersFeature() {
       />
       <ConfirmDialog
         open={Boolean(pendingAction)}
-        title={pendingAction ? `${pendingAction.type} user` : "Confirm user action"}
+        title={
+          pendingAction ? `${pendingAction.type} user` : "Confirm user action"
+        }
         description={pendingAction ? actionDescription(pendingAction) : ""}
         confirmLabel={pendingAction?.type === "delete" ? "Delete" : "Confirm"}
         cancelLabel="Cancel"
-        tone={pendingAction?.type === "delete" || pendingAction?.type === "deactivate" ? "alert" : "confirm"}
+        tone={
+          pendingAction?.type === "delete" ||
+          pendingAction?.type === "deactivate"
+            ? "alert"
+            : "confirm"
+        }
         isConfirming={isMutating}
         onConfirm={() => void confirmAction()}
         onClose={() => setPendingAction(null)}

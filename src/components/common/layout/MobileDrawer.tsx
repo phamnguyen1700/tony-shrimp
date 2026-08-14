@@ -2,6 +2,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import Link from 'next/link'
 import type { ThemeMode } from '@/hooks/useTheme'
 import type { Lang, Translations } from '@/i18n'
+import { routes } from '@/config/routes'
 import { drawerSlide } from '@/lib/motionVariants'
 
 interface Props {
@@ -28,7 +29,7 @@ export default function MobileDrawer({
   const reduced = useReducedMotion()
 
   const navLinks = [
-    { to: '/shop', label: t.nav.shop },
+    { to: routes.shop, label: t.nav.shop },
     { to: '/about', label: t.nav.about },
     ...(showOrdersLink ? [{ to: '/orders', label: t.nav.myOrders }] : []),
     { to: '/account', label: t.nav.account },

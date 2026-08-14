@@ -1,0 +1,32 @@
+import type { MetadataRoute } from "next";
+import { shrimpService } from "@/services/shrimp";
+import { routes } from "@/config/routes";
+import { absoluteUrl } from "@/lib/seo";
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticRoutes: MetadataRoute.Sitemap = [
+    { url: absoluteUrl(), changeFrequency: "daily", priority: 1 },
+    { url: absoluteUrl(routes.shop), changeFrequency: "daily", priority: 0.9 },
+    { url: absoluteUrl("/about"), changeFrequency: "monthly", priority: 0.5 },
+  ];
+
+  let productRoutes: MetadataRoute.Sitemap = [];
+
+  try {
+    const shrimp = await shrimpService.listShrimp({ limit: 500 });
+
+    productRoutes = shrimp
+      .filter((item) => item.catalog_status === "active")
+      .map((item) => ({
+        url: absoluteUrl(routes.product(item.slug)),
+        lastModified: new Date(item.updated_at),
+        changeFrequency: "weekly",
+        priority: 0.7,
+      }));
+  } catch {
+    // If the catalog API is unreachable at build time, fall back to static routes only
+    // rather than failing the whole sitemap/build.
+  }
+
+  return [...staticRoutes, ...productRoutes];
+}

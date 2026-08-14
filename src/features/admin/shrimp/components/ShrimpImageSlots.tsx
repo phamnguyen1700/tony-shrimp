@@ -15,6 +15,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import FallbackImage from "@/components/common/images/FallbackImage";
 import { isVideoMediaUrl } from "@/lib/media";
 import type { ShrimpImage } from "@/types/shrimp";
 
@@ -115,12 +116,12 @@ function SortableImageSlot({
           playsInline
           preload="metadata"
         />
-      ) : image.url ? (
-        <img src={image.url} alt={image.alt_text ?? `Shrimp image ${index + 1}`} className="h-full w-full object-cover" />
       ) : (
-        <div className="flex h-full w-full items-center justify-center">
-          <span className="font-mono-label text-[10px] uppercase text-white/45">IMG</span>
-        </div>
+        <FallbackImage
+          src={image.url}
+          alt={image.alt_text ?? `Shrimp image ${index + 1}`}
+          className="h-full w-full object-cover"
+        />
       )}
       <button
         type="button"

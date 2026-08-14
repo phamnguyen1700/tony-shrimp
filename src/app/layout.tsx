@@ -1,10 +1,23 @@
 import type { Metadata } from "next";
 import "@/index.css";
 import AppProviders from "@/providers/AppProviders";
+import { siteDescription, siteIcon, siteName } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "TONY SHRIMP",
-  description: "Premium freshwater shrimp storefront.",
+  title: {
+    default: siteName,
+    template: `%s | ${siteName}`,
+  },
+  description: siteDescription,
+  icons: {
+    icon: [
+      {
+        url: siteIcon,
+        type: "image/png",
+      },
+    ],
+    apple: siteIcon,
+  },
 };
 
 export default function RootLayout({

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { motion } from "motion/react";
+import { routes } from "@/config/routes";
 import type { Translations } from "@/i18n";
 
 interface CartEmptyStateProps {
@@ -20,7 +21,7 @@ export default function CartEmptyState({ t, reduced, returnProduct }: CartEmptyS
         {t.cart.empty}
       </p>
       <Link
-        href={returnProduct?.href ?? "/shop"}
+        href={returnProduct?.href ?? routes.shop}
         className="inline-block font-mono-label text-xs uppercase tracking-widest text-accent underline underline-offset-2 transition-colors hover:text-accent/80"
       >
         {returnProduct ? `Back to ${returnProduct.name}` : t.cart.continueShopping} →

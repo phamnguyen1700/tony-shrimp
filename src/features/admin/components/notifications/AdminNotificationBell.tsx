@@ -8,17 +8,17 @@ const bellBurstParticles = [
   { x: -15, y: -6 },
 ];
 
-interface OrderNotificationBellProps {
+interface AdminNotificationBellProps {
   unreadCount: number;
   pulseKey: number;
   onPlay: () => void;
 }
 
-export default function OrderNotificationBell({
+export default function AdminNotificationBell({
   unreadCount,
   pulseKey,
   onPlay,
-}: OrderNotificationBellProps) {
+}: AdminNotificationBellProps) {
   const reduced = useReducedMotion();
 
   return (

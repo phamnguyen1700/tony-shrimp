@@ -16,6 +16,7 @@ function getActiveRoute(pathname: string) {
   if (pathname.startsWith("/admin/orders")) return "/admin/orders";
   if (pathname.startsWith("/admin/shrimp")) return "/admin/shrimp";
   if (pathname.startsWith("/admin/customers")) return "/admin/customers";
+  if (pathname.startsWith("/admin/settings")) return "/admin/settings";
   return "/admin";
 }
 
