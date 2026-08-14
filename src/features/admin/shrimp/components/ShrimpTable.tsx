@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import AdminDataTable, { type AdminDataTableColumn } from "@/components/common/table/AdminDataTable";
 import type { Translations } from "@/i18n";
 import type { ShrimpDetail, ShrimpImage, ShrimpListItem } from "@/types/shrimp";
+import FallbackImage from "@/components/common/images/FallbackImage";
 import Badge from "@/components/ui/Badge";
 import MotionButton from "@/components/common/motion/MotionButton";
 import { isVideoMediaUrl } from "@/lib/media";
@@ -183,9 +184,9 @@ export default function ShrimpTable({
             <div className="h-14 w-14 shrink-0 overflow-hidden bg-[#080b08]" style={{ borderRadius: "var(--radius-sm)" }}>
               {product.primary_image_url && isVideoMediaUrl(product.primary_image_url) ? (
                 <video src={product.primary_image_url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
-              ) : product.primary_image_url ? (
-                <img src={product.primary_image_url} alt={product.name} className="h-full w-full object-cover" />
-              ) : null}
+              ) : (
+                <FallbackImage src={product.primary_image_url} alt={product.name} className="h-full w-full object-cover" />
+              )}
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-2">

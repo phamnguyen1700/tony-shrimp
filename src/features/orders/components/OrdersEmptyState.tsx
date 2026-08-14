@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { routes } from "@/config/routes";
 import type { Translations } from "@/i18n";
 
 interface OrdersEmptyStateProps {
@@ -15,10 +16,10 @@ export default function OrdersEmptyState({ t, type }: OrdersEmptyStateProps) {
         {isSignedOut ? "Sign in to view your orders." : "No orders yet."}
       </p>
       <Link
-        href={isSignedOut ? "/account?redirect=%2Forders" : "/shop"}
+        href={isSignedOut ? "/account?redirect=%2Forders" : routes.shop}
         className="mt-4 inline-block font-mono-label text-xs uppercase tracking-widest text-accent underline underline-offset-2"
       >
-        {isSignedOut ? t.nav.account : "Browse the shop"} -&gt;
+        {isSignedOut ? t.nav.account : `Browse ${t.nav.shop}`} -&gt;
       </Link>
     </div>
   );

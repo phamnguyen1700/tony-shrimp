@@ -6,6 +6,7 @@ import { Suspense, type ReactNode } from "react";
 import toast from "react-hot-toast";
 import { AlertCircle, ClipboardList, CreditCard, Loader2, PackageCheck, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
 import MotionButton from "@/components/common/motion/MotionButton";
+import { routes } from "@/config/routes";
 import { useCancelOrder, useContinuePayment, useOrderByPaymentSession } from "@/hooks/order";
 import { clearPendingOrderId } from "@/lib/pendingOrder";
 import { useAppRuntime } from "@/providers/AppProviders";
@@ -193,7 +194,7 @@ function FallbackActions() {
               Continue with your cart
             </MotionButton>
           </Link>
-          <Link href="/shop">
+          <Link href={routes.shop}>
             <MotionButton variant="secondary" size="md" className="w-full sm:min-w-44">
               {t.nav.shop}
             </MotionButton>

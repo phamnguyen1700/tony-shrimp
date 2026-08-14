@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import AppBreadcrumb from "@/components/common/navigation/AppBreadcrumb";
+import { routes } from "@/config/routes";
 import { useShrimpDetailBySlug, useShrimpList } from "@/hooks/shrimp";
 import { fadeIn, fadeUp, staggerContainer } from "@/lib/motionVariants";
 import { useAppRuntime } from "@/providers/AppProviders";
@@ -34,7 +35,7 @@ export default function ProductDetailFeature({ slug }: { slug: string }) {
     sessionStorage.setItem(
       "tony-last-viewed-product",
       JSON.stringify({
-        href: `/products/${product.slug}`,
+        href: routes.product(product.slug),
         name: product.name,
       }),
     );
@@ -86,7 +87,7 @@ export default function ProductDetailFeature({ slug }: { slug: string }) {
       >
         <AppBreadcrumb
           items={[
-            { label: t.nav.shop, href: "/shop" },
+            { label: t.nav.shop, href: routes.shop },
             { label: product.name },
           ]}
         />

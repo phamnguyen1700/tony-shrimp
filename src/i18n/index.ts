@@ -5,8 +5,8 @@ const translations = {
     brand: "TONY SHRIMP",
     tagline: "AUSTRALIA",
     nav: {
-      shop: "Shop",
-      about: "About",
+      shop: "Aquarium Shrimp",
+      about: "About Us",
       account: "Account",
       cart: "Cart",
       myOrders: "My Orders",
@@ -24,7 +24,7 @@ const translations = {
       from: "From",
     },
     shop: {
-      title: "SHOP",
+      title: "Aquarium Shrimp",
       filters: "Filters",
       clearAll: "Clear all",
       type: "LINE",
@@ -71,7 +71,8 @@ const translations = {
       calculated: "Calculated at checkout",
       orderForm: {
         title: "Shipping details",
-        description: "Choose a saved address or enter a new delivery address for this order.",
+        description:
+          "Choose a saved address or enter a new delivery address for this order.",
         useNewAddress: "+ Use new address",
         placeOrder: "PLACE ORDER",
         confirmTitle: "Confirm order",
@@ -79,7 +80,8 @@ const translations = {
         confirm: "CONFIRM ORDER",
         ready: "Order request is ready. Order API can be connected next.",
         customerNote: "Customer note",
-        customerNotePlaceholder: "Delivery notes, preferred time, or anything we should know...",
+        customerNotePlaceholder:
+          "Delivery notes, preferred time, or anything we should know...",
       },
     },
     order: {
@@ -222,7 +224,25 @@ const translations = {
         hardDeleteTitle: "Delete Shrimp Permanently",
         hardDeleteConfirm: "Permanently delete this inactive shrimp",
         deactivateTitle: "Deactivate Shrimp",
-        deactivateConfirm: "Deactivate this shrimp? It will be hidden from the public catalog.",
+        deactivateConfirm:
+          "Deactivate this shrimp? It will be hidden from the public catalog.",
+      },
+      settingsPage: {
+        appearance: "Appearance",
+        appearanceDescription: "Choose how the admin dashboard looks.",
+        themeOptionDescriptions: {
+          light: "Always use the light appearance.",
+          dark: "Always use the dark appearance.",
+          system: "Match your device's appearance.",
+        },
+        language: {
+          title: "Language",
+          description: "Choose the display language for the admin dashboard.",
+          options: {
+            en: { label: "English", description: "Use English." },
+            vi: { label: "Vietnamese", description: "Use Vietnamese." },
+          },
+        },
       },
       markShipped: "MARK AS SHIPPED",
       processingOrders: "Processing Orders",
@@ -241,8 +261,8 @@ const translations = {
     brand: "TONY SHRIMP",
     tagline: "ÚC",
     nav: {
-      shop: "Cửa hàng",
-      about: "Giới thiệu",
+      shop: "Tép thủy sinh",
+      about: "Về chúng tôi",
       account: "Tài khoản",
       cart: "Giỏ hàng",
       myOrders: "Đơn hàng",
@@ -260,7 +280,7 @@ const translations = {
       from: "Từ",
     },
     shop: {
-      title: "CỬA HÀNG",
+      title: "TÉP THỦY SINH",
       filters: "Lọc",
       clearAll: "Xóa tất cả",
       type: "DÒNG",
@@ -307,13 +327,15 @@ const translations = {
       calculated: "Tính khi thanh toán",
       orderForm: {
         title: "Thông tin giao hàng",
-        description: "Chọn địa chỉ đã lưu hoặc nhập địa chỉ giao hàng mới cho đơn này.",
+        description:
+          "Chọn địa chỉ đã lưu hoặc nhập địa chỉ giao hàng mới cho đơn này.",
         useNewAddress: "+ Dùng địa chỉ mới",
         placeOrder: "ĐẶT HÀNG",
         confirmTitle: "Xác nhận đặt hàng",
         confirmDescription: "Xác nhận yêu cầu đặt hàng với tổng tiền",
         confirm: "XÁC NHẬN ĐẶT HÀNG",
-        ready: "Yêu cầu đặt hàng đã sẵn sàng. Có thể nối Order API ở bước tiếp theo.",
+        ready:
+          "Yêu cầu đặt hàng đã sẵn sàng. Có thể nối Order API ở bước tiếp theo.",
       },
     },
     order: {
@@ -456,7 +478,25 @@ const translations = {
         hardDeleteTitle: "Xóa vĩnh viễn tôm",
         hardDeleteConfirm: "Xóa vĩnh viễn tôm đang ẩn này",
         deactivateTitle: "Ẩn tôm",
-        deactivateConfirm: "Ẩn tôm này? Nó sẽ không hiển thị trong catalog công khai.",
+        deactivateConfirm:
+          "Ẩn tôm này? Nó sẽ không hiển thị trong catalog công khai.",
+      },
+      settingsPage: {
+        appearance: "Giao diện",
+        appearanceDescription: "Chọn giao diện hiển thị cho trang quản trị.",
+        themeOptionDescriptions: {
+          light: "Luôn dùng giao diện sáng.",
+          dark: "Luôn dùng giao diện tối.",
+          system: "Theo giao diện thiết bị của bạn.",
+        },
+        language: {
+          title: "Ngôn ngữ",
+          description: "Chọn ngôn ngữ hiển thị cho khu vực quản trị.",
+          options: {
+            en: { label: "Tiếng Anh", description: "Sử dụng tiếng Anh." },
+            vi: { label: "Tiếng Việt", description: "Sử dụng tiếng Việt." },
+          },
+        },
       },
       markShipped: "ĐÁNH DẤU ĐÃ GỬI",
       processingOrders: "Đơn đang xử lý",

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
+import { routes } from "@/config/routes";
 import type { Translations } from "@/i18n";
 import { staggerContainer } from "@/lib/motionVariants";
 import type { CartItem } from "@/types/cart";
@@ -51,7 +52,7 @@ export default function CartItemsList({
 
       <div className="mt-6">
         <Link
-          href={returnProduct?.href ?? "/shop"}
+          href={returnProduct?.href ?? routes.shop}
           className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground"
         >
           &larr; {returnProduct ? `Back to ${returnProduct.name}` : t.cart.continueShopping}

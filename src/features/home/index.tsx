@@ -26,7 +26,27 @@ export default function HomeFeature() {
     (specimen, index, list) => list.findIndex((item) => item.id === specimen.id) === index,
   );
   const priorityResolved = !extremelyRareQuery.isLoading && !rareQuery.isLoading;
-  const shrimp = priorityShrimp.length > 0 ? priorityShrimp : priorityResolved ? (fallbackQuery.data ?? []) : [];
+  const fallbackResolved = !fallbackQuery.isLoading;
+  const shrimp =
+    priorityShrimp.length > 0
+      ? priorityShrimp
+      : priorityResolved
+        ? (fallbackQuery.data ?? [])
+        : [];
+  const isCollectionLoading =
+    priorityShrimp.length === 0 &&
+    (!priorityResolved || !fallbackResolved);
+  const isCollectionError =
+    priorityResolved &&
+    fallbackResolved &&
+    extremelyRareQuery.isError &&
+    rareQuery.isError &&
+    fallbackQuery.isError;
+  const isComingSoon =
+    priorityResolved &&
+    fallbackResolved &&
+    !isCollectionError &&
+    shrimp.length === 0;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [slideWidth, setSlideWidth] = useState(0);
@@ -48,6 +68,11 @@ export default function HomeFeature() {
 
     return () => window.removeEventListener("resize", updateSlideWidth);
   }, [activeIndex, x]);
+
+  useEffect(() => {
+    if (activeIndex <= Math.max(0, shrimp.length - 1)) return;
+    setActiveIndex(Math.max(0, shrimp.length - 1));
+  }, [activeIndex, shrimp.length]);
 
   useEffect(() => {
     if (!isDragging) return;
@@ -133,8 +158,20 @@ export default function HomeFeature() {
 
   const active = shrimp[activeIndex];
 
-  if (!active) {
+  if (isCollectionLoading) {
     return <LandingLoadingState />;
+  }
+
+  if (isCollectionError) {
+    return <LandingLoadingState status="error" />;
+  }
+
+  if (isComingSoon) {
+    return <LandingLoadingState status="coming-soon" />;
+  }
+
+  if (!active) {
+    return <LandingLoadingState status="coming-soon" />;
   }
 
   return (

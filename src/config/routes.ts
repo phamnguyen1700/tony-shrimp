@@ -1,9 +1,9 @@
 export const routes = {
   home: "/",
-  shop: "/shop",
+  shop: "/aquarium-shrimp",
   cart: "/cart",
   account: "/account",
-  product: (slug: string) => `/products/${slug}`,
+  product: (slug: string) => `/aquarium-shrimp/${slug}`,
   order: (id: string) => `/orders/${id}`,
   admin: {
     dashboard: "/admin",

@@ -23,6 +23,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useCart } from "@/store/cartStore";
 import { useCreateOrder } from "@/hooks/order";
 import AppBreadcrumb from "@/components/common/navigation/AppBreadcrumb";
+import { routes } from "@/config/routes";
 import CartEmptyState from "./components/CartEmptyState";
 import CartItemsList from "./components/CartItemsList";
 import CartOrderSummary from "./components/CartOrderSummary";
@@ -72,7 +73,7 @@ export default function CartFeature() {
   const queryReturnProduct =
     fromProductSlug && fromProductName
       ? {
-          href: `/products/${fromProductSlug}`,
+          href: routes.product(fromProductSlug),
           name: fromProductName,
         }
       : null;
@@ -234,7 +235,7 @@ export default function CartFeature() {
             <AppBreadcrumb
               className="mb-4"
               items={[
-                { label: t.nav.shop, href: "/shop" },
+                { label: t.nav.shop, href: routes.shop },
                 ...(returnProduct ? [{ label: returnProduct.name, href: returnProduct.href }] : []),
                 { label: t.cart.title },
               ]}

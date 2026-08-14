@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import FallbackImage from "@/components/common/images/FallbackImage";
 import { isVideoMediaUrl } from "@/lib/media";
 import { formatOrderMoney } from "@/lib/orderFormat";
 import type { OrderDetail } from "@/types/order";
@@ -24,9 +25,9 @@ export default function OrderItemsList({ order, reduced }: OrderItemsListProps) 
           <div className="ui-radius h-14 w-14 shrink-0 bg-[#080b08]">
             {item.image_url && isVideoMediaUrl(item.image_url) ? (
               <video src={item.image_url} className="h-full w-full object-contain" muted playsInline preload="metadata" />
-            ) : item.image_url ? (
-              <img src={item.image_url} alt={item.shrimp_name} className="h-full w-full object-contain" />
-            ) : null}
+            ) : (
+              <FallbackImage src={item.image_url} alt={item.shrimp_name} className="h-full w-full object-contain" />
+            )}
           </div>
           <div className="min-w-0 flex-1">
             <p className="font-display text-sm font-semibold italic text-foreground">{item.shrimp_name}</p>

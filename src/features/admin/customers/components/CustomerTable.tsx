@@ -1,11 +1,11 @@
 import AdminDataTable, { type AdminDataTableColumn } from "@/components/common/table/AdminDataTable";
+import Badge from "@/components/ui/Badge";
 import type { OwnerUserListItem } from "@/types/customer";
 
 interface CustomerTableProps {
-  title: string;
   users: OwnerUserListItem[];
   emptyText: string;
-  mode: "active" | "inactive";
+  mode: "active" | "inactive" | "admin";
   isLoading?: boolean;
   onViewAddresses: (user: OwnerUserListItem) => void;
   onEditRole: (user: OwnerUserListItem) => void;
@@ -15,7 +15,6 @@ interface CustomerTableProps {
 }
 
 export default function CustomerTable({
-  title,
   users,
   emptyText,
   mode,
@@ -37,6 +36,20 @@ export default function CustomerTable({
           <p className="mt-1 font-body text-xs text-muted-foreground">{user.email}</p>
         </>
       ),
+    },
+    {
+      key: "role",
+      header: "Role",
+      align: "center",
+      className: "min-w-[130px]",
+      render: (user) => <Badge variant={user.role === "admin" ? "accent" : "inStock"}>{user.role}</Badge>,
+    },
+    {
+      key: "status",
+      header: "Status",
+      align: "center",
+      className: "min-w-[130px] font-mono-label text-xs uppercase tracking-widest text-muted-foreground",
+      render: (user) => user.status,
     },
     {
       key: "phone",
@@ -74,7 +87,7 @@ export default function CustomerTable({
           >
             Edit
           </button>
-          {mode === "active" ? (
+          {mode === "active" || (mode === "admin" && user.status === "active") ? (
             <button
               type="button"
               className="font-mono-label text-xs uppercase tracking-widest text-red-500 transition-colors hover:text-red-600"
@@ -82,7 +95,7 @@ export default function CustomerTable({
             >
               Deactivate
             </button>
-          ) : (
+          ) : user.status === "inactive" ? (
             <>
               <button
                 type="button"
@@ -99,7 +112,7 @@ export default function CustomerTable({
                 Delete
               </button>
             </>
-          )}
+          ) : null}
         </div>
       ),
     },
@@ -112,7 +125,7 @@ export default function CustomerTable({
     },
   ];
 
-  if (mode === "inactive") {
+  if (mode === "inactive" || mode === "admin") {
     columns.push({
       key: "deactivated",
       header: "Deactivated",
@@ -123,16 +136,7 @@ export default function CustomerTable({
   }
 
   return (
-    <section className="space-y-4">
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <h2 className="font-display text-xl font-semibold text-foreground">{title}</h2>
-          <p className="mt-1 font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
-            {users.length} users
-          </p>
-        </div>
-      </div>
-
+    <section>
       <AdminDataTable
         rows={users}
         columns={columns}
@@ -141,7 +145,7 @@ export default function CustomerTable({
         loadingText="Loading users..."
         isLoading={isLoading}
         pageSize={10}
-        minWidth={mode === "active" ? "920px" : "1060px"}
+        minWidth="1120px"
       />
     </section>
   );

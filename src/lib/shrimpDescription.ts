@@ -21,14 +21,18 @@ export function descriptionDraftToMarkdown(draft: ShrimpDescriptionDraft) {
   return [
     draft.title.trim() ? `## ${draft.title.trim()}` : "",
     draft.overview.trim(),
-    highlights.length ? `### Highlights\n\n${highlights.map((item) => `- ${item}`).join("\n")}` : "",
+    highlights.length
+      ? `### Highlights\n\n${highlights.map((item) => `- ${item}`).join("\n")}`
+      : "",
     draft.careNotes.trim() ? `### Care Notes\n\n${draft.careNotes.trim()}` : "",
   ]
     .filter(Boolean)
     .join("\n\n");
 }
 
-export function markdownToDescriptionDraft(value?: string | null): ShrimpDescriptionDraft {
+export function markdownToDescriptionDraft(
+  value?: string | null,
+): ShrimpDescriptionDraft {
   if (!value?.trim()) return emptyShrimpDescriptionDraft;
 
   const lines = value.replace(/\r\n/g, "\n").split("\n");

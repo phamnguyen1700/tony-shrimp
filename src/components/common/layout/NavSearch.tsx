@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
+import { routes } from "@/config/routes";
 
 interface NavSearchProps {
   isLanding: boolean;
@@ -14,7 +15,7 @@ export default function NavSearch({ isLanding }: NavSearchProps) {
   const [expanded, setExpanded] = useState(false);
   const [value, setValue] = useState("");
   const open = expanded || value.trim().length > 0;
-  const isShop = pathname === "/shop";
+  const isShop = pathname === routes.shop;
 
   useEffect(() => {
     if (!isShop) return;
@@ -49,7 +50,7 @@ export default function NavSearch({ isLanding }: NavSearchProps) {
     }
 
     const query = params.toString();
-    return query ? `/shop?${query}` : "/shop";
+    return query ? `${routes.shop}?${query}` : routes.shop;
   }
 
   function applySearch(nextValue: string, mode: "push" | "replace") {

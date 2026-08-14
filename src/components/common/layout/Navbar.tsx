@@ -6,6 +6,7 @@ import type { ThemeMode } from '@/hooks/useTheme'
 import type { Lang } from '@/i18n'
 import type { Translations } from '@/i18n'
 import type { CartItem } from '@/types/cart'
+import { routes } from '@/config/routes'
 import { canAccessAdmin } from '@/lib/authAccess'
 import { useAuthStore } from '@/store/authStore'
 import BrandMark from './BrandMark'
@@ -30,7 +31,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
   const canGoAdmin = canAccessAdmin(user)
   const showOrdersLink = Boolean(user)
   const totalItems = cartItems.reduce((s, i) => s + i.quantity, 0)
-  const cartHref = pathname.startsWith('/products/') ? '/cart?fromLastViewed=1' : '/cart'
+  const cartHref = pathname.startsWith(`${routes.shop}/`) ? '/cart?fromLastViewed=1' : '/cart'
 
   const nextTheme: ThemeMode = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'
   const themeIcon = theme === 'light' ? '☀' : theme === 'dark' ? '☾' : '◑'
@@ -55,7 +56,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
             {[
-              { to: '/shop', label: t.nav.shop },
+              { to: routes.shop, label: t.nav.shop },
               { to: '/about', label: t.nav.about },
               ...(showOrdersLink ? [{ to: '/orders', label: t.nav.myOrders }] : []),
             ].map(({ to, label }) => (

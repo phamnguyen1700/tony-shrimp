@@ -2,20 +2,16 @@
 
 import { useState } from "react";
 import type { OrderStatus } from "@/types/order";
-import { useMarkOwnerNotificationRead, useOwnerNotifications } from "@/hooks/notification";
 import { useOwnerOrders } from "@/hooks/order";
 import { useAppRuntime } from "@/providers/AppProviders";
 import Input from "@/components/ui/Input";
 import AdminOrderTable from "./components/AdminOrderTable";
-import OrderNotificationsFeed from "./components/OrderNotificationsFeed";
 import OrderStatusTabs from "./components/OrderStatusTabs";
 
 export default function AdminOrdersFeature() {
   const { t } = useAppRuntime();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<OrderStatus | "">("");
-  const notificationsQuery = useOwnerNotifications({ unread_only: true, limit: 8, offset: 0 });
-  const markNotificationReadMutation = useMarkOwnerNotificationRead();
   const ordersQuery = useOwnerOrders({
     limit: 20,
     offset: 0,
@@ -39,32 +35,20 @@ export default function AdminOrdersFeature() {
         />
       </div>
 
-      <div className="grid items-start gap-6 xl:grid-cols-2">
-        <section>
-          <div className="mb-3 flex items-end justify-between gap-4">
-            <div>
-              <p className="font-mono-label text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                Order Check
-              </p>
-              <p className="mt-1 font-body text-sm text-muted-foreground">
-                Compact list for spotting missed orders.
-              </p>
-            </div>
-          </div>
+      <section>
+        <div className="mb-4">
+          <OrderStatusTabs
+            t={t}
+            activeStatus={status}
+            onStatusChange={setStatus}
+          />
+        </div>
 
-          <div className="mb-4">
-            <OrderStatusTabs t={t} activeStatus={status} onStatusChange={setStatus} />
-          </div>
-
-          <AdminOrderTable orders={ordersQuery.data?.items ?? []} isLoading={ordersQuery.isLoading} />
-        </section>
-
-        <OrderNotificationsFeed
-          notifications={notificationsQuery.data?.items ?? []}
-          isLoading={notificationsQuery.isLoading}
-          onMarkRead={(notificationId) => markNotificationReadMutation.mutate(notificationId)}
+        <AdminOrderTable
+          orders={ordersQuery.data?.items ?? []}
+          isLoading={ordersQuery.isLoading}
         />
-      </div>
+      </section>
     </div>
   );
 }

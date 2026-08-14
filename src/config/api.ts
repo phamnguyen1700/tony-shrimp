@@ -101,11 +101,10 @@ apiClient.interceptors.response.use(
     if (axios.isAxiosError(error) && error.response?.status === 401 && error.config) {
       const config = error.config as typeof error.config & RetriableRequestConfig;
       const requestUrl = config.url ?? "";
-      const isAuthMeRequest = requestUrl.includes(endpoints.auth.me);
       const isAuthRefreshRequest = requestUrl.includes(endpoints.auth.refresh);
       const isAuthLogoutRequest = requestUrl.includes(endpoints.auth.logout);
 
-      if (!config._retry && !isAuthMeRequest && !isAuthRefreshRequest && !isAuthLogoutRequest) {
+      if (!config._retry && !isAuthRefreshRequest && !isAuthLogoutRequest) {
         config._retry = true;
 
         try {

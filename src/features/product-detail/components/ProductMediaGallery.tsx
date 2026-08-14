@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { motion } from "motion/react";
+import FallbackImage from "@/components/common/images/FallbackImage";
 import { isVideoMediaUrl } from "@/lib/media";
 import type { ShrimpDetail } from "@/types/shrimp";
 
@@ -41,16 +42,12 @@ export default function ProductMediaGallery({ product }: ProductMediaGalleryProp
           playsInline
           preload="auto"
         />
-      ) : activeImage?.url ? (
-        <img
-          src={activeImage.url}
-          alt={activeImage.alt_text ?? product.name}
+      ) : (
+        <FallbackImage
+          src={activeImage?.url}
+          alt={activeImage?.alt_text ?? product.name}
           className="h-full w-full object-contain"
         />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center">
-          <p className="mono-meta uppercase">No image</p>
-        </div>
       )}
       {hasMultipleImages && (
         <>
@@ -129,16 +126,12 @@ function MediaThumb({
             <Play className="h-4 w-4 fill-current" aria-hidden="true" />
           </span>
         </>
-      ) : image.url ? (
-        <img
+      ) : (
+        <FallbackImage
           src={image.url}
           alt={image.alt_text ?? name}
           className="h-full w-full object-cover"
         />
-      ) : (
-        <span className="flex h-full w-full items-center justify-center font-mono-label text-[10px] uppercase text-white/45">
-          Empty
-        </span>
       )}
     </button>
   );

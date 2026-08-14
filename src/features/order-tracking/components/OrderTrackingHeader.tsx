@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { motion } from "motion/react";
+import { routes } from "@/config/routes";
 import type { Translations } from "@/i18n";
 import type { OrderDetail } from "@/types/order";
 
@@ -16,7 +17,7 @@ export default function OrderTrackingHeader({ t, order, reduced }: OrderTracking
         aria-label="Breadcrumb"
         className="mb-8 flex flex-wrap items-center gap-2 font-mono-label text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
       >
-        <Link href="/shop" className="transition-colors hover:text-foreground">
+        <Link href={routes.shop} className="transition-colors hover:text-foreground">
           {t.nav.shop}
         </Link>
         <span>•</span>
