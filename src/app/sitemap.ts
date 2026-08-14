@@ -29,9 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((item) => item.catalog_status === "active")
       .map((item) => ({
         url: absoluteUrl(routes.product(item.slug)),
-        ...(item.updated_at
-          ? { lastModified: new Date(item.updated_at) }
-          : {}),
+        ...(item.updated_at ? { lastModified: new Date(item.updated_at) } : {}),
         changeFrequency: "weekly",
         priority: 0.7,
       }));
