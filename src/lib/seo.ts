@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 export const siteName = "TONY SHRIMP";
 export const siteDescription = "Premium freshwater shrimp storefront.";
 export const siteIcon = "/logo/tony-shrimp-logo.png";
-export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://tonyshrimp.com").replace(/\/$/, "");
+export const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://tonyshrimp.com.au"
+).replace(/\/$/, "");
 
 export function formatSiteTitle(title?: string) {
   return title ? `${title} | ${siteName}` : siteName;
@@ -14,7 +16,10 @@ export function absoluteUrl(path = "/") {
   return `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
-type PageMetadataInput = Omit<Metadata, "title" | "description" | "openGraph"> & {
+type PageMetadataInput = Omit<
+  Metadata,
+  "title" | "description" | "openGraph"
+> & {
   title?: string;
   description?: string;
   openGraph?: Metadata["openGraph"];
