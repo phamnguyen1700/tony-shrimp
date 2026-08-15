@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import PageHero from "@/components/common/layout/PageHero";
+import AppBreadcrumb from "@/components/common/navigation/AppBreadcrumb";
+import { routes } from "@/config/routes";
 import { fadeUp, staggerContainer } from "@/lib/motionVariants";
 import { useAppRuntime } from "@/providers/AppProviders";
 import AboutAccordionList from "./components/AboutAccordionList";
@@ -33,6 +35,19 @@ export default function AboutFeature() {
   return (
     <main className="app-page">
       <div className="app-container">
+        <motion.div
+          className="pt-8"
+          initial={reduced ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <AppBreadcrumb
+            items={[
+              { label: t.brand, href: routes.home },
+              { label: t.nav.about },
+            ]}
+          />
+        </motion.div>
         <motion.section
           className="grid gap-10 py-10 md:grid-cols-[0.8fr_1.2fr] md:py-16"
           variants={reduced ? undefined : staggerContainer}

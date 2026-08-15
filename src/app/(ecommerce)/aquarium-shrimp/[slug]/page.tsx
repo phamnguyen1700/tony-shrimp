@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/common/seo/JsonLd";
 import ProductDetailFeature from "@/features/product-detail";
 import { shrimpService } from "@/services/shrimp";
 import { markdownToDescriptionDraft } from "@/lib/shrimpDescription";
 import { routes } from "@/config/routes";
-import { absoluteUrl, createPageMetadata } from "@/lib/seo";
+import { createPageMetadata } from "@/lib/seo";
+import { createBreadcrumbItems, createBreadcrumbJsonLd, createProductJsonLd } from "@/lib/structuredData";
 
 function createMetaDescription(text: string, maxLength = 155) {
   const clean = text.trim();
@@ -36,9 +38,7 @@ export async function generateMetadata({
     return createPageMetadata({
       title: productTitle,
       description: metaDescription,
-      alternates: {
-        canonical: absoluteUrl(routes.product(shrimp.slug)),
-      },
+      path: routes.product(shrimp.slug),
       openGraph: {
         description: metaDescription,
         images: shrimp.images[0]?.url
@@ -61,6 +61,26 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug: slug } = await params;
+  const shrimp = await shrimpService
+    .getShrimpDetailBySlug(slug)
+    .catch(() => null);
 
-  return <ProductDetailFeature slug={slug} />;
+  return (
+    <>
+      {shrimp && (
+        <JsonLd
+          data={[
+            createBreadcrumbJsonLd(
+              createBreadcrumbItems([
+                { name: "Aquarium Shrimp", path: routes.shop },
+                { name: shrimp.name, path: routes.product(shrimp.slug) },
+              ]),
+            ),
+            createProductJsonLd(shrimp),
+          ]}
+        />
+      )}
+      <ProductDetailFeature slug={slug} />
+    </>
+  );
 }

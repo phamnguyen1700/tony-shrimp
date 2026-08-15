@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import PageHero from "@/components/common/layout/PageHero";
+import AppBreadcrumb from "@/components/common/navigation/AppBreadcrumb";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "@/config/api";
+import { routes } from "@/config/routes";
 import {
   useCatalogOptions,
   useFetchShrimpDetail,
@@ -114,6 +116,19 @@ export default function AquariumShrimpFeature() {
   return (
     <div className="min-h-screen bg-background pt-14">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
+        <motion.div
+          className="pt-8"
+          initial={reduced ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <AppBreadcrumb
+            items={[
+              { label: t.brand, href: routes.home },
+              { label: t.nav.shop },
+            ]}
+          />
+        </motion.div>
         <PageHero
           title={t.shop.title}
           reduced={reduced}

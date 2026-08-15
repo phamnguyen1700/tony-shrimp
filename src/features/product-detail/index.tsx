@@ -87,6 +87,7 @@ export default function ProductDetailFeature({ slug }: { slug: string }) {
       >
         <AppBreadcrumb
           items={[
+            { label: t.brand, href: routes.home },
             { label: t.nav.shop, href: routes.shop },
             { label: product.name },
           ]}
