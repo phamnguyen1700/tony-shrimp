@@ -11,7 +11,7 @@ interface PageHeroProps {
 
 export default function PageHero({
   title,
-  eyebrow = "TONY SHRIMP AUSTRALIA",
+  eyebrow = "",
   eyebrowSlot,
   reduced,
   className = "",
@@ -23,7 +23,8 @@ export default function PageHero({
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className={`mb-8 md:mb-10 ${className}`}
     >
-      {eyebrowSlot ?? (eyebrow ? <p className="mono-eyebrow mb-2">{eyebrow}</p> : null)}
+      {eyebrowSlot ??
+        (eyebrow ? <p className="mono-eyebrow mb-2">{eyebrow}</p> : null)}
       <h1 className="font-display text-5xl font-semibold italic leading-none text-foreground md:text-7xl">
         {title}
       </h1>
