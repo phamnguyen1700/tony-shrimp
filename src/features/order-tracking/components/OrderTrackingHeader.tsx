@@ -10,18 +10,28 @@ interface OrderTrackingHeaderProps {
   reduced: boolean | null;
 }
 
-export default function OrderTrackingHeader({ t, order, reduced }: OrderTrackingHeaderProps) {
+export default function OrderTrackingHeader({
+  t,
+  order,
+  reduced,
+}: OrderTrackingHeaderProps) {
   return (
     <>
       <nav
         aria-label="Breadcrumb"
-        className="mb-8 flex flex-wrap items-center gap-2 font-mono-label text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
+        className="flex flex-wrap items-center gap-2 font-mono-label text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
       >
-        <Link href={routes.shop} className="transition-colors hover:text-foreground">
+        <Link
+          href={routes.shop}
+          className="transition-colors hover:text-foreground"
+        >
           {t.nav.shop}
         </Link>
         <span>•</span>
-        <Link href="/orders" className="transition-colors hover:text-foreground">
+        <Link
+          href="/orders"
+          className="transition-colors hover:text-foreground"
+        >
           {t.nav.myOrders}
         </Link>
         <span>•</span>
@@ -32,11 +42,11 @@ export default function OrderTrackingHeader({ t, order, reduced }: OrderTracking
         initial={reduced ? false : { opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="mb-8 md:mb-12"
+        // className="mb-8 md:mb-8"
       >
-        <p className="mb-2 font-mono-label text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+        {/* <p className="mb-2 font-mono-label text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
           {t.order.orderNumber}
-        </p>
+        </p> */}
         <h1 className="font-display text-5xl font-semibold italic leading-none text-foreground md:text-7xl">
           {order.order_number}
         </h1>

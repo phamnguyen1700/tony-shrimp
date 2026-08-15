@@ -36,7 +36,6 @@ export default function AboutFeature() {
     <main className="app-page">
       <div className="app-container">
         <motion.div
-          className="pt-8"
           initial={reduced ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -49,7 +48,7 @@ export default function AboutFeature() {
           />
         </motion.div>
         <motion.section
-          className="grid gap-10 py-10 md:grid-cols-[0.8fr_1.2fr] md:py-16"
+          className="grid md:grid-cols-[0.8fr_1.2fr]"
           variants={reduced ? undefined : staggerContainer}
           initial={reduced ? false : "hidden"}
           animate="visible"

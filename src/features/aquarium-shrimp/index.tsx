@@ -117,7 +117,7 @@ export default function AquariumShrimpFeature() {
     <div className="min-h-screen bg-background pt-14">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
         <motion.div
-          className="pt-8"
+          className="pt-8 md:pt-12"
           initial={reduced ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -132,7 +132,7 @@ export default function AquariumShrimpFeature() {
         <PageHero
           title={t.shop.title}
           reduced={reduced}
-          className="py-10 md:py-14"
+          // className="py-2 md:py-5"
         />
 
         <ShopMobileFilterBar
