@@ -12,17 +12,23 @@ function getNameParts(name: string) {
   return name.trim().split(/\s+/);
 }
 
-export default function ProductInfoHeader({ product, productIndex, totalProducts }: ProductInfoHeaderProps) {
+export default function ProductInfoHeader({
+  product,
+  productIndex,
+  totalProducts,
+}: ProductInfoHeaderProps) {
   const speciesAndType = [product.species, product.line].filter(Boolean);
 
   return (
     <div>
       <p className="mono-eyebrow mb-3">
-        {String(productIndex + 1).padStart(2, "0")} / {String(totalProducts).padStart(2, "0")}
+        {String(productIndex + 1).padStart(2, "0")} /{" "}
+        {String(totalProducts).padStart(2, "0")}
       </p>
-      <h1 className="font-display text-4xl font-semibold italic leading-tight text-foreground md:text-5xl">
-        {getNameParts(product.name).map((part) => (
-          <span key={part} className="block">
+      <h1 className="font-display text-3xl font-semibold italic leading-tight text-foreground md:text-4xl lg:text-5xl">
+        {getNameParts(product.name).map((part, index) => (
+          <span key={part} className="md:block">
+            {index > 0 && <span className="md:hidden"> </span>}
             {part}
           </span>
         ))}

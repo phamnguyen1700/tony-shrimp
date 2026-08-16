@@ -22,6 +22,12 @@ export class ApiError extends Error {
   }
 }
 
+export interface InsufficientStockItem {
+  variant_id: string;
+  requested: number;
+  available: number;
+}
+
 interface RetriableRequestConfig {
   _retry?: boolean;
   headers?: Record<string, unknown>;
@@ -45,6 +51,19 @@ function getDetailMessage(detail: unknown) {
   return null;
 }
 
+export function getInsufficientStockItems(
+  error: unknown,
+): InsufficientStockItem[] | null {
+  if (!(error instanceof ApiError)) return null;
+  const detail = error.detail as
+    | { error?: string; items?: InsufficientStockItem[] }
+    | undefined;
+  if (detail?.error === "INSUFFICIENT_STOCK" && Array.isArray(detail.items)) {
+    return detail.items;
+  }
+  return null;
+}
+
 export function clearLegacyAuthTokens() {
   if (!isBrowser()) return;
   window.localStorage.removeItem(LEGACY_ACCESS_TOKEN_KEY);
@@ -53,7 +72,9 @@ export function clearLegacyAuthTokens() {
 
 async function refreshAccessToken() {
   refreshPromise ??= axios
-    .post(`${env.apiBaseUrl}${endpoints.auth.refresh}`, null, { withCredentials: true })
+    .post(`${env.apiBaseUrl}${endpoints.auth.refresh}`, null, {
+      withCredentials: true,
+    })
     .then((response) => response.data)
     .finally(() => {
       refreshPromise = null;
@@ -67,7 +88,23 @@ export function normalizeApiError(error: unknown) {
 
   if (axios.isAxiosError(error)) {
     const status = error.response?.status;
-    const data = error.response?.data as { detail?: unknown; message?: unknown } | undefined;
+    const data = error.response?.data as
+      | { detail?: unknown; message?: unknown }
+      | undefined;
+    if (
+      data?.detail &&
+      typeof data.detail === "object" &&
+      !Array.isArray(data.detail)
+    ) {
+      const structured = data.detail as { error?: string; items?: unknown };
+      if (structured.error === "INSUFFICIENT_STOCK") {
+        return new ApiError(
+          "Một số sản phẩm trong đơn không đủ số lượng trong kho.",
+          status,
+          structured,
+        );
+      }
+    }
     const detailMessage = getDetailMessage(data?.detail);
     const message =
       detailMessage ??
@@ -83,7 +120,10 @@ export function normalizeApiError(error: unknown) {
   return new ApiError("Something went wrong.");
 }
 
-export function getApiErrorMessage(error: unknown, fallback = "Something went wrong.") {
+export function getApiErrorMessage(
+  error: unknown,
+  fallback = "Something went wrong.",
+) {
   if (error instanceof ApiError) return error.message;
   if (error instanceof Error && error.message) return error.message;
   return fallback;
@@ -98,8 +138,13 @@ export const apiClient = axios.create({
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (axios.isAxiosError(error) && error.response?.status === 401 && error.config) {
-      const config = error.config as typeof error.config & RetriableRequestConfig;
+    if (
+      axios.isAxiosError(error) &&
+      error.response?.status === 401 &&
+      error.config
+    ) {
+      const config = error.config as typeof error.config &
+        RetriableRequestConfig;
       const requestUrl = config.url ?? "";
       const isAuthRefreshRequest = requestUrl.includes(endpoints.auth.refresh);
       const isAuthLogoutRequest = requestUrl.includes(endpoints.auth.logout);

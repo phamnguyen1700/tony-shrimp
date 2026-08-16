@@ -421,18 +421,18 @@ body {
   }
 
   .quantity-stepper {
-    @apply flex items-center border border-border;
+    @apply flex h-14 flex-1 items-center justify-between border border-border;
     border-radius: var(--radius);
   }
 
   .quantity-stepper-button {
-    @apply flex h-10 w-10 items-center justify-center text-base text-muted-foreground transition-colors hover:text-foreground;
+    @apply flex h-full w-12 shrink-0 items-center justify-center text-base text-muted-foreground transition-colors hover:text-foreground;
     font-family: var(--font-dm-mono);
   }
 
   .quantity-stepper-value {
-    @apply w-10 text-center text-sm text-foreground;
-    font-family: var(--font-dm-mono);
+    @apply flex-1 text-center text-sm text-foreground;
+    font-family: var(--font-dm-mono); 
   }
 
   .accordion-row {

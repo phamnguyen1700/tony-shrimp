@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { getApiErrorMessage } from "@/config/api";
+import { getApiErrorMessage, getInsufficientStockItems } from "@/config/api";
 import {
   createOrderSchema,
   orderListQuerySchema,
@@ -18,8 +18,10 @@ import type {
 export const orderQueryKeys = {
   customerList: (params?: OrderListQuery) => ["orders", params ?? {}] as const,
   customerDetail: (orderId: string) => ["orders", orderId] as const,
-  paymentSession: (sessionId: string) => ["orders", "payment-session", sessionId] as const,
-  ownerList: (params?: OwnerOrderListQuery) => ["owner", "orders", params ?? {}] as const,
+  paymentSession: (sessionId: string) =>
+    ["orders", "payment-session", sessionId] as const,
+  ownerList: (params?: OwnerOrderListQuery) =>
+    ["owner", "orders", params ?? {}] as const,
   ownerDetail: (orderId: string) => ["owner", "orders", orderId] as const,
 };
 
@@ -31,10 +33,22 @@ export function useCreateOrder() {
       orderService.createOrder(createOrderSchema.parse(payload)),
     onSuccess: (checkout) => {
       toast.success("Checkout created.");
-      queryClient.setQueryData(orderQueryKeys.customerDetail(checkout.order.id), checkout.order);
+      queryClient.setQueryData(
+        orderQueryKeys.customerDetail(checkout.order.id),
+        checkout.order,
+      );
       void queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not place order.")),
+    onError: (error) => {
+      const stockItems = getInsufficientStockItems(error);
+      if (stockItems) {
+        toast.error(
+          "Some items don't have enough stock. Your cart has been updated.",
+        );
+        return;
+      }
+      toast.error(getApiErrorMessage(error, "Could not place order."));
+    },
   });
 }
 
@@ -63,7 +77,10 @@ export function useOrderByPaymentSession(sessionId: string, enabled = true) {
     enabled: Boolean(sessionId) && enabled,
     refetchInterval: (query) => {
       const order = query.state.data;
-      return order?.status === "processing" && order.payment_status === "pending" ? 3000 : false;
+      return order?.status === "processing" &&
+        order.payment_status === "pending"
+        ? 3000
+        : false;
     },
   });
 }
@@ -74,10 +91,14 @@ export function useContinuePayment(orderId: string) {
   return useMutation({
     mutationFn: () => orderService.continuePayment(orderId),
     onSuccess: (checkout) => {
-      queryClient.setQueryData(orderQueryKeys.customerDetail(checkout.order.id), checkout.order);
+      queryClient.setQueryData(
+        orderQueryKeys.customerDetail(checkout.order.id),
+        checkout.order,
+      );
       void queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not continue payment.")),
+    onError: (error) =>
+      toast.error(getApiErrorMessage(error, "Could not continue payment.")),
   });
 }
 
@@ -91,7 +112,8 @@ export function useCancelOrder(orderId: string) {
       queryClient.setQueryData(orderQueryKeys.customerDetail(order.id), order);
       void queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not cancel order.")),
+    onError: (error) =>
+      toast.error(getApiErrorMessage(error, "Could not cancel order.")),
   });
 }
 
@@ -115,14 +137,19 @@ export function useOwnerOrderDetail(orderId: string) {
 export function useUpdateOwnerOrderStatus(orderId: string) {
   return useOwnerOrderMutation(
     (payload: UpdateOwnerOrderStatusPayload) =>
-      orderService.updateOwnerOrderStatus(orderId, updateOwnerOrderStatusSchema.parse(payload)),
+      orderService.updateOwnerOrderStatus(
+        orderId,
+        updateOwnerOrderStatusSchema.parse(payload),
+      ),
     "Order status updated.",
     "Could not update order status.",
   );
 }
 
 function useOwnerOrderMutation<TPayload>(
-  mutationFn: (payload: TPayload) => ReturnType<typeof orderService.getOwnerOrder>,
+  mutationFn: (
+    payload: TPayload,
+  ) => ReturnType<typeof orderService.getOwnerOrder>,
   successMessage: string,
   errorMessage: string,
 ) {

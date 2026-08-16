@@ -21,13 +21,41 @@ import ProductWaterParameters from "./components/ProductWaterParameters";
 export default function ProductDetailFeature({ slug }: { slug: string }) {
   const { t } = useAppRuntime();
   const reduced = useReducedMotion();
-  const { addItem } = useCart();
+  const { items, addItem } = useCart();
   const [qty, setQty] = useState(1);
-  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
+    null,
+  );
   const detailQuery = useShrimpDetailBySlug(slug);
   const listQuery = useShrimpList({ limit: 100 });
 
   const product = detailQuery.data;
+  const activeVariants =
+    product?.variants.filter((variant) => variant.is_active) ?? [];
+  const selectedVariant =
+    activeVariants.find((variant) => variant.id === selectedVariantId) ??
+    activeVariants[0] ??
+    product?.variants[0];
+
+  const qtyInCart =
+    product && selectedVariant
+      ? (items.find(
+          (item) =>
+            item.productId === product.id &&
+            item.variantId === selectedVariant.id,
+        )?.quantity ?? 0)
+      : 0;
+
+  const maxAddable = selectedVariant
+    ? Math.max(0, selectedVariant.stock_quantity - qtyInCart)
+    : 0;
+
+  useEffect(() => {
+    setQty((value) => {
+      if (maxAddable <= 0) return 1;
+      return Math.min(Math.max(value, 1), maxAddable);
+    });
+  }, [selectedVariant?.id, maxAddable]);
 
   useEffect(() => {
     if (!product) return;
@@ -49,16 +77,16 @@ export default function ProductDetailFeature({ slug }: { slug: string }) {
     return <ProductNotFound t={t} />;
   }
 
-  const activeVariants = product.variants.filter((variant) => variant.is_active);
-  const selectedVariant =
-    activeVariants.find((variant) => variant.id === selectedVariantId) ?? activeVariants[0] ?? product.variants[0];
   const imageUrl =
-    product.images.find((image) => image.is_primary)?.url ?? product.images[0]?.url ?? undefined;
+    product.images.find((image) => image.is_primary)?.url ??
+    product.images[0]?.url ??
+    undefined;
   const products = listQuery.data ?? [];
   const productIndex = products.findIndex((item) => item.slug === product.slug);
 
   function handleAddToCart() {
     if (!product || !selectedVariant) return;
+    if (qty <= 0 || qty > maxAddable) return;
 
     addItem(
       {
@@ -99,8 +127,14 @@ export default function ProductDetailFeature({ slug }: { slug: string }) {
         initial={reduced ? false : "hidden"}
         animate="visible"
       >
-        <motion.div className="space-y-6" variants={reduced ? undefined : staggerContainer}>
-          <motion.div variants={reduced ? undefined : fadeIn} transition={{ duration: 0.5 }}>
+        <motion.div
+          className="space-y-6"
+          variants={reduced ? undefined : staggerContainer}
+        >
+          <motion.div
+            variants={reduced ? undefined : fadeIn}
+            transition={{ duration: 0.5 }}
+          >
             <ProductMediaGallery product={product} />
           </motion.div>
           <motion.div variants={reduced ? undefined : fadeUp}>
@@ -108,7 +142,10 @@ export default function ProductDetailFeature({ slug }: { slug: string }) {
           </motion.div>
         </motion.div>
 
-        <motion.div className="space-y-6" variants={reduced ? undefined : staggerContainer}>
+        <motion.div
+          className="space-y-6"
+          variants={reduced ? undefined : staggerContainer}
+        >
           <motion.div variants={reduced ? undefined : fadeUp}>
             <ProductInfoHeader
               product={product}
@@ -127,9 +164,13 @@ export default function ProductDetailFeature({ slug }: { slug: string }) {
               selectedVariantId={selectedVariant?.id ?? ""}
               imageUrl={imageUrl}
               qty={qty}
+              qtyInCart={qtyInCart}
+              maxAddable={maxAddable}
               onAddToCart={handleAddToCart}
               onDecreaseQty={() => setQty((value) => Math.max(1, value - 1))}
-              onIncreaseQty={() => setQty((value) => value + 1)}
+              onIncreaseQty={() =>
+                setQty((value) => Math.min(maxAddable, value + 1))
+              }
               onSelectVariant={setSelectedVariantId}
             />
           </motion.div>

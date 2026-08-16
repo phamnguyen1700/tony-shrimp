@@ -29,6 +29,7 @@ import CartItemsList from "./components/CartItemsList";
 import CartOrderSummary from "./components/CartOrderSummary";
 import type { AccountAddressDraft } from "@/components/common/address/AddressForm";
 import type { UserAddress } from "@/types/user";
+import { getInsufficientStockItems } from "@/config/api";
 
 type AddressFieldErrors = Partial<Record<keyof AccountAddressDraft, string>>;
 
@@ -56,18 +57,25 @@ export default function CartFeature() {
   const addressOptionsQuery = useAddressOptions();
   const createAddressMutation = useCreateUserAddress();
   const createOrderMutation = useCreateOrder();
-  const [lastViewedProduct, setLastViewedProduct] = useState<{ href: string; name: string } | null>(null);
+  const [lastViewedProduct, setLastViewedProduct] = useState<{
+    href: string;
+    name: string;
+  } | null>(null);
   const [orderPanelOpen, setOrderPanelOpen] = useState(false);
-  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
+    null,
+  );
   const [addressFormOpen, setAddressFormOpen] = useState(false);
   const [addressTouched, setAddressTouched] = useState(false);
-  const [addressDraft, setAddressDraft] = useState<AccountAddressDraft>(emptyAddressDraft);
+  const [addressDraft, setAddressDraft] =
+    useState<AccountAddressDraft>(emptyAddressDraft);
   const [debouncedAddressDraft, setDebouncedAddressDraft] =
     useState<AccountAddressDraft>(emptyAddressDraft);
   const [confirmOrderOpen, setConfirmOrderOpen] = useState(false);
   const [customerNote, setCustomerNote] = useState("");
 
-  const fromProductSlug = searchParams.get("fromProductSlug") ?? searchParams.get("fromProductId");
+  const fromProductSlug =
+    searchParams.get("fromProductSlug") ?? searchParams.get("fromProductId");
   const fromProductName = searchParams.get("fromProductName");
   const shouldUseLastViewed = searchParams.get("fromLastViewed") === "1";
   const queryReturnProduct =
@@ -104,8 +112,11 @@ export default function CartFeature() {
     return { suburb, postcode };
   }, [debouncedAddressDraft]);
 
-  const addressSuggestionQueryResult = useAddressSuburbSuggestions(addressSuggestionQuery);
-  const addressLocalityQueryResult = useAddressLocalityCheck(addressLocalityQuery);
+  const addressSuggestionQueryResult = useAddressSuburbSuggestions(
+    addressSuggestionQuery,
+  );
+  const addressLocalityQueryResult =
+    useAddressLocalityCheck(addressLocalityQuery);
 
   function order() {
     if (!user) {
@@ -116,7 +127,8 @@ export default function CartFeature() {
     }
 
     setOrderPanelOpen(true);
-    if (!addressesQuery.isLoading && addresses.length === 0) openNewAddressForm();
+    if (!addressesQuery.isLoading && addresses.length === 0)
+      openNewAddressForm();
   }
 
   function openNewAddressForm() {
@@ -124,7 +136,9 @@ export default function CartFeature() {
     setAddressDraft({
       ...emptyAddressDraft,
       recipient_name: profileQuery.data?.full_name ?? "",
-      recipient_phone: profileQuery.data?.phone ? normalizeAustralianPhone(profileQuery.data.phone) : "",
+      recipient_phone: profileQuery.data?.phone
+        ? normalizeAustralianPhone(profileQuery.data.phone)
+        : "",
       is_default: addresses.length === 0,
     });
     setAddressFormOpen(true);
@@ -145,7 +159,9 @@ export default function CartFeature() {
     try {
       const legacyItem = items.find((item) => !item.variantId);
       if (legacyItem) {
-        toast.error(`${legacyItem.name} needs to be added to cart again before ordering.`);
+        toast.error(
+          `${legacyItem.name} needs to be added to cart again before ordering.`,
+        );
         setConfirmOrderOpen(false);
         return;
       }
@@ -158,7 +174,9 @@ export default function CartFeature() {
           setAddressTouched(true);
           return;
         }
-        const createdAddress = await createAddressMutation.mutateAsync(parsedPayload.data);
+        const createdAddress = await createAddressMutation.mutateAsync(
+          parsedPayload.data,
+        );
         shippingAddressId = createdAddress.id;
         setSelectedAddressId(createdAddress.id);
         setAddressFormOpen(false);
@@ -180,9 +198,29 @@ export default function CartFeature() {
       clearCart();
       setConfirmOrderOpen(false);
       window.location.assign(checkout.checkout_url);
-    } catch {
-      // Mutation hooks own the toast messages.
+    } catch (error) {
+      const stockItems = getInsufficientStockItems(error);
+      if (stockItems) {
+        // Đồng bộ lại giỏ hàng theo đúng số lượng thực tế BE trả về
+        stockItems.forEach((stockItem) => {
+          const cartItem = items.find(
+            (item) => item.variantId === stockItem.variant_id,
+          );
+          if (!cartItem) return;
+
+          if (stockItem.available <= 0) {
+            removeItem(cartItem.lineId);
+          } else {
+            updateQuantity(cartItem.lineId, stockItem.available);
+          }
+        });
+        // Đóng modal xác nhận, KHÔNG clear cart, KHÔNG redirect —
+        // để user thấy giỏ hàng đã được điều chỉnh và tự quyết định tiếp
+        setConfirmOrderOpen(false);
+        return;
+      }
     }
+    // Non-stock errors: useCreateOrder's onError already toasts the message.
   }
 
   useEffect(() => {
@@ -195,7 +233,8 @@ export default function CartFeature() {
       const value = sessionStorage.getItem("tony-last-viewed-product");
       if (!value) return;
       const parsed = JSON.parse(value) as { href?: string; name?: string };
-      if (parsed.href && parsed.name) setLastViewedProduct({ href: parsed.href, name: parsed.name });
+      if (parsed.href && parsed.name)
+        setLastViewedProduct({ href: parsed.href, name: parsed.name });
     } catch {
       setLastViewedProduct(null);
     }
@@ -210,15 +249,33 @@ export default function CartFeature() {
   }, [addressDraft]);
 
   useEffect(() => {
-    if (!orderPanelOpen || addressFormOpen || selectedAddressId || addresses.length === 0) return;
-    const defaultAddress = addresses.find((address) => address.is_default) ?? addresses[0];
+    if (
+      !orderPanelOpen ||
+      addressFormOpen ||
+      selectedAddressId ||
+      addresses.length === 0
+    )
+      return;
+    const defaultAddress =
+      addresses.find((address) => address.is_default) ?? addresses[0];
     setSelectedAddressId(defaultAddress.id);
   }, [addresses, addressFormOpen, orderPanelOpen, selectedAddressId]);
 
   useEffect(() => {
-    if (!orderPanelOpen || addressesQuery.isLoading || addressFormOpen || addresses.length > 0) return;
+    if (
+      !orderPanelOpen ||
+      addressesQuery.isLoading ||
+      addressFormOpen ||
+      addresses.length > 0
+    )
+      return;
     openNewAddressForm();
-  }, [addresses.length, addressFormOpen, addressesQuery.isLoading, orderPanelOpen]);
+  }, [
+    addresses.length,
+    addressFormOpen,
+    addressesQuery.isLoading,
+    orderPanelOpen,
+  ]);
 
   useEffect(() => {
     if (currentUserQuery.error) setOrderPanelOpen(false);
@@ -236,7 +293,9 @@ export default function CartFeature() {
               className="mb-4"
               items={[
                 { label: t.nav.shop, href: routes.shop },
-                ...(returnProduct ? [{ label: returnProduct.name, href: returnProduct.href }] : []),
+                ...(returnProduct
+                  ? [{ label: returnProduct.name, href: returnProduct.href }]
+                  : []),
                 { label: t.cart.title },
               ]}
             />
@@ -244,7 +303,11 @@ export default function CartFeature() {
         />
 
         {items.length === 0 ? (
-          <CartEmptyState t={t} reduced={reduced} returnProduct={returnProduct} />
+          <CartEmptyState
+            t={t}
+            reduced={reduced}
+            returnProduct={returnProduct}
+          />
         ) : (
           <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_460px] lg:gap-14 xl:grid-cols-[minmax(0,1fr)_500px]">
             <CartItemsList
@@ -268,14 +331,30 @@ export default function CartFeature() {
               customerNote={customerNote}
               addressDraft={addressDraft}
               addressFormOpen={addressFormOpen}
-              states={addressOptionsQuery.data?.states ?? ["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"]}
+              states={
+                addressOptionsQuery.data?.states ?? [
+                  "ACT",
+                  "NSW",
+                  "NT",
+                  "QLD",
+                  "SA",
+                  "TAS",
+                  "VIC",
+                  "WA",
+                ]
+              }
               suburbSuggestions={addressSuggestionQueryResult.data?.items ?? []}
               addressLocalityCheck={addressLocalityQueryResult.data}
               addressErrors={addressFieldErrors}
               canSaveAddress={parsedAddressDraft.success}
               isAddressLoading={addressesQuery.isLoading}
-              isAddressValidating={addressSuggestionQueryResult.isFetching || addressLocalityQueryResult.isFetching}
-              isAddressMutating={createAddressMutation.isPending || createOrderMutation.isPending}
+              isAddressValidating={
+                addressSuggestionQueryResult.isFetching ||
+                addressLocalityQueryResult.isFetching
+              }
+              isAddressMutating={
+                createAddressMutation.isPending || createOrderMutation.isPending
+              }
               confirmOrderOpen={confirmOrderOpen}
               onOrder={order}
               onSelectAddress={(addressId) => {

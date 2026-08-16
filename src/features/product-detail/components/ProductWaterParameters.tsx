@@ -66,12 +66,16 @@ export default function ProductWaterParameters({
       <p className="font-mono-label text-[13px] font-semibold uppercase tracking-[0.2em] text-foreground">
         {t.product.waterParams}
       </p>
-      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3 md:grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-x-6">
+      <div className="grid grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-3 gap-y-3 sm:gap-x-4 md:gap-x-6">
+        {" "}
         {rows.map(({ label, value }) => (
           <div key={label} className="contents">
             <p className="mono-meta uppercase">{label}</p>
             {label === t.product.careLevel ? (
-              <Badge variant="muted" className={`w-fit justify-self-start ${careLevelBadgeClass(care?.care_level)}`}>
+              <Badge
+                variant="muted"
+                className={`w-fit justify-self-start ${careLevelBadgeClass(care?.care_level)}`}
+              >
                 {value}
               </Badge>
             ) : (
