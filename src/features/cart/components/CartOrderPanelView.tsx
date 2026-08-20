@@ -31,6 +31,7 @@ interface CartOrderPanelProps {
   subtotal: number;
   shipping: number;
   total: number;
+  hasOutOfStockItems: boolean;
   onSelectAddress: (addressId: string) => void;
   onCustomerNoteChange: (note: string) => void;
   onUseNewAddress: () => void;
@@ -63,6 +64,7 @@ export default function CartOrderPanel({
   subtotal,
   shipping,
   total,
+  hasOutOfStockItems,
   onSelectAddress,
   onCustomerNoteChange,
   onUseNewAddress,
@@ -81,7 +83,8 @@ export default function CartOrderPanel({
     (isEnglish
       ? "Delivery notes, preferred time, or anything we should know..."
       : "Ghi chu giao hang, thoi gian mong muon hoac thong tin can luu y...");
-  const canPlaceOrder = addressFormOpen ? canSaveAddress : Boolean(selectedAddressId);
+  const canPlaceOrder =
+    !hasOutOfStockItems && (addressFormOpen ? canSaveAddress : Boolean(selectedAddressId));
   const showSavedAddresses = !isLoading && addresses.length > 0 && !addressFormOpen;
   const showAddressForm = !isLoading && (addresses.length === 0 || addressFormOpen);
 
@@ -259,6 +262,12 @@ export default function CartOrderPanel({
               </div>
 
               {!addressFormOpen && (
+                <>
+                  {hasOutOfStockItems && (
+                    <p className="mt-4 font-body text-sm leading-6 text-red-500">
+                      Remove or update out-of-stock items before checkout.
+                    </p>
+                  )}
                 <MotionButton
                   variant="accent"
                   size="lg"
@@ -268,6 +277,7 @@ export default function CartOrderPanel({
                 >
                   {labels.placeOrder}
                 </MotionButton>
+                </>
               )}
             </motion.section>
           </motion.div>

@@ -16,6 +16,7 @@ interface CartOrderSummaryProps {
   shipping: number;
   total: number;
   items: CartItem[];
+  hasOutOfStockItems: boolean;
   reduced: boolean | null;
   orderPanelOpen: boolean;
   addresses: UserAddress[];
@@ -49,6 +50,7 @@ export default function CartOrderSummary({
   shipping,
   total,
   items,
+  hasOutOfStockItems,
   reduced,
   orderPanelOpen,
   addresses,
@@ -122,6 +124,7 @@ export default function CartOrderSummary({
             size="lg"
             className="mt-2 w-full"
             onClick={onOrder}
+            disabled={hasOutOfStockItems}
           >
             {t.cart.order}
           </MotionButton>
@@ -148,6 +151,7 @@ export default function CartOrderSummary({
           subtotal={subtotal}
           shipping={shipping}
           total={total}
+          hasOutOfStockItems={hasOutOfStockItems}
           onSelectAddress={onSelectAddress}
           onCustomerNoteChange={onCustomerNoteChange}
           onUseNewAddress={onUseNewAddress}

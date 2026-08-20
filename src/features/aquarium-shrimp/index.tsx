@@ -26,6 +26,7 @@ import type {
   CatalogOptions,
   ShopFilters,
   ShrimpListItem,
+  ShrimpVariant,
 } from "@/types/shrimp";
 import ShopEmptyState from "./components/ShopEmptyState";
 import ShopFilterPanel from "./components/ShopFilterPanel";
@@ -48,7 +49,7 @@ export default function AquariumShrimpFeature() {
   const { t } = useAppRuntime();
   const searchParams = useSearchParams();
   const reduced = useReducedMotion();
-  const { addItem } = useCart();
+  const { items, addItem } = useCart();
   const fetchShrimpDetail = useFetchShrimpDetail();
   const catalogOptionsQuery = useCatalogOptions();
   const storedOptions = useShrimpOptionsStore((state) => state.catalogOptions);
@@ -88,8 +89,18 @@ export default function AquariumShrimpFeature() {
       const activeVariants = detail.variants.filter(
         (variant) => variant.is_active,
       );
-      const firstVariant = activeVariants[0] ?? detail.variants[0];
+      const firstVariant =
+        activeVariants.find((variant) => variant.stock_quantity > 0) ??
+        activeVariants[0] ??
+        detail.variants[0];
       if (!firstVariant) return;
+      const qtyInCart = getCartQuantityForVariant(items, firstVariant.id);
+      const maxAddable = Math.max(0, firstVariant.stock_quantity - qtyInCart);
+      if (maxAddable <= 0) {
+        toast.error("This item has reached the available stock in your cart.");
+        return;
+      }
+
       const imageUrl =
         detail.images.find((image) => image.is_primary)?.url ??
         detail.images[0]?.url ??
@@ -169,19 +180,16 @@ export default function AquariumShrimpFeature() {
           >
             <ShopProductGrid>
               {filteredProducts.map((product) => (
-                <motion.div
+                <ShopProductCardContainer
                   key={product.id}
-                  variants={reduced ? undefined : fadeUp}
-                  layout
-                >
-                  <ShopProductCard
-                    product={product}
-                    t={t}
-                    hovered={hoveredId === product.id}
-                    onHover={setHoveredId}
-                    onAddToCart={addProductToCart}
-                  />
-                </motion.div>
+                  product={product}
+                  t={t}
+                  reduced={reduced}
+                  hovered={hoveredId === product.id}
+                  items={items}
+                  onHover={setHoveredId}
+                  onAddToCart={addProductToCart}
+                />
               ))}
             </ShopProductGrid>
           </motion.div>
@@ -206,4 +214,72 @@ export default function AquariumShrimpFeature() {
       />
     </div>
   );
+}
+
+function ShopProductCardContainer({
+  product,
+  t,
+  reduced,
+  hovered,
+  items,
+  onHover,
+  onAddToCart,
+}: {
+  product: ShrimpListItem;
+  t: ReturnType<typeof useAppRuntime>["t"];
+  reduced: boolean | null;
+  hovered: boolean;
+  items: ReturnType<typeof useCart>["items"];
+  onHover: (id: string | null) => void;
+  onAddToCart: (product: ShrimpListItem) => void;
+}) {
+  const defaultVariant = getDefaultListVariant(product);
+  const qtyInCart = defaultVariant
+    ? getCartQuantityForVariant(items, defaultVariant.id)
+    : 0;
+  const maxAddable = defaultVariant
+    ? Math.max(0, defaultVariant.stock_quantity - qtyInCart)
+    : 0;
+  const addDisabled =
+    !product.is_available ||
+    (defaultVariant
+      ? !defaultVariant.is_active ||
+        defaultVariant.stock_quantity <= 0 ||
+        maxAddable <= 0
+      : false);
+  const addLabel =
+    product.is_available && defaultVariant && maxAddable <= 0
+      ? "MAX IN CART"
+      : t.product.addToCart;
+
+  return (
+    <motion.div variants={reduced ? undefined : fadeUp} layout>
+      <ShopProductCard
+        product={product}
+        t={t}
+        hovered={hovered}
+        addDisabled={addDisabled}
+        addLabel={addLabel}
+        onHover={onHover}
+        onAddToCart={onAddToCart}
+      />
+    </motion.div>
+  );
+}
+
+function getDefaultListVariant(product: ShrimpListItem): ShrimpVariant | null {
+  const activeVariants = product.variants?.filter((variant) => variant.is_active) ?? [];
+  const inStockVariant = activeVariants.find((variant) => variant.stock_quantity > 0);
+  if (inStockVariant) return inStockVariant;
+  if (product.first_variant?.is_active) return product.first_variant;
+  return activeVariants[0] ?? product.variants?.[0] ?? null;
+}
+
+function getCartQuantityForVariant(
+  items: ReturnType<typeof useCart>["items"],
+  variantId: string,
+) {
+  return items
+    .filter((item) => item.variantId === variantId)
+    .reduce((sum, item) => sum + item.quantity, 0);
 }

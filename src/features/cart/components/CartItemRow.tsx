@@ -10,6 +10,7 @@ import { fadeUp } from "@/lib/motionVariants";
 interface CartItemRowProps {
   t: Translations;
   item: CartItem;
+  isOutOfStock: boolean;
   reduced: boolean | null;
   onRemoveItem: (productId: string) => void;
   onUpdateQuantity: (productId: string, quantity: number) => void;
@@ -48,6 +49,7 @@ function CartQuantityControl({
 export default function CartItemRow({
   t,
   item,
+  isOutOfStock,
   reduced,
   onRemoveItem,
   onUpdateQuantity,
@@ -90,6 +92,11 @@ export default function CartItemRow({
         </Link>
         {item.grade && <p className="mono-meta mt-0.5 uppercase">{item.grade}</p>}
         {item.variantName && <p className="mono-meta mt-0.5 uppercase">{item.variantName}</p>}
+        {isOutOfStock && (
+          <p className="mt-1 font-mono-label text-[11px] uppercase tracking-[0.16em] text-red-500">
+            Out of stock
+          </p>
+        )}
         <p className="mt-1 font-display text-sm font-medium text-foreground md:hidden">A${lineTotal}</p>
       </div>
 

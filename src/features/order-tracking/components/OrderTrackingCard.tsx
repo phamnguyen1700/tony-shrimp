@@ -1,7 +1,8 @@
 import { motion } from "motion/react";
 import type { Translations } from "@/i18n";
-import { isPendingPaymentOrder } from "@/lib/orderPayment";
+import { getPaymentStatusLabel, isPendingPaymentOrder } from "@/lib/orderPayment";
 import { formatOrderDate } from "@/lib/orderFormat";
+import { useAppRuntime } from "@/providers/AppProviders";
 import type { OrderDetail } from "@/types/order";
 
 interface OrderTrackingCardProps {
@@ -11,8 +12,10 @@ interface OrderTrackingCardProps {
 }
 
 export default function OrderTrackingCard({ order, reduced }: OrderTrackingCardProps) {
+  const { lang } = useAppRuntime();
   const paymentDate = order.paid_at ?? order.payment_failed_at ?? null;
   const isPendingPayment = isPendingPaymentOrder(order);
+  const paymentLabel = getPaymentStatusLabel(order, lang);
 
   if (isPendingPayment) return null;
 
@@ -33,7 +36,7 @@ export default function OrderTrackingCard({ order, reduced }: OrderTrackingCardP
                 Provider
               </p>
               <p className="mt-0.5 font-body text-sm text-foreground">
-                {order.payment_provider ?? "stripe"}
+                {(order.payment_provider ?? "stripe").toUpperCase()}
               </p>
             </div>
             <div>
@@ -41,7 +44,7 @@ export default function OrderTrackingCard({ order, reduced }: OrderTrackingCardP
                 Status
               </p>
               <p className="mt-0.5 font-mono-label text-xs uppercase text-foreground">
-                {order.payment_status}
+                {paymentLabel}
               </p>
             </div>
             {paymentDate && (

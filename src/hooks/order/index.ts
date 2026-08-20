@@ -1,6 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
 import toast from "react-hot-toast";
-import { getApiErrorMessage, getInsufficientStockItems } from "@/config/api";
+import {
+  getApiErrorMessage,
+  getInsufficientStockItems,
+  isOrderActionUnavailableError,
+} from "@/config/api";
 import {
   createOrderSchema,
   orderListQuerySchema,
@@ -43,7 +48,7 @@ export function useCreateOrder() {
       const stockItems = getInsufficientStockItems(error);
       if (stockItems) {
         toast.error(
-          "Some items don't have enough stock. Your cart has been updated.",
+          "We apologize for the inconvenience because some items in your cart are out of stock.",
         );
         return;
       }
@@ -71,6 +76,8 @@ export function useMyOrderDetail(orderId: string) {
 }
 
 export function useOrderByPaymentSession(sessionId: string, enabled = true) {
+  const pollingStartedAt = useMemo(() => Date.now(), [sessionId]);
+
   return useQuery({
     queryKey: orderQueryKeys.paymentSession(sessionId),
     queryFn: () => orderService.getOrderByPaymentSession(sessionId),
@@ -78,7 +85,8 @@ export function useOrderByPaymentSession(sessionId: string, enabled = true) {
     refetchInterval: (query) => {
       const order = query.state.data;
       return order?.status === "processing" &&
-        order.payment_status === "pending"
+        order.payment_status === "pending" &&
+        Date.now() - pollingStartedAt < 30000
         ? 3000
         : false;
     },
@@ -97,8 +105,18 @@ export function useContinuePayment(orderId: string) {
       );
       void queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error) =>
-      toast.error(getApiErrorMessage(error, "Could not continue payment.")),
+    onError: (error) => {
+      void queryClient.invalidateQueries({
+        queryKey: orderQueryKeys.customerDetail(orderId),
+      });
+      void queryClient.invalidateQueries({ queryKey: ["orders"] });
+
+      toast.error(
+        isOrderActionUnavailableError(error)
+          ? "This payment is no longer available. Please review the order status."
+          : getApiErrorMessage(error, "Could not continue payment."),
+      );
+    },
   });
 }
 
@@ -112,8 +130,18 @@ export function useCancelOrder(orderId: string) {
       queryClient.setQueryData(orderQueryKeys.customerDetail(order.id), order);
       void queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error) =>
-      toast.error(getApiErrorMessage(error, "Could not cancel order.")),
+    onError: (error) => {
+      void queryClient.invalidateQueries({
+        queryKey: orderQueryKeys.customerDetail(orderId),
+      });
+      void queryClient.invalidateQueries({ queryKey: ["orders"] });
+
+      toast.error(
+        isOrderActionUnavailableError(error)
+          ? "This order is already no longer cancellable. Refreshing the latest status."
+          : getApiErrorMessage(error, "Could not cancel order."),
+      );
+    },
   });
 }
 

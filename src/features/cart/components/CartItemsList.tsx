@@ -9,6 +9,7 @@ import CartItemRow from "./CartItemRow";
 interface CartItemsListProps {
   t: Translations;
   items: CartItem[];
+  outOfStockLineIds: string[];
   reduced: boolean | null;
   returnProduct: { href: string; name: string } | null;
   onRemoveItem: (lineId: string) => void;
@@ -18,6 +19,7 @@ interface CartItemsListProps {
 export default function CartItemsList({
   t,
   items,
+  outOfStockLineIds,
   reduced,
   returnProduct,
   onRemoveItem,
@@ -43,6 +45,7 @@ export default function CartItemsList({
             key={item.lineId}
             t={t}
             item={item}
+            isOutOfStock={outOfStockLineIds.includes(item.lineId)}
             reduced={reduced}
             onRemoveItem={onRemoveItem}
             onUpdateQuantity={onUpdateQuantity}

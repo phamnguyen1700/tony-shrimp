@@ -49,7 +49,7 @@ export default function CartFeature() {
   const router = useRouter();
   const reduced = useReducedMotion();
   const searchParams = useSearchParams();
-  const { items, removeItem, updateQuantity, clearCart, subtotal } = useCart();
+  const { items, removeItem, updateQuantity, clearCart } = useCart();
   const user = useAuthStore((state) => state.user);
   const currentUserQuery = useCurrentUser();
   const profileQuery = useUserProfile();
@@ -73,6 +73,7 @@ export default function CartFeature() {
     useState<AccountAddressDraft>(emptyAddressDraft);
   const [confirmOrderOpen, setConfirmOrderOpen] = useState(false);
   const [customerNote, setCustomerNote] = useState("");
+  const [outOfStockLineIds, setOutOfStockLineIds] = useState<string[]>([]);
 
   const fromProductSlug =
     searchParams.get("fromProductSlug") ?? searchParams.get("fromProductId");
@@ -86,8 +87,17 @@ export default function CartFeature() {
         }
       : null;
   const returnProduct = queryReturnProduct ?? lastViewedProduct;
-  const shipping = items.length > 0 ? 25 : 0;
-  const total = subtotal + shipping;
+  const purchasableItems = useMemo(
+    () => items.filter((item) => !outOfStockLineIds.includes(item.lineId)),
+    [items, outOfStockLineIds],
+  );
+  const reconciledSubtotal = purchasableItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+  const hasOutOfStockItems = outOfStockLineIds.length > 0;
+  const shipping = purchasableItems.length > 0 ? 25 : 0;
+  const total = reconciledSubtotal + shipping;
   const addresses = addressesQuery.data ?? [];
   const parsedAddressDraft = createUserAddressSchema.safeParse(addressDraft);
   const addressFieldErrors =
@@ -146,6 +156,11 @@ export default function CartFeature() {
   }
 
   function requestPlaceOrder() {
+    if (hasOutOfStockItems) {
+      toast.error("Remove or update out-of-stock items before checkout.");
+      return;
+    }
+
     if (addressFormOpen) {
       setAddressTouched(true);
       if (!parsedAddressDraft.success) return;
@@ -157,6 +172,12 @@ export default function CartFeature() {
 
   async function confirmPlaceOrder() {
     try {
+      if (hasOutOfStockItems) {
+        toast.error("Remove or update out-of-stock items before checkout.");
+        setConfirmOrderOpen(false);
+        return;
+      }
+
       const legacyItem = items.find((item) => !item.variantId);
       if (legacyItem) {
         toast.error(
@@ -209,9 +230,16 @@ export default function CartFeature() {
           if (!cartItem) return;
 
           if (stockItem.available <= 0) {
-            removeItem(cartItem.lineId);
+            setOutOfStockLineIds((current) =>
+              current.includes(cartItem.lineId)
+                ? current
+                : [...current, cartItem.lineId],
+            );
           } else {
             updateQuantity(cartItem.lineId, stockItem.available);
+            setOutOfStockLineIds((current) =>
+              current.filter((lineId) => lineId !== cartItem.lineId),
+            );
           }
         });
         // Đóng modal xác nhận, KHÔNG clear cart, KHÔNG redirect —
@@ -281,6 +309,26 @@ export default function CartFeature() {
     if (currentUserQuery.error) setOrderPanelOpen(false);
   }, [currentUserQuery.error]);
 
+  useEffect(() => {
+    setOutOfStockLineIds((current) =>
+      current.filter((lineId) => items.some((item) => item.lineId === lineId)),
+    );
+  }, [items]);
+
+  function removeCartItem(lineId: string) {
+    setOutOfStockLineIds((current) =>
+      current.filter((currentLineId) => currentLineId !== lineId),
+    );
+    removeItem(lineId);
+  }
+
+  function updateCartItemQuantity(lineId: string, quantity: number) {
+    setOutOfStockLineIds((current) =>
+      current.filter((currentLineId) => currentLineId !== lineId),
+    );
+    updateQuantity(lineId, quantity);
+  }
+
   return (
     <div className="app-page">
       <div className="app-container">
@@ -315,15 +363,17 @@ export default function CartFeature() {
               items={items}
               reduced={reduced}
               returnProduct={returnProduct}
-              onRemoveItem={removeItem}
-              onUpdateQuantity={updateQuantity}
+              outOfStockLineIds={outOfStockLineIds}
+              onRemoveItem={removeCartItem}
+              onUpdateQuantity={updateCartItemQuantity}
             />
             <CartOrderSummary
               t={t}
-              subtotal={subtotal}
+              subtotal={reconciledSubtotal}
               shipping={shipping}
               total={total}
               items={items}
+              hasOutOfStockItems={hasOutOfStockItems}
               reduced={reduced}
               orderPanelOpen={orderPanelOpen}
               addresses={addresses}

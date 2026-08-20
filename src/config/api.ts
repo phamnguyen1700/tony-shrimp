@@ -64,6 +64,16 @@ export function getInsufficientStockItems(
   return null;
 }
 
+export function isOrderActionUnavailableError(error: unknown) {
+  if (!(error instanceof ApiError) || error.status !== 400) return false;
+  if (typeof error.detail !== "string") return false;
+
+  return [
+    "Order cannot continue payment.",
+    "Only pending payment orders can be cancelled.",
+  ].includes(error.detail);
+}
+
 export function clearLegacyAuthTokens() {
   if (!isBrowser()) return;
   window.localStorage.removeItem(LEGACY_ACCESS_TOKEN_KEY);

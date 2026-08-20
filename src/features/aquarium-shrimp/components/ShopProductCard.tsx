@@ -14,6 +14,8 @@ interface ShopProductCardProps {
   product: ShrimpListItem;
   t: Translations;
   hovered: boolean;
+  addDisabled: boolean;
+  addLabel: string;
   onHover: (id: string | null) => void;
   onAddToCart: (product: ShrimpListItem) => void;
 }
@@ -22,6 +24,8 @@ export default function ShopProductCard({
   product,
   t,
   hovered,
+  addDisabled,
+  addLabel,
   onHover,
   onAddToCart,
 }: ShopProductCardProps) {
@@ -63,7 +67,7 @@ export default function ShopProductCard({
               >
                 <AddToCartMotion
                   className="w-full"
-                  disabled={!product.is_available}
+                  disabled={addDisabled}
                   imageUrl={product.primary_image_url}
                   label={product.name}
                   onAddToCart={() => onAddToCart(product)}
@@ -79,7 +83,7 @@ export default function ShopProductCard({
                       className="w-full bg-accent py-2 font-mono-label text-[11px] uppercase tracking-[0.16em] text-accent-foreground transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-40"
                       style={{ borderRadius: "var(--radius)" }}
                     >
-                      {t.product.addToCart}
+                      {addLabel}
                     </button>
                   )}
                 </AddToCartMotion>

@@ -15,13 +15,20 @@ export function isPaidOrder(order: OrderWithPayment) {
 }
 
 export function getPaymentStatusLabel(order: OrderWithPayment, lang: Lang) {
-  return isPaidOrder(order)
-    ? lang === "vi"
-      ? "Đã thanh toán"
-      : "Paid"
-    : lang === "vi"
-      ? "Chưa thanh toán"
-      : "Unpaid";
+  const status = String(order.status).toLowerCase();
+  const paymentStatus = String(order.payment_status).toLowerCase();
+
+  if (paymentStatus === "paid") return lang === "vi" ? "Đã thanh toán" : "Paid";
+  if (paymentStatus === "refunded") return lang === "vi" ? "Đã hoàn tiền" : "Refunded";
+  if (paymentStatus === "pending") {
+    return lang === "vi" ? "Đang chờ thanh toán" : "Payment pending";
+  }
+
+  if (status === "cancelled" || paymentStatus === "failed") {
+    return lang === "vi" ? "Thanh toán chưa hoàn tất" : "Payment not completed";
+  }
+
+  return lang === "vi" ? "Chưa thanh toán" : "Unpaid";
 }
 
 export function getPendingPaymentCopy(lang: Lang) {

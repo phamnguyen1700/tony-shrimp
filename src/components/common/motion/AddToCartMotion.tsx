@@ -39,7 +39,7 @@ export default function AddToCartMotion({
     const target = document.querySelector<HTMLElement>("[data-cart-anchor='true']");
 
     if (reduced || !source || !target) {
-      onAddToCart();
+      await onAddToCart();
       return;
     }
 
@@ -87,9 +87,10 @@ export default function AddToCartMotion({
 
     document.body.appendChild(flyer);
     setIsFlying(true);
-    onAddToCart();
 
     try {
+      await onAddToCart();
+
       const burstDelay = FLY_DURATION * 0.78;
       const burst = document.createElement("div");
       const ring = document.createElement("div");

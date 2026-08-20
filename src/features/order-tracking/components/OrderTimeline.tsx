@@ -149,7 +149,7 @@ function PaymentInlineStatus({ order, lang }: { order: OrderDetail; lang: "en" |
 
   return (
     <Badge variant="cancelled" className="text-red-500">
-      {paymentStatus}
+      {label}
     </Badge>
   );
 }

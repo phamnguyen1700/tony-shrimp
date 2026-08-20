@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -14,7 +14,15 @@ import { useCart } from "@/store/cartStore";
 
 export default function CheckoutSuccessFeature() {
   return (
-    <Suspense fallback={<SuccessShell title="Checking payment" subtitle="We are loading your order from Stripe." />}>
+    <Suspense
+      fallback={
+        <SuccessShell
+          title="Checking payment"
+          subtitle="We are loading your order from Stripe."
+          icon="loading"
+        />
+      }
+    >
       <CheckoutSuccessContent />
     </Suspense>
   );
@@ -25,6 +33,7 @@ function CheckoutSuccessContent() {
   const sessionId = searchParams.get("session_id") ?? "";
   const orderQuery = useOrderByPaymentSession(sessionId);
   const order = orderQuery.data;
+  const verificationTimedOut = useVerificationTimeout(sessionId);
   const isPaid = order?.payment_status === "paid";
   const isPending = order?.status === "processing" && order.payment_status === "pending";
   const isFailed = order?.status === "cancelled" || order?.payment_status === "failed";
@@ -34,28 +43,33 @@ function CheckoutSuccessContent() {
   if (!sessionId) {
     return (
       <SuccessShell
-        title="Payment received"
-        subtitle="Thank you. Your order is confirmed and payment has been received."
+        title="We could not verify payment"
+        subtitle="Please open your orders page to check the latest status from Tony Shrimp."
+        icon="status"
       >
-        <SuccessActions />
+        <VerifyActions />
       </SuccessShell>
     );
   }
 
   if (orderQuery.isLoading) {
     return (
-      <SuccessShell title="Checking payment" subtitle="We are loading your order from Stripe.">
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-accent/12 text-accent">
-          <Loader2 className="h-10 w-10 animate-spin" strokeWidth={1.7} />
-        </div>
-      </SuccessShell>
+      <SuccessShell
+        title="Checking payment"
+        subtitle="We are loading your order from Stripe."
+        icon="loading"
+      />
     );
   }
 
   if (orderQuery.isError || !order) {
     return (
-      <SuccessShell title="We could not load this order" subtitle="Please open your orders page to check the latest status.">
-        <SuccessActions />
+      <SuccessShell
+        title="We could not load this order"
+        subtitle="Please open your orders page to check the latest status."
+        icon="status"
+      >
+        <VerifyActions />
       </SuccessShell>
     );
   }
@@ -64,18 +78,32 @@ function CheckoutSuccessContent() {
     return (
       <SuccessShell
         title="Confirming your payment"
-        subtitle="This usually takes a few seconds. We will update the order as soon as Stripe confirms it."
+        icon="loading"
+        subtitle={
+          verificationTimedOut
+            ? "Confirmation is taking longer than usual. You can refresh the status or open your order."
+            : "This usually takes a few seconds. We will update the order as soon as Stripe confirms it."
+        }
       >
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-accent/12 text-accent">
-          <Loader2 className="h-10 w-10 animate-spin" strokeWidth={1.7} />
-        </div>
         <div className="mt-8 border-t border-border pt-6">
-          <Link href={`/orders/${order.id}`}>
-            <MotionButton variant="accent" size="md" className="w-full sm:min-w-52">
-              <ClipboardList className="h-4 w-4" aria-hidden="true" />
-              View order
-            </MotionButton>
-          </Link>
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+            {verificationTimedOut && (
+              <MotionButton
+                variant="accent"
+                size="md"
+                onClick={() => void orderQuery.refetch()}
+                className="w-full sm:min-w-52"
+              >
+                Refresh status
+              </MotionButton>
+            )}
+            <Link href={`/orders/${order.id}`}>
+              <MotionButton variant="secondary" size="md" className="w-full sm:min-w-52">
+                <ClipboardList className="h-4 w-4" aria-hidden="true" />
+                View order
+              </MotionButton>
+            </Link>
+          </div>
         </div>
       </SuccessShell>
     );
@@ -83,11 +111,34 @@ function CheckoutSuccessContent() {
 
   if (isFailed) {
     return (
-      <SuccessShell title="Payment was not completed" subtitle="Your order is still available to review.">
+      <SuccessShell
+        title="Payment was not completed"
+        subtitle="Your order is still available to review."
+        icon="status"
+      >
         <div className="mt-8 border-t border-border pt-6">
           <Link href={`/orders/failed?session_id=${encodeURIComponent(sessionId)}`}>
             <MotionButton variant="secondary" size="md" className="w-full sm:min-w-56">
               Review payment
+            </MotionButton>
+          </Link>
+        </div>
+      </SuccessShell>
+    );
+  }
+
+  if (order.payment_status !== "paid") {
+    return (
+      <SuccessShell
+        title="Payment status unavailable"
+        subtitle="Please open your order to check the latest payment state."
+        icon="status"
+      >
+        <div className="mt-8 border-t border-border pt-6">
+          <Link href={`/orders/${order.id}`}>
+            <MotionButton variant="secondary" size="md" className="w-full sm:min-w-52">
+              <ClipboardList className="h-4 w-4" aria-hidden="true" />
+              View order
             </MotionButton>
           </Link>
         </div>
@@ -112,14 +163,30 @@ function useClearCompletedCheckout(isPaid: boolean) {
   }, [clearCart, isPaid]);
 }
 
+function useVerificationTimeout(sessionId: string) {
+  const [timedOut, setTimedOut] = useState(false);
+
+  useEffect(() => {
+    setTimedOut(false);
+    if (!sessionId) return;
+
+    const timer = window.setTimeout(() => setTimedOut(true), 32000);
+    return () => window.clearTimeout(timer);
+  }, [sessionId]);
+
+  return timedOut;
+}
+
 function SuccessShell({
   title,
   subtitle,
   children,
+  icon = "success",
 }: {
   title: string;
   subtitle: string;
   children?: ReactNode;
+  icon?: "success" | "loading" | "status";
 }) {
   return (
     <div className="app-page overflow-hidden">
@@ -127,7 +194,13 @@ function SuccessShell({
         <ResultHero title={title} subtitle={subtitle} />
         <div className="mx-auto mt-8 max-w-2xl border border-border bg-card p-8 shadow-2xl shadow-black/10" style={{ borderRadius: "var(--radius)" }}>
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-accent/12 text-accent">
-            <CheckCircle2 className="h-11 w-11" strokeWidth={1.7} />
+            {icon === "loading" ? (
+              <Loader2 className="h-10 w-10 animate-spin" strokeWidth={1.7} />
+            ) : icon === "status" ? (
+              <ClipboardList className="h-10 w-10" strokeWidth={1.7} />
+            ) : (
+              <CheckCircle2 className="h-11 w-11" strokeWidth={1.7} />
+            )}
           </div>
           {children}
         </div>
@@ -145,6 +218,35 @@ function SuccessActions() {
       <h2 className="mt-6 font-display text-2xl font-semibold text-foreground">Your order is paid</h2>
       <p className="mx-auto mt-3 max-w-md font-body text-sm leading-6 text-muted-foreground">
         Tony Shrimp will prepare your order and keep you updated when it ships.
+      </p>
+      <div className="mt-8 border-t border-border pt-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Link href="/orders">
+            <MotionButton variant="accent" size="md" className="w-full sm:min-w-52">
+              <ClipboardList className="h-4 w-4" aria-hidden="true" />
+              {t.nav.myOrders}
+            </MotionButton>
+          </Link>
+          <Link href={routes.shop}>
+            <MotionButton variant="secondary" size="md" className="w-full sm:min-w-52">
+              <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+              Continue shopping
+            </MotionButton>
+          </Link>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function VerifyActions() {
+  const { t } = useAppRuntime();
+
+  return (
+    <>
+      <h2 className="mt-6 font-display text-2xl font-semibold text-foreground">Check your order status</h2>
+      <p className="mx-auto mt-3 max-w-md font-body text-sm leading-6 text-muted-foreground">
+        Payment is only confirmed after Tony Shrimp receives the latest status.
       </p>
       <div className="mt-8 border-t border-border pt-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
