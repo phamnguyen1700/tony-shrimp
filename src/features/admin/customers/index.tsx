@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import ConfirmDialog from "@/components/common/dialogs/ConfirmDialog";
 import {
@@ -11,7 +11,9 @@ import {
   useOwnerUsers,
   useUpdateOwnerUserRole,
 } from "@/hooks/customer";
+import { normalizeUserRole } from "@/lib/authAccess";
 import { useAppRuntime } from "@/providers/AppProviders";
+import { useAuthStore } from "@/store/authStore";
 import CustomerAddressDialog from "./components/CustomerAddressDialog";
 import CustomerFilters from "./components/CustomerFilters";
 import CustomerTable from "./components/CustomerTable";
@@ -25,50 +27,72 @@ type PendingAction =
   | { type: "delete"; user: OwnerUserListItem }
   | null;
 
+const PAGE_SIZE = 10;
+
 export default function AdminCustomersFeature() {
   const { t } = useAppRuntime();
+  const currentUser = useAuthStore((state) => state.user);
+  const currentRole = normalizeUserRole(currentUser?.role);
+  const canViewAdminUsers = currentRole === "admin";
   const reduced = useReducedMotion();
   const [search, setSearch] = useState("");
   const [addressUserId, setAddressUserId] = useState<string | null>(null);
   const [roleUser, setRoleUser] = useState<OwnerUserListItem | null>(null);
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
   const [activeTab, setActiveTab] = useState<CustomerTab>("active");
-  const usersQuery = useOwnerUsers({
-    search: search.trim() || undefined,
-    limit: 100,
-    offset: 0,
+  const [pages, setPages] = useState<Record<CustomerTab, number>>({
+    active: 1,
+    inactive: 1,
+    admin: 1,
   });
+  const searchParam = search.trim() || undefined;
+  const activePage = pages.active;
+  const inactivePage = pages.inactive;
+  const adminPage = pages.admin;
+
+  useEffect(() => {
+    setPages({ active: 1, inactive: 1, admin: 1 });
+  }, [searchParam]);
+
+  const activeUsersQuery = useOwnerUsers({
+    search: searchParam,
+    role: "customer",
+    status: "active",
+    limit: PAGE_SIZE,
+    offset: (activePage - 1) * PAGE_SIZE,
+  });
+  const inactiveUsersQuery = useOwnerUsers({
+    search: searchParam,
+    role: "customer",
+    status: "inactive",
+    limit: PAGE_SIZE,
+    offset: (inactivePage - 1) * PAGE_SIZE,
+  });
+  const adminUsersQuery = useOwnerUsers(
+    {
+      search: searchParam,
+      role_in: "owner,admin",
+      limit: PAGE_SIZE,
+      offset: (adminPage - 1) * PAGE_SIZE,
+    },
+    canViewAdminUsers,
+  );
   const userDetailQuery = useOwnerUserDetail(addressUserId);
   const activateUserMutation = useActivateOwnerUser();
   const deactivateUserMutation = useDeactivateOwnerUser();
   const deleteUserMutation = useHardDeleteOwnerUser();
   const updateRoleMutation = useUpdateOwnerUserRole();
 
-  const users = usersQuery.data?.items ?? [];
-  const activeCustomerUsers = useMemo(
-    () =>
-      users.filter(
-        (user) => user.role === "customer" && user.status === "active",
-      ),
-    [users],
-  );
-  const inactiveCustomerUsers = useMemo(
-    () =>
-      users.filter(
-        (user) => user.role === "customer" && user.status === "inactive",
-      ),
-    [users],
-  );
-  const adminUsers = useMemo(
-    () =>
-      users.filter((user) => user.role === "admin" || user.role === "owner"),
-    [users],
-  );
+  const activeCustomerUsers = activeUsersQuery.data?.items ?? [];
+  const inactiveCustomerUsers = inactiveUsersQuery.data?.items ?? [];
+  const adminUsers = adminUsersQuery.data?.items ?? [];
   const tabCounts = {
-    active: activeCustomerUsers.length,
-    inactive: inactiveCustomerUsers.length,
-    admin: adminUsers.length,
+    active: activeUsersQuery.data?.total ?? 0,
+    inactive: inactiveUsersQuery.data?.total ?? 0,
+    admin: adminUsersQuery.data?.total ?? 0,
   };
+  const visibleTotal = tabCounts[activeTab];
+  const visiblePage = pages[activeTab];
   const visibleUsers =
     activeTab === "active"
       ? activeCustomerUsers
@@ -81,6 +105,12 @@ export default function AdminCustomersFeature() {
       : activeTab === "inactive"
         ? "No inactive customers found."
         : "No admin users found.";
+  const isLoading =
+    activeTab === "active"
+      ? activeUsersQuery.isLoading
+      : activeTab === "inactive"
+        ? inactiveUsersQuery.isLoading
+        : adminUsersQuery.isLoading;
   const isMutating =
     activateUserMutation.isPending ||
     deactivateUserMutation.isPending ||
@@ -143,7 +173,12 @@ export default function AdminCustomersFeature() {
           users={visibleUsers}
           emptyText={emptyText}
           mode={activeTab}
-          isLoading={usersQuery.isLoading}
+          isLoading={isLoading}
+          totalUsers={visibleTotal}
+          page={visiblePage}
+          onPageChange={(page) =>
+            setPages((current) => ({ ...current, [activeTab]: page }))
+          }
           onViewAddresses={(user) => setAddressUserId(user.id)}
           onEditRole={setRoleUser}
           onActivate={(user) => setPendingAction({ type: "activate", user })}

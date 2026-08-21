@@ -16,6 +16,9 @@ interface AdminDataTableProps<T> {
   loadingText?: string;
   isLoading?: boolean;
   pageSize?: number;
+  page?: number;
+  totalRows?: number;
+  onPageChange?: (page: number) => void;
   minWidth?: string;
   className?: string;
 }
@@ -34,27 +37,45 @@ export default function AdminDataTable<T>({
   loadingText = "Loading...",
   isLoading = false,
   pageSize = 10,
+  page: controlledPage,
+  totalRows,
+  onPageChange,
   minWidth = "920px",
   className = "",
 }: AdminDataTableProps<T>) {
   const [page, setPage] = useState(1);
-  const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+  const currentPage = controlledPage ?? page;
+  const rowCount = totalRows ?? rows.length;
+  const isServerPaginated = typeof totalRows === "number";
+  const totalPages = Math.max(1, Math.ceil(rowCount / pageSize));
 
   useEffect(() => {
-    setPage(1);
-  }, [rows.length, pageSize]);
+    if (!isServerPaginated) setPage(1);
+  }, [isServerPaginated, rows.length, pageSize]);
 
   useEffect(() => {
-    setPage((current) => Math.min(current, totalPages));
-  }, [totalPages]);
+    if (!isServerPaginated) {
+      setPage((current) => Math.min(current, totalPages));
+    }
+  }, [isServerPaginated, totalPages]);
 
   const paginatedRows = useMemo(
-    () => rows.slice((page - 1) * pageSize, page * pageSize),
-    [page, pageSize, rows],
+    () =>
+      isServerPaginated
+        ? rows
+        : rows.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [currentPage, isServerPaginated, pageSize, rows],
   );
 
-  const from = rows.length === 0 ? 0 : (page - 1) * pageSize + 1;
-  const to = Math.min(page * pageSize, rows.length);
+  const from = rowCount === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const to = Math.min(currentPage * pageSize, rowCount);
+  const changePage = (nextPage: number) => {
+    if (onPageChange) {
+      onPageChange(nextPage);
+      return;
+    }
+    setPage(nextPage);
+  };
 
   return (
     <div className={className}>
@@ -104,17 +125,17 @@ export default function AdminDataTable<T>({
         </table>
       </div>
 
-      {rows.length > 0 && (
+      {rowCount > 0 && (
         <div className="mt-4 flex items-center justify-between gap-4">
           <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
-            Showing {from}-{to} of {rows.length}
+            Showing {from}-{to} of {rowCount}
           </p>
           {totalPages > 1 && (
             <div className="flex gap-2">
               <button
                 type="button"
-                onClick={() => setPage((current) => Math.max(1, current - 1))}
-                disabled={page === 1}
+                onClick={() => changePage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
                 className="ui-radius-sm border border-border px-3 py-1.5 font-mono-label text-xs uppercase tracking-widest text-foreground transition-colors hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Prev
@@ -122,9 +143,9 @@ export default function AdminDataTable<T>({
               <button
                 type="button"
                 onClick={() =>
-                  setPage((current) => Math.min(totalPages, current + 1))
+                  changePage(Math.min(totalPages, currentPage + 1))
                 }
-                disabled={page === totalPages}
+                disabled={currentPage === totalPages}
                 className="ui-radius-sm border border-border px-3 py-1.5 font-mono-label text-xs uppercase tracking-widest text-foreground transition-colors hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next

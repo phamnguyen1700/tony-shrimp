@@ -6,6 +6,7 @@ export type ManagedUserStatus = "active" | "inactive";
 export interface OwnerUserListQuery {
   search?: string;
   role?: ManagedUserRole;
+  role_in?: string;
   status?: ManagedUserStatus;
   limit?: number;
   offset?: number;

@@ -15,12 +15,13 @@ function validateId(value: string) {
   return value;
 }
 
-export function useOwnerUsers(params?: OwnerUserListQuery) {
+export function useOwnerUsers(params?: OwnerUserListQuery, enabled = true) {
   const validParams = ownerUserListQuerySchema.parse(params ?? {});
 
   return useQuery({
     queryKey: customerQueryKeys.ownerUsers(validParams),
     queryFn: () => customerService.listOwnerUsers(validParams),
+    enabled,
   });
 }
 

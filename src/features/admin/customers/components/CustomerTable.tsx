@@ -7,6 +7,9 @@ interface CustomerTableProps {
   emptyText: string;
   mode: "active" | "inactive" | "admin";
   isLoading?: boolean;
+  totalUsers: number;
+  page: number;
+  onPageChange: (page: number) => void;
   onViewAddresses: (user: OwnerUserListItem) => void;
   onEditRole: (user: OwnerUserListItem) => void;
   onActivate: (user: OwnerUserListItem) => void;
@@ -19,6 +22,9 @@ export default function CustomerTable({
   emptyText,
   mode,
   isLoading = false,
+  totalUsers,
+  page,
+  onPageChange,
   onViewAddresses,
   onEditRole,
   onActivate,
@@ -145,6 +151,9 @@ export default function CustomerTable({
         loadingText="Loading users..."
         isLoading={isLoading}
         pageSize={10}
+        page={page}
+        totalRows={totalUsers}
+        onPageChange={onPageChange}
         minWidth="1120px"
       />
     </section>
