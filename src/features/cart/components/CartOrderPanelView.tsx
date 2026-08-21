@@ -76,13 +76,6 @@ export default function CartOrderPanel({
 }: CartOrderPanelProps) {
   const labels = t.cart.orderForm;
   const addressLabels = t.account.addressFields;
-  const isEnglish = t.cart.title === "CART";
-  const customerNoteLabel = labels.customerNote ?? (isEnglish ? "Customer note" : "Ghi chu cua khach");
-  const customerNotePlaceholder =
-    labels.customerNotePlaceholder ??
-    (isEnglish
-      ? "Delivery notes, preferred time, or anything we should know..."
-      : "Ghi chu giao hang, thoi gian mong muon hoac thong tin can luu y...");
   const canPlaceOrder =
     !hasOutOfStockItems && (addressFormOpen ? canSaveAddress : Boolean(selectedAddressId));
   const showSavedAddresses = !isLoading && addresses.length > 0 && !addressFormOpen;
@@ -249,7 +242,7 @@ export default function CartOrderPanel({
 
               <div className="mt-5">
                 <label className="font-mono-label text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                  {customerNoteLabel}
+                  {labels.customerNote}
                 </label>
                 <textarea
                   value={customerNote}
@@ -257,7 +250,7 @@ export default function CartOrderPanel({
                   rows={4}
                   onChange={(event) => onCustomerNoteChange(event.target.value)}
                   className="ui-radius-sm mt-2 w-full border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-accent"
-                  placeholder={customerNotePlaceholder}
+                  placeholder={labels.customerNotePlaceholder}
                 />
               </div>
 
@@ -265,7 +258,7 @@ export default function CartOrderPanel({
                 <>
                   {hasOutOfStockItems && (
                     <p className="mt-4 font-body text-sm leading-6 text-red-500">
-                      Remove or update out-of-stock items before checkout.
+                      {t.cart.outOfStockCheckout}
                     </p>
                   )}
                 <MotionButton
@@ -358,7 +351,7 @@ function OrderInvoiceDialog({
       <div className="space-y-5">
         <div className="border-b border-border pb-5">
           <p className="font-mono-label text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-            Items
+            {t.cart.invoiceItems}
           </p>
           <div className="mt-3 max-h-[222px] space-y-3 overflow-y-auto pr-2">
             {items.map((item) => (
@@ -391,7 +384,7 @@ function OrderInvoiceDialog({
         <div className="grid gap-5 border-b border-border pb-5 md:grid-cols-[minmax(0,1fr)_minmax(240px,320px)]">
           <div>
             <p className="font-mono-label text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-              Ship to
+            {t.cart.shipTo}
             </p>
             {address ? (
               <div className="mt-3 space-y-1 font-body text-sm leading-5 text-muted-foreground">
@@ -406,7 +399,7 @@ function OrderInvoiceDialog({
                 </p>
               </div>
             ) : (
-              <p className="mt-3 font-body text-sm text-muted-foreground">No address selected.</p>
+              <p className="mt-3 font-body text-sm text-muted-foreground">{t.cart.noAddressSelected}</p>
             )}
           </div>
 
@@ -425,7 +418,7 @@ function OrderInvoiceDialog({
         {customerNote.trim() && (
           <div className="border-b border-border pb-5">
             <p className="font-mono-label text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-              Customer note
+              {t.cart.orderForm.customerNote}
             </p>
             <p className="mt-2 font-body text-sm leading-6 text-muted-foreground">{customerNote}</p>
           </div>

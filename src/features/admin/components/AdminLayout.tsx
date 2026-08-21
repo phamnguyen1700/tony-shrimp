@@ -14,7 +14,7 @@ interface Props {
 
 const navItems = (t: Translations) => [
   {
-    href: "/admin",
+    href: routes.admin.dashboard,
     label: t.admin.dashboard,
     icon: (
       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -26,7 +26,7 @@ const navItems = (t: Translations) => [
     ),
   },
   {
-    href: "/admin/shrimp",
+    href: routes.admin.shrimp,
     label: t.admin.shrimp,
     icon: (
       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,7 +35,7 @@ const navItems = (t: Translations) => [
     ),
   },
   {
-    href: "/admin/orders",
+    href: routes.admin.orders,
     label: t.admin.orders,
     icon: (
       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,7 +44,7 @@ const navItems = (t: Translations) => [
     ),
   },
   {
-    href: "/admin/customers",
+    href: routes.admin.customers,
     label: t.admin.customers,
     icon: (
       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +53,7 @@ const navItems = (t: Translations) => [
     ),
   },
   {
-    href: "/admin/settings",
+    href: routes.admin.settings,
     label: t.admin.settings,
     icon: (
       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

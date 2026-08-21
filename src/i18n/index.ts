@@ -23,6 +23,190 @@ const translations = {
       collectionTitle: "TOP COLLECTION",
       from: "From",
     },
+    about: {
+      highlights: "Highlights",
+      sections: {
+        store: {
+          title: "About Us",
+          heading: "Tony Shrimp Australia - Quality Over Quantity",
+          overview: [
+            { text: "Tony Shrimp Australia", strong: true },
+            { text: " provides " },
+            { text: "high-quality ornamental freshwater shrimp", strong: true },
+            {
+              text: " for aquarium keepers and shrimp enthusiasts across Australia. Our philosophy is simple: ",
+            },
+            { text: "quality over quantity", strong: true },
+            {
+              text: ". Every shrimp is carefully selected for colour, pattern, health, vigour, and overall quality.",
+            },
+          ],
+          highlights: [
+            [
+              { text: "Years of hands-on experience", strong: true },
+              {
+                text: " keeping, caring for, and selecting ornamental shrimp before opening the store.",
+              },
+            ],
+            [
+              {
+                text: "Carefully selected shrimp with a focus on ",
+              },
+              { text: "health, colour, pattern, and quality", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Built with " },
+              { text: "fresh ideas, genuine enthusiasm", strong: true },
+              { text: ", and a passion for the aquarium hobby." },
+            ],
+          ],
+          note: [
+            {
+              text: "Tony Shrimp Australia - Quality over quantity. Since 2025.",
+              strong: true,
+            },
+          ],
+        },
+        shipping: {
+          title: "Shipping",
+          heading: "Safe & Reliable Live Shrimp Shipping",
+          overview: [
+            { text: "All shrimp are shipped live via " },
+            {
+              text: "Australia Post Express Post or StarTrack overnight courier",
+              strong: true,
+            },
+            {
+              text: ". Every order is prepared with livestock safety, weather conditions, and transit time in mind.",
+            },
+          ],
+          highlights: [
+            [
+              { text: "Dispatch days: " },
+              { text: "Monday to Wednesday", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Flat Australia-wide shipping rate: " },
+              { text: "A$25", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Orders are packed specifically to help protect " },
+              { text: "live shrimp during transit", strong: true },
+              { text: "." },
+            ],
+          ],
+        },
+        terms: {
+          title: "Terms of Service",
+          heading: "Ordering with Tony Shrimp",
+          overview: [
+            { text: "Orders are prepared and dispatched after " },
+            { text: "payment confirmation", strong: true },
+            {
+              text: " and when conditions are suitable for safely transporting live shrimp. Dispatch timing may be adjusted when weather or livestock safety requires it.",
+            },
+          ],
+          highlights: [
+            [
+              { text: "Orders require " },
+              { text: "confirmed payment", strong: true },
+              { text: " before dispatch." },
+            ],
+            [
+              { text: "Dispatch may change due to " },
+              { text: "weather or livestock safety", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Product " },
+              { text: "availability may change", strong: true },
+              { text: " before checkout is completed." },
+            ],
+          ],
+          note: [
+            { text: "By placing an order, customers acknowledge the applicable " },
+            { text: "shipping, live arrival, and DOA conditions", strong: true },
+            { text: "." },
+          ],
+        },
+        liveArrival: {
+          title: "Live Arrival",
+          heading: "Our Live Arrival Commitment",
+          overview: [
+            { text: "Tony Shrimp provides a " },
+            { text: "live arrival guarantee", strong: true },
+            {
+              text: " when orders are received under the applicable delivery conditions. Customers should monitor tracking and arrange to receive the parcel promptly.",
+            },
+          ],
+          highlights: [
+            [
+              { text: "Track your parcel closely", strong: true },
+              { text: " after dispatch." },
+            ],
+            [
+              { text: "Receive or collect the parcel " },
+              { text: "as soon as it is delivered", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Use an address suitable for receiving " },
+              { text: "live livestock", strong: true },
+              { text: "." },
+            ],
+          ],
+          note: [
+            { text: "If there is an issue on arrival, please follow the " },
+            { text: "DOA Policy", strong: true },
+            { text: "." },
+          ],
+        },
+        doa: {
+          title: "DOA Policy",
+          heading: "Dead on Arrival (DOA) Policy",
+          overview: [
+            { text: "We guarantee " },
+            { text: "live arrival", strong: true },
+            { text: " on all orders. Please check the " },
+            { text: "order details and delivery information", strong: true },
+            { text: " before opening the package." },
+          ],
+          highlights: [
+            [
+              { text: "If there is any loss, take " },
+              { text: "clear photos of the shipment", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Include the " },
+              { text: "delivery time and tracking/order information", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Then " },
+              { text: "contact us", href: "/about#contact" },
+              { text: " so we can review the case." },
+            ],
+          ],
+          note: [
+            { text: "We will arrange a " },
+            { text: "replacement or refund", strong: true },
+            {
+              text: ". Transit delays outside our control are not covered by the DOA policy.",
+            },
+          ],
+        },
+        contact: {
+          title: "Contact",
+          heading: "Get in Touch",
+          ownerLabel: "Owner",
+          ownerName: "Mr. CAO THANG PHAM",
+        },
+      },
+    },
     shop: {
       title: "Aquarium Shrimp",
       filters: "Filters",
@@ -37,6 +221,8 @@ const translations = {
       inStock: "In Stock",
       outOfStock: "Out of Stock",
       showFilters: "Show Filters",
+      loading: "Loading shrimp...",
+      empty: "No shrimp match your filters.",
     },
     product: {
       addToCart: "ADD TO CART",
@@ -61,10 +247,14 @@ const translations = {
       notFoundDescription:
         "The product you are looking for may have been updated or removed.",
       findSimilar: "Find similar products -> Aquarium Shrimp",
+      loading: "Loading shrimp...",
     },
     cart: {
       title: "CART",
       empty: "Your cart is empty.",
+      item: "ITEM",
+      qty: "QTY",
+      price: "PRICE",
       subtotal: "Subtotal",
       shipping: "Shipping",
       total: "Total",
@@ -72,7 +262,12 @@ const translations = {
       order: "ORDER",
       remove: "Remove",
       continueShopping: "Continue Shopping",
+      backTo: "Back to",
       calculated: "Calculated at checkout",
+      outOfStockCheckout: "Remove or update out-of-stock items before checkout.",
+      invoiceItems: "Items",
+      shipTo: "Ship to",
+      noAddressSelected: "No address selected.",
       orderForm: {
         title: "Shipping details",
         description:
@@ -147,6 +342,72 @@ const translations = {
       orders: "Orders",
       customers: "Customers",
       settings: "Settings",
+      analytics: {
+        unavailable: "Could not load",
+        ownerAnalytics: "Owner analytics",
+        refreshing: "Refreshing analytics",
+        loadFailed: "Could not load analytics.",
+        sevenDays: "7 days",
+        thirtyDays: "30 days",
+      },
+      dashboardPage: {
+        tabs: {
+          overview: "Overview",
+          traffic: "Traffic",
+          system: "System",
+        },
+        common: {
+          vsPreviousPeriod: "vs. previous period",
+          rightNow: "right now",
+          noTrafficData: "No traffic data",
+        },
+        overview: {
+          grossRevenue: "Gross revenue",
+          orders: "Orders",
+          averageOrderValue: "Average order value",
+          refunds: "Refunds",
+          successfulPayments: "Successful payments",
+          performance: "Performance",
+          revenue: "Revenue",
+          visitors: "Visitors",
+          totalRevenue: "total revenue",
+          uniqueVisitors: "unique visitors",
+          paymentSummary: "Payment summary",
+          thisPeriod: "This period",
+          topProducts: "Top products",
+          byRevenue: "By revenue",
+          product: "Product",
+          revenueColumn: "Revenue",
+        },
+        traffic: {
+          webAnalytics: "Web analytics",
+          visitors: "Visitors",
+          sessions: "Sessions",
+          engagementRate: "Engagement rate",
+          liveNow: "Live now",
+          websiteTraffic: "Website traffic",
+          users: "Users",
+          pageViews: "Page views",
+          last30Days: "Last 30 days",
+          trafficSources: "Traffic sources",
+          byChannel: "By channel",
+          ecommerceFunnel: "Ecommerce funnel",
+          customerJourney: "Customer journey",
+          completedOrders: "Completed orders",
+          conversionRate: "Conversion rate",
+          topPages: "Top pages",
+          byPageViews: "By page views",
+          views: "views",
+          noPageData: "No page data",
+        },
+        system: {
+          title: "System monitoring coming soon",
+          description:
+            "Infrastructure, API performance, server resources, and deployment activity will be connected in a later monitoring phase.",
+          label: "Monitoring phase",
+          imageAlt: "System monitoring coming soon",
+        },
+      },
       addShrimp: "+ ADD SHRIMP",
       editShrimp: "Edit",
       deleteShrimp: "Delete",
@@ -283,6 +544,199 @@ const translations = {
       collectionTitle: "BỘ SƯU TẬP NỔI BẬT",
       from: "Từ",
     },
+    about: {
+      highlights: "Điểm nổi bật",
+      sections: {
+        store: {
+          title: "Giới thiệu",
+          heading: "Tony Shrimp Australia - Chất Lượng Hơn Số Lượng",
+          overview: [
+            { text: "Tony Shrimp Australia", strong: true },
+            { text: " chuyên cung cấp các dòng " },
+            { text: "tép cảnh nước ngọt chất lượng cao", strong: true },
+            {
+              text: " dành cho người chơi thủy sinh và những người đam mê tép cảnh tại Úc. Phương châm của chúng tôi rất đơn giản: ",
+            },
+            { text: "chất lượng hơn số lượng", strong: true },
+            {
+              text: ". Mỗi cá thể đều được tuyển chọn kỹ dựa trên màu sắc, hoa văn, sức khỏe, độ sung và chất lượng tổng thể.",
+            },
+          ],
+          highlights: [
+            [
+              { text: "Nhiều năm kinh nghiệm thực tế", strong: true },
+              {
+                text: " nuôi, chăm sóc và tuyển chọn tép cảnh trước khi mở cửa hàng.",
+              },
+            ],
+            [
+              { text: "Tuyển chọn kỹ dựa trên " },
+              { text: "màu sắc, hoa văn, sức khỏe và chất lượng", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Mang tinh thần " },
+              { text: "mới mẻ, nhiệt huyết", strong: true },
+              { text: " và niềm đam mê dành cho thú chơi thủy sinh." },
+            ],
+          ],
+          note: [
+            {
+              text: "Tony Shrimp Australia - Chất lượng hơn số lượng. Since 2025.",
+              strong: true,
+            },
+          ],
+        },
+        shipping: {
+          title: "Vận chuyển",
+          heading: "Vận Chuyển Tép Sống An Toàn",
+          overview: [
+            { text: "Tất cả tép được vận chuyển sống thông qua " },
+            {
+              text: "Australia Post Express Post hoặc StarTrack overnight courier",
+              strong: true,
+            },
+            {
+              text: ". Mỗi đơn hàng được chuẩn bị dựa trên độ an toàn của tép, điều kiện thời tiết và thời gian vận chuyển.",
+            },
+          ],
+          highlights: [
+            [
+              { text: "Ngày gửi hàng: " },
+              { text: "Thứ Hai đến Thứ Tư", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Phí vận chuyển cố định toàn nước Úc: " },
+              { text: "A$25", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Đơn hàng được đóng gói nhằm đảm bảo " },
+              {
+                text: "an toàn cho tép sống trong quá trình vận chuyển",
+                strong: true,
+              },
+              { text: "." },
+            ],
+          ],
+        },
+        terms: {
+          title: "Điều khoản dịch vụ",
+          heading: "Đặt Hàng Tại Tony Shrimp",
+          overview: [
+            { text: "Đơn hàng được chuẩn bị và gửi đi sau khi " },
+            { text: "thanh toán được xác nhận", strong: true },
+            {
+              text: " và điều kiện phù hợp để vận chuyển tép sống an toàn. Thời gian gửi có thể thay đổi nếu điều kiện thời tiết hoặc độ an toàn của tép yêu cầu.",
+            },
+          ],
+          highlights: [
+            [
+              { text: "Đơn hàng cần " },
+              { text: "được xác nhận thanh toán", strong: true },
+              { text: " trước khi gửi." },
+            ],
+            [
+              { text: "Lịch gửi có thể thay đổi do " },
+              { text: "thời tiết hoặc độ an toàn của tép", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Tình trạng còn hàng có thể thay đổi", strong: true },
+              { text: " trước khi hoàn tất thanh toán." },
+            ],
+          ],
+          note: [
+            { text: "Khi đặt hàng, khách hàng đồng ý với các " },
+            {
+              text: "điều kiện vận chuyển, live arrival và chính sách DOA",
+              strong: true,
+            },
+            { text: "." },
+          ],
+        },
+        liveArrival: {
+          title: "Cam kết tép sống",
+          heading: "Cam Kết Tép Sống Khi Nhận Hàng",
+          overview: [
+            { text: "Tony Shrimp áp dụng " },
+            { text: "cam kết tép sống khi nhận hàng", strong: true },
+            {
+              text: " đối với các đơn đáp ứng điều kiện vận chuyển. Khách hàng nên theo dõi tracking và sắp xếp nhận kiện hàng sớm nhất có thể.",
+            },
+          ],
+          highlights: [
+            [
+              { text: "Theo dõi kiện hàng thường xuyên", strong: true },
+              { text: " sau khi gửi." },
+            ],
+            [
+              { text: "Nhận hoặc lấy hàng " },
+              { text: "ngay khi đơn được giao tới", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Sử dụng địa chỉ phù hợp để tiếp nhận " },
+              { text: "sinh vật sống", strong: true },
+              { text: "." },
+            ],
+          ],
+          note: [
+            { text: "Nếu có vấn đề khi nhận hàng, vui lòng thực hiện theo " },
+            { text: "Chính sách DOA", strong: true },
+            { text: "." },
+          ],
+        },
+        doa: {
+          title: "Chính sách DOA",
+          heading: "Chính Sách Tép Chết Khi Nhận Hàng (DOA)",
+          overview: [
+            { text: "Chúng tôi cam kết " },
+            { text: "tép sống khi nhận hàng", strong: true },
+            { text: " đối với tất cả đơn hàng. Vui lòng kiểm tra " },
+            {
+              text: "thông tin đơn hàng và thông tin giao hàng",
+              strong: true,
+            },
+            { text: " trước khi mở kiện hàng." },
+          ],
+          highlights: [
+            [
+              { text: "Nếu có tổn thất, vui lòng chụp " },
+              { text: "hình ảnh rõ ràng của kiện hàng", strong: true },
+              { text: "." },
+            ],
+            [
+              { text: "Cung cấp " },
+              {
+                text: "thời gian giao hàng và thông tin tracking/mã đơn hàng",
+                strong: true,
+              },
+              { text: "." },
+            ],
+            [
+              { text: "Sau đó " },
+              { text: "liên hệ với chúng tôi", href: "/about#contact" },
+              { text: " để được kiểm tra và hỗ trợ." },
+            ],
+          ],
+          note: [
+            { text: "Chúng tôi sẽ hỗ trợ " },
+            { text: "gửi thay thế hoặc hoàn tiền", strong: true },
+            {
+              text: ". Các trường hợp giao hàng chậm nằm ngoài khả năng kiểm soát của chúng tôi không thuộc phạm vi của chính sách DOA.",
+            },
+          ],
+        },
+        contact: {
+          title: "Liên hệ",
+          heading: "Liên Hệ Với Chúng Tôi",
+          ownerLabel: "Chủ cửa hàng",
+          ownerName: "Mr. CAO THANG PHAM",
+        },
+      },
+    },
     shop: {
       title: "TÉP THỦY SINH",
       filters: "Lọc",
@@ -297,6 +751,8 @@ const translations = {
       inStock: "Còn hàng",
       outOfStock: "Hết hàng",
       showFilters: "Hiển thị bộ lọc",
+      loading: "Đang tải tôm...",
+      empty: "Không có tôm nào khớp với bộ lọc.",
     },
     product: {
       addToCart: "THÊM VÀO GIỎ",
@@ -321,10 +777,14 @@ const translations = {
       notFoundDescription:
         "Sản phẩm bạn tìm kiếm có thể đã được chỉnh sửa hoặc bị gỡ.",
       findSimilar: "Tìm sản phẩm tương tự -> Tép thủy sinh",
+      loading: "Đang tải tôm...",
     },
     cart: {
       title: "GIỎ HÀNG",
       empty: "Giỏ hàng của bạn đang trống.",
+      item: "SẢN PHẨM",
+      qty: "SL",
+      price: "GIÁ",
       subtotal: "Tạm tính",
       shipping: "Vận chuyển",
       total: "Tổng cộng",
@@ -332,7 +792,13 @@ const translations = {
       order: "ĐẶT HÀNG",
       remove: "Xóa",
       continueShopping: "Tiếp tục mua sắm",
+      backTo: "Quay lại",
       calculated: "Tính khi thanh toán",
+      outOfStockCheckout:
+        "Vui lòng xóa hoặc cập nhật các sản phẩm hết hàng trước khi thanh toán.",
+      invoiceItems: "Sản phẩm",
+      shipTo: "Giao đến",
+      noAddressSelected: "Chưa chọn địa chỉ.",
       orderForm: {
         title: "Thông tin giao hàng",
         description:
@@ -344,6 +810,9 @@ const translations = {
         confirm: "XÁC NHẬN ĐẶT HÀNG",
         ready:
           "Yêu cầu đặt hàng đã sẵn sàng. Có thể nối Order API ở bước tiếp theo.",
+        customerNote: "Ghi chú của khách",
+        customerNotePlaceholder:
+          "Ghi chú giao hàng, thời gian mong muốn, hoặc thông tin cần lưu ý...",
       },
     },
     order: {
@@ -405,6 +874,72 @@ const translations = {
       orders: "Đơn hàng",
       customers: "Khách hàng",
       settings: "Cài đặt",
+      analytics: {
+        unavailable: "Chưa lấy được",
+        ownerAnalytics: "Thống kê chủ cửa hàng",
+        refreshing: "Đang tải lại thống kê",
+        loadFailed: "Chưa lấy được thống kê.",
+        sevenDays: "7 ngày",
+        thirtyDays: "30 ngày",
+      },
+      dashboardPage: {
+        tabs: {
+          overview: "Tổng quan",
+          traffic: "Lưu lượng",
+          system: "Hệ thống",
+        },
+        common: {
+          vsPreviousPeriod: "so với kỳ trước",
+          rightNow: "hiện tại",
+          noTrafficData: "Không có dữ liệu lưu lượng",
+        },
+        overview: {
+          grossRevenue: "Doanh thu gộp",
+          orders: "Đơn hàng",
+          averageOrderValue: "Giá trị đơn trung bình",
+          refunds: "Hoàn tiền",
+          successfulPayments: "Thanh toán thành công",
+          performance: "Hiệu suất",
+          revenue: "Doanh thu",
+          visitors: "Khách truy cập",
+          totalRevenue: "tổng doanh thu",
+          uniqueVisitors: "khách truy cập duy nhất",
+          paymentSummary: "Tóm tắt thanh toán",
+          thisPeriod: "Kỳ này",
+          topProducts: "Sản phẩm nổi bật",
+          byRevenue: "Theo doanh thu",
+          product: "Sản phẩm",
+          revenueColumn: "Doanh thu",
+        },
+        traffic: {
+          webAnalytics: "Thống kê truy cập",
+          visitors: "Khách truy cập",
+          sessions: "Phiên truy cập",
+          engagementRate: "Tỷ lệ tương tác",
+          liveNow: "Đang online",
+          websiteTraffic: "Lưu lượng website",
+          users: "Người dùng",
+          pageViews: "Lượt xem trang",
+          last30Days: "30 ngày gần nhất",
+          trafficSources: "Nguồn truy cập",
+          byChannel: "Theo kênh",
+          ecommerceFunnel: "Phễu thương mại",
+          customerJourney: "Hành trình khách hàng",
+          completedOrders: "Đơn hoàn tất",
+          conversionRate: "Tỷ lệ chuyển đổi",
+          topPages: "Trang hàng đầu",
+          byPageViews: "Theo lượt xem trang",
+          views: "lượt xem",
+          noPageData: "Không có dữ liệu trang",
+        },
+        system: {
+          title: "Theo dõi hệ thống sắp ra mắt",
+          description:
+            "Hạ tầng, hiệu suất API, tài nguyên máy chủ và hoạt động triển khai sẽ được kết nối ở giai đoạn monitoring sau.",
+          label: "Giai đoạn monitoring",
+          imageAlt: "Theo dõi hệ thống sắp ra mắt",
+        },
+      },
       addShrimp: "+ THÊM TÔM",
       editShrimp: "Sửa",
       deleteShrimp: "Xóa",

@@ -33,7 +33,7 @@ export default function AdminCustomersFeature() {
   const { t } = useAppRuntime();
   const currentUser = useAuthStore((state) => state.user);
   const currentRole = normalizeUserRole(currentUser?.role);
-  const canViewAdminUsers = currentRole === "admin";
+  const canViewAdminUsers = currentRole === "admin" || currentRole === "owner";
   const reduced = useReducedMotion();
   const [search, setSearch] = useState("");
   const [addressUserId, setAddressUserId] = useState<string | null>(null);

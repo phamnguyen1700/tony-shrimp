@@ -13,11 +13,11 @@ import { useAuthStore } from "@/store/authStore";
 import AdminLayout from "./AdminLayout";
 
 function getActiveRoute(pathname: string) {
-  if (pathname.startsWith("/admin/orders")) return "/admin/orders";
-  if (pathname.startsWith("/admin/shrimp")) return "/admin/shrimp";
-  if (pathname.startsWith("/admin/customers")) return "/admin/customers";
-  if (pathname.startsWith("/admin/settings")) return "/admin/settings";
-  return "/admin";
+  if (pathname.startsWith(routes.admin.orders)) return routes.admin.orders;
+  if (pathname.startsWith(routes.admin.shrimp)) return routes.admin.shrimp;
+  if (pathname.startsWith(routes.admin.customers)) return routes.admin.customers;
+  if (pathname.startsWith(routes.admin.settings)) return routes.admin.settings;
+  return routes.admin.dashboard;
 }
 
 export default function AdminRouteLayout({ children }: { children: ReactNode }) {

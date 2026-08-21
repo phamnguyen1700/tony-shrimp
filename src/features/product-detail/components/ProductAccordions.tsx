@@ -9,6 +9,12 @@ interface ProductAccordionsProps {
   product: ShrimpDetail;
 }
 
+type ProductCopySegment = {
+  text: string;
+  strong?: boolean;
+  href?: string;
+};
+
 function AccordionSection({
   title,
   children,
@@ -60,71 +66,59 @@ export default function ProductAccordions({ t, product }: ProductAccordionsProps
         )}
       </AccordionSection>
       <AccordionSection title={t.product.shipping}>
-        <div className="space-y-3">
-          <p>
-            All shrimp are shipped live via{" "}
-            <strong className="font-semibold text-foreground">
-              Australia Post Express Post
-            </strong>{" "}
-            or{" "}
-            <strong className="font-semibold text-foreground">
-              StarTrack overnight courier
-            </strong>
-            .
-          </p>
-          <p>
-            Orders are dispatched{" "}
-            <strong className="font-semibold text-foreground">
-              Monday to Wednesday
-            </strong>{" "}
-            to keep transit time short and protect live arrival.
-          </p>
-          <p>
-            A flat shipping rate of{" "}
-            <strong className="font-semibold text-foreground">A$25</strong>{" "}
-            applies Australia-wide.
-          </p>
-        </div>
+        <TranslatedPolicyContent section={t.about.sections.shipping} />
       </AccordionSection>
       <AccordionSection title={t.product.doaPolicy}>
-        <div className="space-y-3">
-          <p>
-            We guarantee{" "}
-            <strong className="font-semibold text-foreground">live arrival</strong>{" "}
-            on all orders.
-          </p>
-          <p>
-            Please check the{" "}
-            <strong className="font-semibold text-foreground">
-              order details and delivery information
-            </strong>{" "}
-            before opening the package.
-          </p>
-          <p>
-            If there is any loss, please take clear photos with the{" "}
-            <strong className="font-semibold text-foreground">
-              delivery time and tracking/order information
-            </strong>
-            , then{" "}
-            <Link
-              href="/about"
-              className="font-semibold text-foreground underline underline-offset-4 transition-colors hover:text-accent"
-            >
-              contact us
-            </Link>
-            .
-          </p>
-          <p>
-            We will arrange a{" "}
-            <strong className="font-semibold text-foreground">
-              replacement or refund
-            </strong>
-            . Transit delays outside our control are not covered by the DOA policy.
-          </p>
-        </div>
+        <TranslatedPolicyContent section={t.about.sections.doa} />
       </AccordionSection>
     </div>
   );
+}
+
+function TranslatedPolicyContent({
+  section,
+}: {
+  section: {
+    overview: ProductCopySegment[];
+    highlights?: ProductCopySegment[][];
+    note?: ProductCopySegment[];
+  };
+}) {
+  return (
+    <div className="space-y-3">
+      <p>{renderSegments(section.overview)}</p>
+      {section.highlights?.map((highlight, index) => (
+        <p key={index}>{renderSegments(highlight)}</p>
+      ))}
+      {section.note ? <p>{renderSegments(section.note)}</p> : null}
+    </div>
+  );
+}
+
+function renderSegments(segments: ProductCopySegment[]) {
+  return segments.map((segment, index) => {
+    if (segment.href) {
+      return (
+        <Link
+          key={index}
+          href={segment.href}
+          className="font-semibold text-foreground underline underline-offset-4 transition-colors hover:text-accent"
+        >
+          {segment.text}
+        </Link>
+      );
+    }
+
+    if (segment.strong) {
+      return (
+        <strong key={index} className="font-semibold text-foreground">
+          {segment.text}
+        </strong>
+      );
+    }
+
+    return <span key={index}>{segment.text}</span>;
+  });
 }
 
 function MarkdownDescription({ value }: { value?: string | null }) {

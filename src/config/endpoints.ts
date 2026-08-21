@@ -58,6 +58,12 @@ export const endpoints = {
     order: (orderId: string) => `/owner/orders/${orderId}`,
     status: (orderId: string) => `/owner/orders/${orderId}/status`,
   },
+  ownerAnalytics: {
+    dashboard: "/owner/analytics/dashboard",
+    payouts: "/owner/analytics/payouts",
+    traffic: "/owner/analytics/traffic",
+    realtime: "/owner/analytics/realtime",
+  },
   ownerNotifications: {
     notifications: "/owner/notifications",
     read: (notificationId: string) => `/owner/notifications/${notificationId}/read`,

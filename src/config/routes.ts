@@ -10,5 +10,7 @@ export const routes = {
     shrimp: "/admin/shrimp",
     orders: "/admin/orders",
     order: (id: string) => `/admin/orders/${id}`,
+    customers: "/admin/customers",
+    settings: "/admin/settings",
   },
 } as const;

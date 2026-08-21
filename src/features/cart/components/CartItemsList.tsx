@@ -33,9 +33,9 @@ export default function CartItemsList({
       animate="visible"
     >
       <div className="mb-4 hidden grid-cols-[1fr_auto_auto_auto] items-center gap-6 border-b border-border pb-3 md:grid">
-        <p className="mono-section-label">ITEM</p>
-        <p className="mono-section-label w-24 text-center">QTY</p>
-        <p className="mono-section-label w-16 text-right">PRICE</p>
+        <p className="mono-section-label">{t.cart.item}</p>
+        <p className="mono-section-label w-24 text-center">{t.cart.qty}</p>
+        <p className="mono-section-label w-16 text-right">{t.cart.price}</p>
         <p className="mono-section-label w-4" />
       </div>
 
@@ -58,7 +58,7 @@ export default function CartItemsList({
           href={returnProduct?.href ?? routes.shop}
           className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground"
         >
-          &larr; {returnProduct ? `Back to ${returnProduct.name}` : t.cart.continueShopping}
+          &larr; {returnProduct ? `${t.cart.backTo} ${returnProduct.name}` : t.cart.continueShopping}
         </Link>
       </div>
     </motion.div>
