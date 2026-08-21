@@ -2,6 +2,7 @@ import type { Lang, Translations } from "@/i18n";
 import type { ReactNode } from "react";
 import AboutAccordion from "./AboutAccordion";
 import AboutSocialLink from "./AboutSocialLink";
+import { FaFacebookF, FaInstagram } from "react-icons/fa6";
 
 interface AboutAccordionListProps {
   t: Translations;
@@ -17,6 +18,7 @@ interface AboutContentProps {
 }
 
 const facebookUrl = "https://facebook.com/thang.pham.790508";
+const instagramUrl = "https://www.instagram.com/caothang.0105";
 
 const copy = {
   en: {
@@ -488,10 +490,20 @@ export default function AboutAccordionList({
           overview={
             <div className="space-y-3">
               <p>
-                {text.ownerLabel}: <Strong>Mr. Thang Pham</Strong>
+                {text.ownerLabel}: <Strong>Mr. CAO THANG PHAM</Strong>
               </p>
-
-              <AboutSocialLink href={facebookUrl} />
+              <div className="flex flex-wrap gap-3">
+                <AboutSocialLink
+                  href={facebookUrl}
+                  icon={<FaFacebookF />}
+                  label="Facebook"
+                />
+                <AboutSocialLink
+                  href={instagramUrl}
+                  icon={<FaInstagram />}
+                  label="Instagram"
+                />
+              </div>
             </div>
           }
         />
