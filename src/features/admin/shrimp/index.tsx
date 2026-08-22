@@ -266,7 +266,7 @@ export default function AdminShrimpFeature() {
       slug: toNullableString(form.slug),
       line: form.line,
       colors: splitTraits(form.colors),
-      grade: toNullableString(form.grade),
+      grade: form.grade?.trim() ?? "",
       rarity: toNullableString(form.rarity),
       description: toNullableString(description),
       catalog_status: form.catalog_status,

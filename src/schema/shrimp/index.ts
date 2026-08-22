@@ -128,7 +128,10 @@ export const updateShrimpSchema = createShrimpSchema
     catalog_status: true,
     traits: true,
   })
-  .partial();
+  .partial()
+  .extend({
+    grade: z.string().trim().max(64).optional().nullable(),
+  });
 
 export const adminShrimpFormSchema = z.object({
   name: z.string().trim().min(1, "Product name is required"),
