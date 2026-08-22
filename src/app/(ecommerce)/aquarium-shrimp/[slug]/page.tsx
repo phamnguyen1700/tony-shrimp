@@ -1,22 +1,26 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import JsonLd from "@/components/common/seo/JsonLd";
+import AquariumShrimpFeature from "@/features/aquarium-shrimp";
 import ProductDetailFeature from "@/features/product-detail";
-import { shrimpService } from "@/services/shrimp";
-import { markdownToDescriptionDraft } from "@/lib/shrimpDescription";
 import { routes } from "@/config/routes";
-import { createPageMetadata } from "@/lib/seo";
-import { createBreadcrumbItems, createBreadcrumbJsonLd, createProductJsonLd } from "@/lib/structuredData";
+import {
+  createShrimpCollectionMetadata,
+  getCatalogInitialProducts,
+  getShrimpCollectionConfig,
+  getShrimpCollectionInitialProducts,
+} from "@/lib/ssr/collection";
+import {
+  createShrimpDetailJsonLd,
+  createShrimpDetailMetadata,
+  getShrimpDetailBySlugForSsr,
+} from "@/lib/ssr/shrimpDetail/seoHelper";
+import {
+  createBreadcrumbItems,
+  createBreadcrumbJsonLd,
+} from "@/lib/structuredData";
 
-function createMetaDescription(text: string, maxLength = 155) {
-  const clean = text.trim();
-  if (clean.length <= maxLength) return clean;
-
-  const truncated = clean.slice(0, maxLength);
-  const lastSpace = truncated.lastIndexOf(" ");
-  const cut = lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated;
-
-  return `${cut}...`;
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -24,35 +28,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const collection = getShrimpCollectionConfig(slug);
+  if (collection) return createShrimpCollectionMetadata(collection);
 
-  try {
-    const shrimp = await shrimpService.getShrimpDetailBySlug(slug);
-    const { title, overview } = markdownToDescriptionDraft(shrimp.description);
-
-    const productTitle = title || shrimp.name;
-    const metaDescription = createMetaDescription(
-      overview ||
-        `Buy ${shrimp.name} shrimp online in Australia at Tony Shrimp.`,
-    );
-
-    return createPageMetadata({
-      title: productTitle,
-      description: metaDescription,
-      path: routes.product(shrimp.slug),
-      openGraph: {
-        description: metaDescription,
-        images: shrimp.images[0]?.url
-          ? [{ url: shrimp.images[0].url }]
-          : undefined,
-      },
-    });
-  } catch {
-    return createPageMetadata({
-      title: "Aquarium Shrimp",
-      description:
-        "Premium ornamental freshwater shrimp for aquascapers, shipped Australia-wide.",
-    });
-  }
+  return createShrimpDetailMetadata(slug);
 }
 
 export default async function Page({
@@ -61,26 +40,51 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug: slug } = await params;
-  const shrimp = await shrimpService
-    .getShrimpDetailBySlug(slug)
-    .catch(() => null);
+  const collection = getShrimpCollectionConfig(slug);
+
+  if (collection) {
+    const initialProducts = await getShrimpCollectionInitialProducts(collection);
+
+    return (
+      <>
+        <JsonLd
+          data={createBreadcrumbJsonLd(
+            createBreadcrumbItems([
+              { name: "Aquarium Shrimp", path: routes.shop },
+              { name: collection.heading, path: `${routes.shop}/${collection.slug}` },
+            ]),
+          )}
+        />
+        <Suspense fallback={<div className="app-page" />}>
+          <AquariumShrimpFeature
+            initialProducts={initialProducts}
+            initialQuery={collection.query}
+            initialFilters={collection.filters}
+            collectionTitle={collection.heading}
+            activeCollectionSlug={collection.slug}
+          />
+        </Suspense>
+      </>
+    );
+  }
+
+  const [shrimp, products] = await Promise.all([
+    getShrimpDetailBySlugForSsr(slug).catch(() => null),
+    getCatalogInitialProducts().catch(() => []),
+  ]);
 
   return (
     <>
       {shrimp && (
         <JsonLd
-          data={[
-            createBreadcrumbJsonLd(
-              createBreadcrumbItems([
-                { name: "Aquarium Shrimp", path: routes.shop },
-                { name: shrimp.name, path: routes.product(shrimp.slug) },
-              ]),
-            ),
-            createProductJsonLd(shrimp),
-          ]}
+          data={createShrimpDetailJsonLd(shrimp)}
         />
       )}
-      <ProductDetailFeature slug={slug} />
+      <ProductDetailFeature
+        slug={slug}
+        initialProduct={shrimp ?? undefined}
+        initialProducts={products}
+      />
     </>
   );
 }

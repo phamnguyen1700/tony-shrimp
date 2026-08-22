@@ -30,69 +30,52 @@ export default function LandingSlide({ specimen, index, isActive, reduced }: Lan
         }
         transition={springGentle}
       >
-        {specimen.primary_image_url && isVideo ? (
-          <motion.video
-            src={specimen.primary_image_url}
-            className="h-[52vh] w-auto max-w-[80vw] object-contain md:h-[65vh] md:max-w-[70vw]"
-            style={{ filter: "drop-shadow(0 0 60px rgba(0,0,0,0.8))" }}
-            autoPlay={isActive}
-            muted
-            loop
-            playsInline
-            preload={isActive ? "auto" : "metadata"}
-            animate={
-              reduced
-                ? {}
-                : isActive
-                  ? {
-                      y: [0, -10, -3, -12, 0],
-                      rotate: [0, 0.6, -0.4, 0.9, 0],
-                    }
-                  : {}
-            }
-            transition={
-              isActive
+        <motion.div
+          className="flex aspect-[16/9] w-[82vw] max-w-[860px] items-center justify-center overflow-hidden bg-black md:w-[68vw] md:max-w-[980px]"
+          style={{ filter: "drop-shadow(0 0 60px rgba(0,0,0,0.8))" }}
+          animate={
+            reduced
+              ? {}
+              : isActive
                 ? {
-                    duration: 9,
-                    ease: "easeInOut",
-                    repeat: Infinity,
-                    repeatType: "loop",
+                    y: [0, -10, -3, -12, 0],
+                    rotate: [0, 0.6, -0.4, 0.9, 0],
                   }
                 : {}
-            }
-          />
-        ) : (
-          <motion.img
-            src={specimen.primary_image_url || "/coming-soon/comming-soon.png"}
-            alt={specimen.name}
-            className="w-auto h-[52vh] md:h-[65vh] max-w-[80vw] md:max-w-[70vw] object-contain"
-            style={{ filter: "drop-shadow(0 0 60px rgba(0,0,0,0.8))" }}
-            onError={(event) => {
-              event.currentTarget.src = "/coming-soon/comming-soon.png";
-            }}
-            animate={
-              reduced
-                ? {}
-                : isActive
-                  ? {
-                      y: [0, -10, -3, -12, 0],
-                      rotate: [0, 0.6, -0.4, 0.9, 0],
-                    }
-                  : {}
-            }
-            transition={
-              isActive
-                ? {
-                    duration: 9,
-                    ease: "easeInOut",
-                    repeat: Infinity,
-                    repeatType: "loop",
-                  }
-                : {}
-            }
-            draggable={false}
-          />
-        )}
+          }
+          transition={
+            isActive
+              ? {
+                  duration: 9,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                  repeatType: "loop",
+                }
+              : {}
+          }
+        >
+          {specimen.primary_image_url && isVideo ? (
+            <video
+              src={specimen.primary_image_url}
+              className="h-full w-full object-cover"
+              autoPlay={isActive}
+              muted
+              loop
+              playsInline
+              preload={isActive ? "auto" : "metadata"}
+            />
+          ) : (
+            <img
+              src={specimen.primary_image_url || "/coming-soon/comming-soon.png"}
+              alt={specimen.name}
+              className="h-full w-full object-cover"
+              onError={(event) => {
+                event.currentTarget.src = "/coming-soon/comming-soon.png";
+              }}
+              draggable={false}
+            />
+          )}
+        </motion.div>
       </motion.div>
     </div>
   );

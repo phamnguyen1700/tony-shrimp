@@ -21,6 +21,7 @@ const translations = {
       swipeHint: "SWIPE TO EXPLORE",
       viewShrimp: "VIEW SHRIMP ->",
       collectionTitle: "TOP COLLECTION",
+      rareCollectionTitle: "RARE SHRIMP COLLECTION",
       from: "From",
     },
     about: {
@@ -28,42 +29,59 @@ const translations = {
       sections: {
         store: {
           title: "About Us",
-          heading: "Tony Shrimp Australia - Quality Over Quantity",
+          heading: "Tony Shrimp Australia - Serious Shrimp, Sensible Prices",
           overview: [
             { text: "Tony Shrimp Australia", strong: true },
-            { text: " provides " },
-            { text: "high-quality ornamental freshwater shrimp", strong: true },
             {
-              text: " for aquarium keepers and shrimp enthusiasts across Australia. Our philosophy is simple: ",
+              text: " is a Victoria-based ornamental freshwater shrimp store specialising in ",
             },
-            { text: "quality over quantity", strong: true },
+            { text: "Caridina and Neocaridina", strong: true },
             {
-              text: ". Every shrimp is carefully selected for colour, pattern, health, vigour, and overall quality.",
+              text: ". Backed by a strong Australian breeding operation, we focus on supplying ",
+            },
+            { text: "quality shrimp at sensible prices", strong: true },
+            {
+              text: ", with reliable availability across our core range. Every now and then, a few rare and harder-to-find shrimp also turn up in limited numbers — and they usually do not hang around for long.",
             },
           ],
           highlights: [
             [
-              { text: "Years of hands-on experience", strong: true },
+              { text: "Breeder-backed supply", strong: true },
               {
-                text: " keeping, caring for, and selecting ornamental shrimp before opening the store.",
+                text: " helps us maintain consistent quality, healthier stock, and more reliable availability.",
               },
             ],
             [
               {
-                text: "Carefully selected shrimp with a focus on ",
+                text: "Quality ornamental shrimp at ",
               },
-              { text: "health, colour, pattern, and quality", strong: true },
-              { text: "." },
+              { text: "fair and accessible prices", strong: true },
+              {
+                text: " — because good shrimp should not need a ridiculous price tag.",
+              },
             ],
             [
-              { text: "Built with " },
-              { text: "fresh ideas, genuine enthusiasm", strong: true },
-              { text: ", and a passion for the aquarium hobby." },
+              {
+                text: "Core Caridina and Neocaridina varieties are kept ",
+              },
+              { text: "reliably available", strong: true },
+              {
+                text: ", making it easier to start, build, or expand a colony over time.",
+              },
+            ],
+            [
+              {
+                text: "Rare and unusual varieties are released ",
+              },
+              { text: "periodically in limited numbers", strong: true },
+              {
+                text: " when genuine breeder stock becomes available.",
+              },
             ],
           ],
           note: [
             {
-              text: "Tony Shrimp Australia - Quality over quantity. Since 2025.",
+              text: "Tony Shrimp Australia - Serious shrimp. Sensible prices. No fancy nonsense.",
               strong: true,
             },
           ],
@@ -127,8 +145,13 @@ const translations = {
             ],
           ],
           note: [
-            { text: "By placing an order, customers acknowledge the applicable " },
-            { text: "shipping, live arrival, and DOA conditions", strong: true },
+            {
+              text: "By placing an order, customers acknowledge the applicable ",
+            },
+            {
+              text: "shipping, live arrival, and DOA conditions",
+              strong: true,
+            },
             { text: "." },
           ],
         },
@@ -182,7 +205,10 @@ const translations = {
             ],
             [
               { text: "Include the " },
-              { text: "delivery time and tracking/order information", strong: true },
+              {
+                text: "delivery time and tracking/order information",
+                strong: true,
+              },
               { text: "." },
             ],
             [
@@ -204,13 +230,16 @@ const translations = {
           heading: "Get in Touch",
           ownerLabel: "Owner",
           ownerName: "Mr. CAO THANG PHAM",
+          addressLabel: "Business address",
+          address: "Unit 3 12 CASTRA AV, CLYDE, 3978, VIC, AUSTRALIA",
         },
       },
     },
     shop: {
-      title: "Aquarium Shrimp",
+      title: "Aquarium Shrimp Australia",
       filters: "Filters",
       clearAll: "Clear all",
+      species: "SPECIES",
       type: "LINE",
       colour: "COLOUR",
       grade: "GRADE",
@@ -223,6 +252,41 @@ const translations = {
       showFilters: "Show Filters",
       loading: "Loading shrimp...",
       empty: "No shrimp match your filters.",
+      collections: {
+        "rare-shrimp": {
+          eyebrow: "Collector Shrimp",
+          title: "Rare aquarium shrimp in Australia",
+          body:
+            "Explore rare and extremely rare aquarium shrimp from Tony Shrimp in Victoria, Australia. Selected rare stock is released in limited numbers, so collectors should check back often or contact Tony Shrimp directly through Facebook to ask about upcoming availability and pre-orders.",
+          highlights: [
+            "Rare and extremely rare shrimp grouped in one collector collection",
+            "Selected stock from a leading Australian shrimp breeding operation",
+            "Limited quantities, with updates shared regularly through Tony Shrimp",
+          ],
+        },
+        "caridina-shrimp": {
+          eyebrow: "Soft Water Shrimp",
+          title: "Caridina shrimp for Australian aquariums",
+          body:
+            "Browse high-quality Caridina shrimp from Tony Shrimp in Victoria, Australia. Backed by a leading Australian shrimp breeding operation, Tony Shrimp focuses on keeping strong Caridina lines regularly available at fair, accessible prices for hobbyists and breeders.",
+          highlights: [
+            "Regularly available Caridina shrimp for planted and dedicated tanks",
+            "High-quality stock at sensible, accessible prices",
+            "Selected lines suited to stable, mature soft-water aquariums",
+          ],
+        },
+        "neocaridina-shrimp": {
+          eyebrow: "Colour Shrimp",
+          title: "Neocaridina shrimp for planted aquariums",
+          body:
+            "Browse high-quality Neocaridina shrimp from Tony Shrimp in Victoria, Australia. Core Neo lines are kept reliably available with healthy breeder-backed stock and fair pricing, making them easier to access for planted tanks, colony building, and everyday shrimp keepers.",
+          highlights: [
+            "Reliable Neocaridina availability for freshwater aquariums",
+            "Healthy, colourful stock at approachable prices",
+            "A practical choice for planted tanks and colony building",
+          ],
+        },
+      },
     },
     product: {
       addToCart: "ADD TO CART",
@@ -264,7 +328,8 @@ const translations = {
       continueShopping: "Continue Shopping",
       backTo: "Back to",
       calculated: "Calculated at checkout",
-      outOfStockCheckout: "Remove or update out-of-stock items before checkout.",
+      outOfStockCheckout:
+        "Remove or update out-of-stock items before checkout.",
       invoiceItems: "Items",
       shipTo: "Ship to",
       noAddressSelected: "No address selected.",
@@ -542,6 +607,7 @@ const translations = {
       swipeHint: "VUỐT ĐỂ KHÁM PHÁ",
       viewShrimp: "XEM TÔM ->",
       collectionTitle: "BỘ SƯU TẬP NỔI BẬT",
+      rareCollectionTitle: "BỘ SƯU TẬP TÉP HIẾM",
       from: "Từ",
     },
     about: {
@@ -571,7 +637,10 @@ const translations = {
             ],
             [
               { text: "Tuyển chọn kỹ dựa trên " },
-              { text: "màu sắc, hoa văn, sức khỏe và chất lượng", strong: true },
+              {
+                text: "màu sắc, hoa văn, sức khỏe và chất lượng",
+                strong: true,
+              },
               { text: "." },
             ],
             [
@@ -734,6 +803,8 @@ const translations = {
           heading: "Liên Hệ Với Chúng Tôi",
           ownerLabel: "Chủ cửa hàng",
           ownerName: "Mr. CAO THANG PHAM",
+          addressLabel: "Địa chỉ kinh doanh",
+          address: "U 3 12 CASTRA AV, CLYDE, 3978, VIC, AUSTRALIA",
         },
       },
     },
@@ -741,6 +812,7 @@ const translations = {
       title: "TÉP THỦY SINH",
       filters: "Lọc",
       clearAll: "Xóa tất cả",
+      species: "LOÀI",
       type: "DÒNG",
       colour: "MÀU SẮC",
       grade: "GRADE",
@@ -753,6 +825,41 @@ const translations = {
       showFilters: "Hiển thị bộ lọc",
       loading: "Đang tải tôm...",
       empty: "Không có tôm nào khớp với bộ lọc.",
+      collections: {
+        "rare-shrimp": {
+          eyebrow: "Tép tuyển chọn",
+          title: "Tép hiếm cho người chơi tại Úc",
+          body:
+            "Khám phá các dòng tép hiếm và cực hiếm từ Tony Shrimp tại Victoria, Australia. Hàng tuyển chọn thường được thả với số lượng giới hạn, vì vậy người chơi nên theo dõi thường xuyên hoặc liên hệ trực tiếp qua fanpage Facebook để hỏi lịch có hàng và đặt trước.",
+          highlights: [
+            "Gộp cả tép hiếm và cực hiếm trong một bộ sưu tập",
+            "Nguồn tép tuyển chọn từ một trại tép hàng đầu tại Úc",
+            "Số lượng giới hạn, được Tony Shrimp cập nhật thường xuyên",
+          ],
+        },
+        "caridina-shrimp": {
+          eyebrow: "Tép nước mềm",
+          title: "Caridina chất lượng cao cho hồ thủy sinh tại Úc",
+          body:
+            "Xem các dòng Caridina chất lượng cao từ Tony Shrimp tại Victoria, Australia. Với nền tảng từ một trại tép hàng đầu tại Úc, Tony Shrimp tập trung giữ các dòng Caridina mạnh, ổn định, có hàng thường xuyên với mức giá phải chăng và dễ tiếp cận.",
+          highlights: [
+            "Caridina có sẵn thường xuyên cho hồ thủy sinh và hồ tép chuyên biệt",
+            "Tép chất lượng cao với giá hợp lý, dễ tiếp cận",
+            "Các dòng được chọn lọc cho môi trường nước mềm ổn định",
+          ],
+        },
+        "neocaridina-shrimp": {
+          eyebrow: "Tép màu",
+          title: "Neocaridina cho hồ thủy sinh và hồ tép cộng đồng",
+          body:
+            "Xem các dòng Neocaridina chất lượng cao từ Tony Shrimp tại Victoria, Australia. Các dòng Neo chủ lực luôn được duy trì nguồn hàng ổn định, khỏe, màu đẹp và có giá phải chăng, phù hợp cho hồ thủy sinh, xây đàn và người chơi phổ thông.",
+          highlights: [
+            "Nguồn Neocaridina ổn định cho hồ nước ngọt",
+            "Tép khỏe, màu đẹp với mức giá dễ tiếp cận",
+            "Lựa chọn thực tế cho hồ thủy sinh và xây đàn lâu dài",
+          ],
+        },
+      },
     },
     product: {
       addToCart: "THÊM VÀO GIỎ",

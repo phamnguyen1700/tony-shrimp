@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import type { Translations } from "@/i18n";
 import { bottomSheetSlide } from "@/lib/motionVariants";
 import MotionButton from "@/components/common/motion/MotionButton";
+import type { ShrimpCollectionLink } from "@/lib/shrimpCollectionConfig";
 import type { CatalogOptions, ShopFilters } from "@/types/shrimp";
 import ShopFilterPanel from "./ShopFilterPanel";
 
@@ -9,7 +10,9 @@ interface ShopMobileFilterSheetProps {
   open: boolean;
   t: Translations;
   filters: ShopFilters;
-  options: Pick<CatalogOptions, "lines" | "colors" | "grades" | "rarities" | "traits">;
+  options: Pick<CatalogOptions, "species" | "lines" | "colors" | "grades" | "rarities" | "traits">;
+  collectionLinks?: ShrimpCollectionLink[];
+  activeCollectionSlug?: string;
   filterCount: number;
   resultCount: number;
   onToggle: (key: keyof ShopFilters, value: string) => void;
@@ -22,6 +25,8 @@ export default function ShopMobileFilterSheet({
   t,
   filters,
   options,
+  collectionLinks,
+  activeCollectionSlug,
   filterCount,
   resultCount,
   onToggle,
@@ -66,7 +71,14 @@ export default function ShopMobileFilterSheet({
                   </svg>
                 </button>
               </div>
-              <ShopFilterPanel filters={filters} t={t} options={options} onToggle={onToggle} />
+              <ShopFilterPanel
+                filters={filters}
+                t={t}
+                options={options}
+                collectionLinks={collectionLinks}
+                activeCollectionSlug={activeCollectionSlug}
+                onToggle={onToggle}
+              />
               <div className="mt-6 flex gap-3">
                 {filterCount > 0 && (
                   <button

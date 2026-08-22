@@ -2,9 +2,13 @@ import type { MetadataRoute } from "next";
 
 import { routes } from "@/config/routes";
 import { absoluteUrl } from "@/lib/seo";
+import { shrimpCollectionConfigs } from "@/lib/ssr/collection";
 import { shrimpService } from "@/services/shrimp";
+import type { ShrimpListItem } from "@/types/shrimp";
 
 export const dynamic = "force-dynamic";
+
+const sitemapPageSize = 100;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -24,19 +28,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     },
   ];
+  const collectionRoutes: MetadataRoute.Sitemap = shrimpCollectionConfigs.map((collection) => ({
+    url: absoluteUrl(`${routes.shop}/${collection.slug}`),
+    changeFrequency: "weekly",
+    priority: 0.75,
+  }));
 
   try {
-    const shrimp = await shrimpService.listShrimp({
-      limit: 100,
-    });
+    const activeShrimp: ShrimpListItem[] = [];
+    let offset = 0;
 
-    console.log("[SITEMAP] fetched:", shrimp.length);
+    while (true) {
+      const page = await shrimpService.listShrimp({
+        limit: sitemapPageSize,
+        offset,
+      });
+      activeShrimp.push(
+        ...page.filter((item) => item.catalog_status === "active"),
+      );
 
-    const activeShrimp = shrimp.filter(
-      (item) => item.catalog_status === "active",
-    );
-
-    console.log("[SITEMAP] active:", activeShrimp.length);
+      if (page.length < sitemapPageSize) break;
+      offset += sitemapPageSize;
+    }
 
     const productRoutes: MetadataRoute.Sitemap = activeShrimp.map((item) => ({
       url: absoluteUrl(routes.product(item.slug)),
@@ -49,10 +62,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-    return [...staticRoutes, ...productRoutes];
-  } catch (error) {
-    console.error("[SITEMAP] Failed to load shrimp catalog:", error);
-
-    return staticRoutes;
+    return [...staticRoutes, ...collectionRoutes, ...productRoutes];
+  } catch {
+    return [...staticRoutes, ...collectionRoutes];
   }
 }

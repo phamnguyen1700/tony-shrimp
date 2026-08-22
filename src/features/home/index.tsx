@@ -12,28 +12,53 @@ import LandingLoadingState from "./components/LandingLoadingState";
 import LandingNavigation from "./components/LandingNavigation";
 import LandingSlideTrack from "./components/LandingSlideTrack";
 import LandingSpecimenOverlay from "./components/LandingSpecimenOverlay";
+import type { ShrimpListItem } from "@/types/shrimp";
 
 const WHEEL_SWIPE_THRESHOLD = 42;
 const WHEEL_SWIPE_COOLDOWN_MS = 720;
 
-export default function HomeFeature() {
+interface HomeFeatureProps {
+  initialShrimp?: ShrimpListItem[];
+  initialIsRareCollection?: boolean;
+}
+
+export default function HomeFeature({
+  initialShrimp,
+  initialIsRareCollection = false,
+}: HomeFeatureProps) {
   const { t } = useAppRuntime();
   const reduced = useReducedMotion();
-  const extremelyRareQuery = useShrimpList({ limit: 10, in_stock: true, rarity: "extremely rare" });
-  const rareQuery = useShrimpList({ limit: 10, in_stock: true, rarity: "rare" });
-  const fallbackQuery = useShrimpList({ limit: 10, in_stock: true });
+  const hasInitialShrimp = Boolean(initialShrimp?.length);
+  const extremelyRareQuery = useShrimpList(
+    { limit: 10, in_stock: true, rarity: "extremely rare" },
+    { enabled: !hasInitialShrimp },
+  );
+  const rareQuery = useShrimpList(
+    { limit: 10, in_stock: true, rarity: "rare" },
+    { enabled: !hasInitialShrimp },
+  );
+  const fallbackQuery = useShrimpList(
+    { limit: 10, in_stock: true },
+    { enabled: !hasInitialShrimp },
+  );
   const priorityShrimp = [...(extremelyRareQuery.data ?? []), ...(rareQuery.data ?? [])].filter(
     (specimen, index, list) => list.findIndex((item) => item.id === specimen.id) === index,
   );
   const priorityResolved = !extremelyRareQuery.isLoading && !rareQuery.isLoading;
   const fallbackResolved = !fallbackQuery.isLoading;
   const shrimp =
-    priorityShrimp.length > 0
+    initialShrimp?.length
+      ? initialShrimp
+      : priorityShrimp.length > 0
       ? priorityShrimp
       : priorityResolved
         ? (fallbackQuery.data ?? [])
         : [];
+  const hasRareCollection = initialShrimp?.length
+    ? initialIsRareCollection
+    : priorityShrimp.length > 0;
   const isCollectionLoading =
+    !hasInitialShrimp &&
     priorityShrimp.length === 0 &&
     (!priorityResolved || !fallbackResolved);
   const isCollectionError =
@@ -202,7 +227,12 @@ export default function HomeFeature() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6, duration: 0.6 }}
         >
-          <LandingCollectionCounter t={t} activeIndex={activeIndex} total={shrimp.length} />
+          <LandingCollectionCounter
+            t={t}
+            activeIndex={activeIndex}
+            total={shrimp.length}
+            isRareCollection={hasRareCollection}
+          />
         </motion.div>
 
         <div className="absolute bottom-16 md:bottom-20 left-6 md:left-10 right-6 md:right-auto max-w-xs">

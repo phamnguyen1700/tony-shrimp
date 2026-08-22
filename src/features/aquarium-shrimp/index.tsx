@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import PageHero from "@/components/common/layout/PageHero";
@@ -14,6 +14,7 @@ import {
   useShrimpList,
 } from "@/hooks/shrimp";
 import { fadeUp, staggerContainer } from "@/lib/motionVariants";
+import { shrimpCollectionLinks } from "@/lib/shrimpCollectionConfig";
 import {
   activeShopFilterCount,
   emptyShopFilters,
@@ -26,9 +27,11 @@ import type {
   CatalogOptions,
   ShopFilters,
   ShrimpListItem,
+  ShrimpListQuery,
   ShrimpVariant,
 } from "@/types/shrimp";
 import ShopEmptyState from "./components/ShopEmptyState";
+import ShopCollectionIntro from "./components/ShopCollectionIntro";
 import ShopFilterPanel from "./components/ShopFilterPanel";
 import ShopMobileFilterBar from "./components/ShopMobileFilterBar";
 import ShopMobileFilterSheet from "./components/ShopMobileFilterSheet";
@@ -36,6 +39,7 @@ import ShopProductCard from "./components/ShopProductCard";
 import ShopProductGrid from "./components/ShopProductGrid";
 
 const fallbackCatalogOptions: CatalogOptions = {
+  species: [],
   catalog_statuses: [],
   sale_units: [],
   lines: [],
@@ -45,7 +49,21 @@ const fallbackCatalogOptions: CatalogOptions = {
   traits: [],
 };
 
-export default function AquariumShrimpFeature() {
+interface AquariumShrimpFeatureProps {
+  initialProducts?: ShrimpListItem[];
+  initialQuery?: ShrimpListQuery;
+  initialFilters?: ShopFilters;
+  collectionTitle?: string;
+  activeCollectionSlug?: string;
+}
+
+export default function AquariumShrimpFeature({
+  initialProducts,
+  initialQuery,
+  initialFilters,
+  collectionTitle,
+  activeCollectionSlug = "",
+}: AquariumShrimpFeatureProps) {
   const { t } = useAppRuntime();
   const searchParams = useSearchParams();
   const reduced = useReducedMotion();
@@ -55,18 +73,28 @@ export default function AquariumShrimpFeature() {
   const storedOptions = useShrimpOptionsStore((state) => state.catalogOptions);
   const search = searchParams.get("search")?.trim() ?? "";
   const shrimpQuery = useShrimpList({
-    limit: 100,
+    limit: 24,
+    ...initialQuery,
     ...(search ? { search } : {}),
+  }, {
+    initialData: search ? undefined : initialProducts,
   });
-  const [filters, setFilters] = useState<ShopFilters>(emptyShopFilters);
+  const [filters, setFilters] = useState<ShopFilters>(initialFilters ?? emptyShopFilters);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const options =
     catalogOptionsQuery.data ?? storedOptions ?? fallbackCatalogOptions;
   const products = shrimpQuery.data ?? [];
+  const collectionFilterOptions = useMemo(
+    () => createFilterOptionsForProducts(products, options),
+    [products, options],
+  );
   const filteredProducts = filterShrimpProducts(products, filters);
   const filterCount = activeShopFilterCount(filters);
+  const collectionIntro = activeCollectionSlug
+    ? t.shop.collections[activeCollectionSlug as keyof typeof t.shop.collections]
+    : undefined;
 
   function toggleFilter(key: keyof ShopFilters, value: string) {
     setFilters((current) => ({
@@ -141,10 +169,12 @@ export default function AquariumShrimpFeature() {
           />
         </motion.div>
         <PageHero
-          title={t.shop.title}
+          title={collectionTitle ?? t.shop.title}
           reduced={reduced}
           // className="py-2 md:py-5"
         />
+
+        {collectionIntro && <ShopCollectionIntro intro={collectionIntro} />}
 
         <ShopMobileFilterBar
           t={t}
@@ -159,7 +189,9 @@ export default function AquariumShrimpFeature() {
               <ShopFilterPanel
                 filters={filters}
                 t={t}
-                options={options}
+                options={collectionFilterOptions}
+                collectionLinks={shrimpCollectionLinks}
+                activeCollectionSlug={activeCollectionSlug}
                 onToggle={toggleFilter}
               />
               {filterCount > 0 && (
@@ -174,38 +206,43 @@ export default function AquariumShrimpFeature() {
           </aside>
 
           <motion.div
+            className="min-h-[420px]"
             variants={reduced ? undefined : staggerContainer}
             initial={reduced ? false : "hidden"}
             animate="visible"
           >
-            <ShopProductGrid>
-              {filteredProducts.map((product) => (
-                <ShopProductCardContainer
-                  key={product.id}
-                  product={product}
-                  t={t}
-                  reduced={reduced}
-                  hovered={hoveredId === product.id}
-                  items={items}
-                  onHover={setHoveredId}
-                  onAddToCart={addProductToCart}
-                />
-              ))}
-            </ShopProductGrid>
+            {shrimpQuery.isLoading || filteredProducts.length === 0 ? (
+              <ShopEmptyState
+                isLoading={shrimpQuery.isLoading}
+                isEmpty={!shrimpQuery.isLoading && filteredProducts.length === 0}
+              />
+            ) : (
+              <ShopProductGrid>
+                {filteredProducts.map((product) => (
+                  <ShopProductCardContainer
+                    key={product.id}
+                    product={product}
+                    t={t}
+                    reduced={reduced}
+                    hovered={hoveredId === product.id}
+                    items={items}
+                    onHover={setHoveredId}
+                    onAddToCart={addProductToCart}
+                  />
+                ))}
+              </ShopProductGrid>
+            )}
           </motion.div>
         </div>
-
-        <ShopEmptyState
-          isLoading={shrimpQuery.isLoading}
-          isEmpty={!shrimpQuery.isLoading && filteredProducts.length === 0}
-        />
       </div>
 
       <ShopMobileFilterSheet
         open={mobileFiltersOpen}
         t={t}
         filters={filters}
-        options={options}
+        options={collectionFilterOptions}
+        collectionLinks={shrimpCollectionLinks}
+        activeCollectionSlug={activeCollectionSlug}
         filterCount={filterCount}
         resultCount={filteredProducts.length}
         onToggle={toggleFilter}
@@ -273,6 +310,47 @@ function getDefaultListVariant(product: ShrimpListItem): ShrimpVariant | null {
   if (inStockVariant) return inStockVariant;
   if (product.first_variant?.is_active) return product.first_variant;
   return activeVariants[0] ?? product.variants?.[0] ?? null;
+}
+
+function createFilterOptionsForProducts(
+  products: ShrimpListItem[],
+  catalogOptions: CatalogOptions,
+): Pick<CatalogOptions, "species" | "lines" | "colors" | "grades" | "rarities" | "traits"> {
+  const values = {
+    species: new Set<string>(),
+    lines: new Set<string>(),
+    colors: new Set<string>(),
+    grades: new Set<string>(),
+    rarities: new Set<string>(),
+    traits: new Set<string>(),
+  };
+
+  for (const product of products) {
+    if (product.species) values.species.add(product.species);
+    if (product.line) values.lines.add(product.line);
+    for (const color of product.colors) values.colors.add(color);
+    if (product.grade) values.grades.add(product.grade);
+    if (product.rarity) values.rarities.add(product.rarity);
+    for (const trait of product.traits) values.traits.add(trait);
+  }
+
+  return {
+    species: orderFilterValues(catalogOptions.species ?? [], values.species),
+    lines: orderFilterValues(catalogOptions.lines, values.lines),
+    colors: orderFilterValues(catalogOptions.colors, values.colors),
+    grades: orderFilterValues(catalogOptions.grades, values.grades),
+    rarities: orderFilterValues(catalogOptions.rarities, values.rarities),
+    traits: orderFilterValues(catalogOptions.traits, values.traits),
+  };
+}
+
+function orderFilterValues(preferredOrder: string[], availableValues: Set<string>) {
+  const ordered = preferredOrder.filter((value) => availableValues.has(value));
+  const extras = [...availableValues]
+    .filter((value) => !preferredOrder.includes(value))
+    .sort((a, b) => a.localeCompare(b));
+
+  return [...ordered, ...extras];
 }
 
 function getCartQuantityForVariant(

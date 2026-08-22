@@ -6,6 +6,7 @@ import {
   facebookUrl,
   siteDescription,
   siteIcon,
+  siteLogo,
   siteName,
   siteShortName,
   siteUrl,
@@ -28,7 +29,7 @@ export function createOrganizationJsonLd() {
     name: siteName,
     alternateName: siteShortName,
     url: absoluteUrl(),
-    logo: absoluteUrl(siteIcon),
+    logo: absoluteUrl(siteLogo),
     description: siteDescription,
     sameAs: [facebookUrl],
   };

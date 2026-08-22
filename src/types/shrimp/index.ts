@@ -23,6 +23,7 @@ export interface CatalogOptions {
 
 export interface ShrimpListQuery {
   search?: string;
+  species?: string;
   line?: string;
   color?: string;
   grade?: string;
@@ -36,6 +37,7 @@ export interface ShrimpListQuery {
 }
 
 export interface ShopFilters {
+  species: string[];
   lines: string[];
   colors: string[];
   grades: string[];
@@ -68,6 +70,8 @@ export interface ShrimpListItem {
   colors: string[];
   grade: string | null;
   rarity: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
   catalog_status: CatalogStatus;
   traits: string[];
   created_at: string;
@@ -192,6 +196,8 @@ export interface CreateShrimpPayload {
   colors?: string[];
   grade?: string | null;
   rarity?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
   description?: string | null;
   catalog_status?: CatalogStatus;
   traits?: string[];
@@ -203,7 +209,7 @@ export interface CreateShrimpPayload {
 export type UpdateShrimpPayload = Partial<
   Pick<
     CreateShrimpPayload,
-    "name" | "slug" | "species" | "line" | "colors" | "grade" | "rarity" | "description" | "catalog_status" | "traits"
+    "name" | "slug" | "species" | "line" | "colors" | "grade" | "rarity" | "meta_title" | "meta_description" | "description" | "catalog_status" | "traits"
   >
 >;
 
@@ -215,6 +221,8 @@ export interface AdminShrimpFormInput {
   colors?: string;
   grade?: string;
   rarity?: string;
+  meta_title?: string;
+  meta_description?: string;
   description?: string;
   description_title?: string;
   description_overview?: string;

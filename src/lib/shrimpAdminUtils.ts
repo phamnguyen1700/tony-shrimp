@@ -17,6 +17,8 @@ export const emptyAdminShrimpForm: AdminShrimpFormInput = {
   colors: "",
   grade: "",
   rarity: "",
+  meta_title: "",
+  meta_description: "",
   description: "",
   description_title: "",
   description_overview: "",

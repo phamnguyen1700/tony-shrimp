@@ -43,7 +43,8 @@ export default function ShopProductCard({
           {product.primary_image_url && isVideoMediaUrl(product.primary_image_url) ? (
             <video
               src={product.primary_image_url}
-              className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              autoPlay
               muted
               loop
               playsInline
@@ -53,7 +54,7 @@ export default function ShopProductCard({
             <FallbackImage
               src={product.primary_image_url}
               alt={product.name}
-              className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           )}
           <AnimatePresence>

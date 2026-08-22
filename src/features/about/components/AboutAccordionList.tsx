@@ -1,5 +1,6 @@
 import type { Lang, Translations } from "@/i18n";
 import type { ReactNode } from "react";
+import GoogleMapEmbed from "@/components/common/location/GoogleMapEmbed";
 import AboutAccordion from "./AboutAccordion";
 import AboutSocialLink from "./AboutSocialLink";
 import { FaFacebookF, FaInstagram } from "react-icons/fa6";
@@ -160,17 +161,35 @@ export default function AboutAccordionList({
           ]}
           highlightsLabel={about.highlights}
         />
-        <div className="mt-3 flex flex-wrap gap-3">
-          <AboutSocialLink
-            href={facebookUrl}
-            icon={<FaFacebookF />}
-            label="Facebook"
-          />
-          <AboutSocialLink
-            href={instagramUrl}
-            icon={<FaInstagram />}
-            label="Instagram"
-          />
+        <div className="mt-6 grid gap-5 md:grid-cols-2">
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-foreground">
+              Social
+            </p>
+            <div className="flex flex-col gap-3">
+              <AboutSocialLink
+                href={facebookUrl}
+                icon={<FaFacebookF />}
+                label="Facebook"
+              />
+              <AboutSocialLink
+                href={instagramUrl}
+                icon={<FaInstagram />}
+                label="Instagram"
+              />
+            </div>
+          </div>
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-foreground">
+              {about.sections.contact.addressLabel}
+            </p>
+            <div className="space-y-3 text-sm leading-6 text-muted-foreground md:text-[15px]">
+              <p>{about.sections.contact.address}</p>
+              <div className="overflow-hidden border border-border bg-card" style={{ borderRadius: "var(--radius)" }}>
+                <GoogleMapEmbed className="h-56 w-full border-0" />
+              </div>
+            </div>
+          </div>
         </div>
       </AboutAccordion>
     </div>

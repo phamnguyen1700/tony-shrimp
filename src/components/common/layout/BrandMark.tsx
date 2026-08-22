@@ -23,7 +23,7 @@ export default function BrandMark({
       className={`flex items-center leading-none ${isFooter ? "gap-3" : "gap-2"}`}
     >
       <span
-        className={`relative shrink-0 overflow-hidden ${isFooter ? "h-36 w-36" : "h-14 w-14"}`}
+        className={`relative shrink-0 overflow-hidden ${isFooter ? "h-28 w-28" : "h-14 w-14"}`}
       >
         <Image
           src="/logo/tony-shrimp-logo.png"

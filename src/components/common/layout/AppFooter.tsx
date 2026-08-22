@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { routes } from "@/config/routes";
 import type { Translations } from "@/i18n";
+import GoogleMapEmbed from "@/components/common/location/GoogleMapEmbed";
 import BrandMark from "./BrandMark";
 
 interface AppFooterProps {
@@ -24,25 +25,16 @@ export default function AppFooter({ t }: AppFooterProps) {
   return (
     <section className="relative z-20 bg-[#0d110d] text-[#edeae3]">
       <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-10 md:py-20">
-        <div className="grid gap-12 md:grid-cols-2 md:gap-20">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(260px,0.7fr)_minmax(320px,0.9fr)] lg:gap-14">
           <div>
             <div className="mb-5">
               <BrandMark tagline={t.tagline} tone="light" size="footer" />
             </div>
             <p className="max-w-sm font-body text-sm leading-relaxed text-[#b7b9b0]">
-              Premium ornamental freshwater shrimp for aquascapers and shrimp
-              keepers. Bred selectively for colour, pattern and vigour.
-              Australia-wide live arrival guarantee.
+              Quality Caridina and Neocaridina from Victoria, Australia. Fair
+              prices, reliable stock, and the occasional rare shrimp that
+              probably won&apos;t hang around for long.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href={routes.shop}
-                className="inline-flex items-center gap-2 bg-[#f2f0eb] px-5 py-2.5 font-mono-label text-xs uppercase tracking-widest text-[#080b08] transition-colors hover:bg-white"
-                style={{ borderRadius: "var(--radius)" }}
-              >
-                Victoria · {t.tagline}
-              </Link>
-            </div>
           </div>
           <div className="grid grid-cols-2 gap-8">
             <div>
@@ -77,6 +69,9 @@ export default function AppFooter({ t }: AppFooterProps) {
                 ))}
               </div>
             </div>
+          </div>
+          <div className="min-h-48 overflow-hidden border border-white/10 bg-[#080b08]" style={{ borderRadius: "var(--radius)" }}>
+            <GoogleMapEmbed className="h-48 w-full border-0 grayscale md:h-full" />
           </div>
         </div>
         <div className="mt-12 flex flex-col justify-between gap-3 border-t border-white/10 pt-8 md:flex-row">

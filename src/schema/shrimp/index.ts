@@ -30,6 +30,7 @@ export const uuidSchema = z.string().uuid("Invalid shrimp id.");
 export const shrimpListQuerySchema = z
   .object({
     search: z.string().trim().optional(),
+    species: z.string().trim().optional(),
     line: z.string().trim().optional(),
     color: z.string().trim().optional(),
     grade: z.string().trim().optional(),
@@ -107,6 +108,8 @@ export const createShrimpSchema = z.object({
   colors: z.array(z.string().trim().min(1).max(64)).max(10).optional(),
   grade: optionalTrimmedString(64),
   rarity: optionalTrimmedString(64),
+  meta_title: optionalTrimmedString(255),
+  meta_description: optionalTrimmedString(320),
   description: z.string().trim().optional().nullable(),
   catalog_status: catalogStatusSchema.optional(),
   traits: z.array(z.string().trim().min(1)).optional(),
@@ -124,6 +127,8 @@ export const updateShrimpSchema = createShrimpSchema
     colors: true,
     grade: true,
     rarity: true,
+    meta_title: true,
+    meta_description: true,
     description: true,
     catalog_status: true,
     traits: true,
@@ -131,6 +136,8 @@ export const updateShrimpSchema = createShrimpSchema
   .partial()
   .extend({
     grade: z.string().trim().max(64).optional().nullable(),
+    meta_title: optionalTrimmedString(255),
+    meta_description: optionalTrimmedString(320),
   });
 
 export const adminShrimpFormSchema = z.object({
@@ -146,6 +153,8 @@ export const adminShrimpFormSchema = z.object({
   colors: z.string().trim().optional(),
   grade: z.string().trim().optional(),
   rarity: z.string().trim().optional(),
+  meta_title: z.string().trim().max(255).optional(),
+  meta_description: z.string().trim().max(320).optional(),
   description: z.string().trim().optional(),
   description_title: z.string().trim().optional(),
   description_overview: z.string().trim().optional(),

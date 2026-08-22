@@ -162,6 +162,25 @@ export default function ShrimpFormModal({
                     className="ui-radius w-full resize-none border border-border bg-card px-3 py-2.5 text-sm font-body text-foreground placeholder:text-muted-foreground transition-colors duration-150 focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
+                <div className="border border-border bg-card/60 p-3" style={{ borderRadius: "var(--radius-sm)" }}>
+                  <p className="mono-section-label mb-3">SEO override</p>
+                  <div className="space-y-3">
+                    <Input label="Meta title" error={errors.meta_title?.message} {...register("meta_title")} />
+                    <div className="flex flex-col gap-1.5">
+                      <label className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
+                        Meta description
+                      </label>
+                      <textarea
+                        {...register("meta_description")}
+                        rows={3}
+                        className="ui-radius w-full resize-none border border-border bg-card px-3 py-2.5 text-sm font-body text-foreground placeholder:text-muted-foreground transition-colors duration-150 focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                      />
+                      {errors.meta_description?.message && (
+                        <p className="text-xs text-red-500">{errors.meta_description.message}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

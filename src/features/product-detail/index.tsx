@@ -17,8 +17,19 @@ import ProductMediaGallery from "./components/ProductMediaGallery";
 import ProductNotFound from "./components/ProductNotFound";
 import ProductPurchasePanel from "./components/ProductPurchasePanel";
 import ProductWaterParameters from "./components/ProductWaterParameters";
+import type { ShrimpDetail, ShrimpListItem } from "@/types/shrimp";
 
-export default function ProductDetailFeature({ slug }: { slug: string }) {
+interface ProductDetailFeatureProps {
+  slug: string;
+  initialProduct?: ShrimpDetail;
+  initialProducts?: ShrimpListItem[];
+}
+
+export default function ProductDetailFeature({
+  slug,
+  initialProduct,
+  initialProducts,
+}: ProductDetailFeatureProps) {
   const { t } = useAppRuntime();
   const reduced = useReducedMotion();
   const { items, addItem } = useCart();
@@ -26,8 +37,8 @@ export default function ProductDetailFeature({ slug }: { slug: string }) {
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     null,
   );
-  const detailQuery = useShrimpDetailBySlug(slug);
-  const listQuery = useShrimpList({ limit: 100 });
+  const detailQuery = useShrimpDetailBySlug(slug, { initialData: initialProduct });
+  const listQuery = useShrimpList({ limit: 24 }, { initialData: initialProducts });
 
   const product = detailQuery.data;
   const activeVariants =

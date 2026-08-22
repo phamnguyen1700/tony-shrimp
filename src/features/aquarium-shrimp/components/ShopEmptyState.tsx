@@ -10,7 +10,7 @@ export default function ShopEmptyState({ isLoading, isEmpty }: ShopEmptyStatePro
 
   if (isLoading) {
     return (
-      <div className="py-24 text-center">
+      <div className="flex min-h-[420px] items-center justify-center text-center">
         <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">{t.shop.loading}</p>
       </div>
     );
@@ -18,7 +18,7 @@ export default function ShopEmptyState({ isLoading, isEmpty }: ShopEmptyStatePro
 
   if (isEmpty) {
     return (
-      <div className="py-24 text-center">
+      <div className="flex min-h-[420px] items-center justify-center text-center">
         <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
           {t.shop.empty}
         </p>

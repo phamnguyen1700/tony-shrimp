@@ -20,6 +20,8 @@ import type {
   OwnerShrimpListQuery,
   UploadShrimpImagePayload,
   ShrimpCareParameterPayload,
+  ShrimpDetail,
+  ShrimpListItem,
   ShrimpListQuery,
   ShrimpVariantPayload,
   UpdateShrimpImagePayload,
@@ -72,12 +74,23 @@ export function useOwnerCatalogOptions() {
   return query;
 }
 
-export function useShrimpList(params?: ShrimpListQuery) {
+type ShrimpListOptions = {
+  enabled?: boolean;
+  initialData?: ShrimpListItem[];
+};
+
+type ShrimpDetailOptions = {
+  enabled?: boolean;
+  initialData?: ShrimpDetail;
+};
+
+export function useShrimpList(params?: ShrimpListQuery, options?: ShrimpListOptions) {
   const validParams = shrimpListQuerySchema.parse(params ?? {});
 
   return useQuery({
     queryKey: shrimpQueryKeys.publicList(validParams),
     queryFn: () => shrimpService.listShrimp(validParams),
+    ...options,
   });
 }
 
@@ -89,11 +102,12 @@ export function useShrimpDetail(shrimpId: string) {
   });
 }
 
-export function useShrimpDetailBySlug(slug: string) {
+export function useShrimpDetailBySlug(slug: string, options?: ShrimpDetailOptions) {
   return useQuery({
     queryKey: shrimpQueryKeys.publicDetailBySlug(slug),
     queryFn: () => shrimpService.getShrimpDetailBySlug(slug),
-    enabled: Boolean(slug),
+    enabled: options?.enabled ?? Boolean(slug),
+    initialData: options?.initialData,
     retry: (failureCount, error) =>
       !(error instanceof ApiError && error.status === 404) && failureCount < 3,
   });
