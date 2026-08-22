@@ -110,7 +110,7 @@ export default function TrafficTab({
         </div>
       )}
 
-      <div className="grid gap-5 xl:grid-cols-3">
+      <div className="grid items-start gap-5 xl:grid-cols-3">
         <TrafficSources sources={trafficSources} labels={labels.traffic} />
         <EcommerceFunnel
           funnel={funnel}

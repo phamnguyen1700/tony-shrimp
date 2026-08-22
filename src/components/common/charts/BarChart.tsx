@@ -23,7 +23,7 @@ export default function BarChart({
         {items.map((item) => (
           <div key={item.label} className="flex min-w-0 flex-1 flex-col items-center gap-2">
             {showValues && (
-              <span className="font-mono-label text-[10px] text-muted-foreground">
+              <span className="max-w-full truncate font-mono-label text-[10px] text-muted-foreground">
                 {item.displayValue ?? item.value.toLocaleString()}
               </span>
             )}

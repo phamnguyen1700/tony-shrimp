@@ -29,20 +29,20 @@ export default function PieChart({ items }: PieChartProps) {
     .join(", ");
 
   return (
-    <div className="grid items-center gap-6 md:grid-cols-[180px_1fr]">
+    <div className="grid min-w-0 items-center gap-6">
       <div
-        className="mx-auto size-44 rounded-full border border-border"
+        className="mx-auto size-40 rounded-full border border-border"
         style={{ background: `conic-gradient(${gradient})` }}
         aria-hidden="true"
       />
-      <div className="space-y-4">
+      <div className="min-w-0 space-y-4">
         {items.map((item, index) => {
           const percent = total > 0 ? (item.value / total) * 100 : 0;
 
           return (
             <div
               key={item.label}
-              className="flex items-center justify-between gap-4 border-b border-border pb-3 text-sm last:border-0"
+              className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-border pb-3 text-sm last:border-0"
             >
               <span className="flex min-w-0 items-center gap-3 font-semibold text-foreground">
                 <span
@@ -51,7 +51,7 @@ export default function PieChart({ items }: PieChartProps) {
                 />
                 <span className="truncate">{item.label}</span>
               </span>
-              <strong className="font-mono-label text-xs text-foreground">
+              <strong className="whitespace-nowrap font-mono-label text-xs text-foreground">
                 {item.displayValue ?? `${percent.toFixed(1)}%`}
               </strong>
             </div>
