@@ -307,15 +307,10 @@ export function useUploadShrimpImage(shrimpId?: string) {
         is_primary: payload.is_primary,
       });
     },
-    onMutate: () => toast.loading("Uploading image..."),
-    onSuccess: (shrimp, _payload, toastId) => {
-      toast.success("Image uploaded.", { id: toastId });
+    onSuccess: (shrimp) => {
       queryClient.setQueryData(shrimpQueryKeys.ownerDetail(shrimp.id), shrimp);
       void queryClient.invalidateQueries({ queryKey: ["owner", "catalog", "shrimp"] });
       void queryClient.invalidateQueries({ queryKey: ["catalog", "shrimp"] });
-    },
-    onError: (error, _payload, toastId) => {
-      toast.error(getApiErrorMessage(error, "Could not upload image."), { id: toastId });
     },
   });
 }

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import AdminDataTable, { type AdminDataTableColumn } from "@/components/common/table/AdminDataTable";
 import type { Translations } from "@/i18n";
 import type { ShrimpDetail, ShrimpImage, ShrimpListItem } from "@/types/shrimp";
+import { Play } from "lucide-react";
 import FallbackImage from "@/components/common/images/FallbackImage";
 import Badge from "@/components/ui/Badge";
 import MotionButton from "@/components/common/motion/MotionButton";
@@ -16,6 +17,10 @@ interface ShrimpTableProps {
   imagePendingById: Record<string, boolean>;
   t: Translations;
   isLoading: boolean;
+  page: number;
+  pageSize: number;
+  totalRows: number;
+  onPageChange: (page: number) => void;
   filtersSlot?: ReactNode;
   onEdit: (product: ShrimpListItem) => void;
   onAdd: () => void;
@@ -34,6 +39,10 @@ export default function ShrimpTable({
   imagePendingById,
   t,
   isLoading,
+  page,
+  pageSize,
+  totalRows,
+  onPageChange,
   filtersSlot,
   onEdit,
   onAdd,
@@ -173,7 +182,10 @@ export default function ShrimpTable({
           emptyText="No shrimp found."
           loadingText={actions.loadingShrimp}
           isLoading={isLoading}
-          pageSize={10}
+          page={page}
+          pageSize={pageSize}
+          totalRows={totalRows}
+          onPageChange={onPageChange}
           minWidth="1480px"
         />
       </div>
@@ -184,7 +196,9 @@ export default function ShrimpTable({
             <div className="flex gap-3">
               <div className="h-14 w-14 shrink-0 overflow-hidden bg-[#080b08]" style={{ borderRadius: "var(--radius-sm)" }}>
                 {product.primary_image_url && isVideoMediaUrl(product.primary_image_url) ? (
-                  <video src={product.primary_image_url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
+                  <div className="flex h-full w-full items-center justify-center bg-[#080b08] text-muted-foreground">
+                    <Play className="h-4 w-4" fill="currentColor" strokeWidth={1.5} />
+                  </div>
                 ) : (
                   <FallbackImage src={product.primary_image_url} alt={product.name} className="h-full w-full object-cover" />
                 )}
@@ -237,6 +251,34 @@ export default function ShrimpTable({
       {isLoading && products.length === 0 && (
         <div className="py-12">
           <p className="mono-section-label">{actions.loadingShrimp}</p>
+        </div>
+      )}
+
+      {totalRows > 0 && (
+        <div className="mt-4 flex items-center justify-between gap-4 md:hidden">
+          <p className="font-mono-label text-xs uppercase tracking-widest text-muted-foreground">
+            Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, totalRows)} of {totalRows}
+          </p>
+          {totalRows > pageSize && (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => onPageChange(Math.max(1, page - 1))}
+                disabled={page === 1}
+                className="ui-radius-sm border border-border px-3 py-1.5 font-mono-label text-xs uppercase tracking-widest text-foreground transition-colors hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Prev
+              </button>
+              <button
+                type="button"
+                onClick={() => onPageChange(page + 1)}
+                disabled={page * pageSize >= totalRows}
+                className="ui-radius-sm border border-border px-3 py-1.5 font-mono-label text-xs uppercase tracking-widest text-foreground transition-colors hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

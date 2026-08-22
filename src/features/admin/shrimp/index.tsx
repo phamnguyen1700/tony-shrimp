@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "@/config/api";
 import { useAppRuntime } from "@/providers/AppProviders";
 import {
   useActivateShrimp,
@@ -69,15 +70,19 @@ const emptyAdminShrimpFilters: AdminShrimpFilters = {
   availability: "",
 };
 
+const adminShrimpPageSize = 10;
+
 export default function AdminShrimpFeature() {
   const { t } = useAppRuntime();
   const reduced = useReducedMotion();
   const ownerOptionsQuery = useOwnerCatalogOptions();
   const storedOptions = useShrimpOptionsStore((state) => state.ownerCatalogOptions);
   const [filters, setFilters] = useState<AdminShrimpFilters>(emptyAdminShrimpFilters);
+  const [page, setPage] = useState(1);
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const shrimpQueryParams: OwnerShrimpListQuery = {
-    limit: 100,
+    limit: adminShrimpPageSize + 1,
+    offset: (page - 1) * adminShrimpPageSize,
     ...(debouncedSearch ? { search: debouncedSearch } : {}),
     ...(filters.catalog_status ? { catalog_status: filters.catalog_status } : {}),
     ...(filters.line ? { line: filters.line } : {}),
@@ -88,7 +93,12 @@ export default function AdminShrimpFeature() {
     ...(filters.availability ? { in_stock: filters.availability === "in_stock" } : {}),
   };
   const shrimpQuery = useOwnerShrimpList(shrimpQueryParams);
-  const products = shrimpQuery.data ?? [];
+  const fetchedProducts = shrimpQuery.data ?? [];
+  const hasNextPage = fetchedProducts.length > adminShrimpPageSize;
+  const products = fetchedProducts.slice(0, adminShrimpPageSize);
+  const totalRows = hasNextPage
+    ? page * adminShrimpPageSize + 1
+    : (page - 1) * adminShrimpPageSize + products.length;
   const detailQueries = useOwnerShrimpDetails(products.map((product) => product.id));
 
   const createShrimp = useCreateShrimp();
@@ -165,6 +175,19 @@ export default function AdminShrimpFeature() {
     const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 300);
     return () => window.clearTimeout(timer);
   }, [filters.search]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [
+    debouncedSearch,
+    filters.catalog_status,
+    filters.line,
+    filters.color,
+    filters.grade,
+    filters.rarity,
+    filters.trait,
+    filters.availability,
+  ]);
 
   useEffect(() => {
     if (!formOpen || !editingId || !editingDetailQuery.data) return;
@@ -323,26 +346,37 @@ export default function AdminShrimpFeature() {
     });
   }
 
-  function uploadProductImage(product: ShrimpListItem, file: File | undefined, index: number) {
+  async function uploadProductImage(product: ShrimpListItem, file: File | undefined, index: number) {
     if (!file) return;
     const images = detailById.get(product.id)?.images ?? [];
-    uploadImage.mutate({
-      shrimp_id: product.id,
-      file,
-      alt_text: product.name,
-      sort_order: index,
-      is_primary: images.length === 0 || index === 0,
-    });
+    const toastId = toast.loading(`Uploading ${file.name}...`);
+
+    try {
+      await uploadImage.mutateAsync({
+        shrimp_id: product.id,
+        file,
+        alt_text: product.name,
+        sort_order: index,
+        is_primary: images.length === 0 || index === 0,
+      });
+      toast.success("Media uploaded.", { id: toastId });
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Could not upload media."), { id: toastId });
+    }
   }
 
   function reorderProductImages(product: ShrimpListItem, images: ShrimpImage[]) {
-    images.forEach((image, index) => {
-      if (image.sort_order === index) return;
+    const currentImageById = new Map(
+      (detailById.get(product.id)?.images ?? []).map((image) => [image.id, image]),
+    );
+
+    images.forEach((image) => {
+      if (currentImageById.get(image.id)?.sort_order === image.sort_order) return;
       updateImage.mutate({
         shrimp_id: product.id,
         image_id: image.id,
         alt_text: image.alt_text ?? null,
-        sort_order: index,
+        sort_order: image.sort_order,
       });
     });
   }
@@ -383,6 +417,10 @@ export default function AdminShrimpFeature() {
             imagePendingById={imagePendingById}
             t={t}
             isLoading={shrimpQuery.isLoading}
+            page={page}
+            pageSize={adminShrimpPageSize}
+            totalRows={totalRows}
+            onPageChange={setPage}
             filtersSlot={
               <AdminShrimpFiltersPanel
                 filters={filters}
