@@ -180,44 +180,55 @@ export default function ShrimpTable({
 
       <div className="space-y-3 md:hidden">
         {products.map((product) => (
-          <div key={product.id} className="flex gap-3 border border-border bg-card p-4" style={{ borderRadius: "var(--radius)" }}>
-            <div className="h-14 w-14 shrink-0 overflow-hidden bg-[#080b08]" style={{ borderRadius: "var(--radius-sm)" }}>
-              {product.primary_image_url && isVideoMediaUrl(product.primary_image_url) ? (
-                <video src={product.primary_image_url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
-              ) : (
-                <FallbackImage src={product.primary_image_url} alt={product.name} className="h-full w-full object-cover" />
-              )}
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <div className="text-sm font-body text-foreground">{product.name}</div>
-                  <div className="mt-0.5 font-mono-label text-xs text-muted-foreground">{product.line}</div>
-                </div>
-                <Badge variant={statusVariant(product.catalog_status)}>{product.catalog_status}</Badge>
-              </div>
-              <div className="mt-2 flex gap-4">
-                <button onClick={() => onEdit(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent">
-                  {t.admin.editShrimp}
-                </button>
-                <button onClick={() => onViewVariants(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent">
-                  {actions.viewVariants}
-                </button>
-                {product.catalog_status === "active" ? (
-                  <button onClick={() => onDeactivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500">
-                    {actions.deactivate}
-                  </button>
+          <div key={product.id} className="border border-border bg-card p-4" style={{ borderRadius: "var(--radius)" }}>
+            <div className="flex gap-3">
+              <div className="h-14 w-14 shrink-0 overflow-hidden bg-[#080b08]" style={{ borderRadius: "var(--radius-sm)" }}>
+                {product.primary_image_url && isVideoMediaUrl(product.primary_image_url) ? (
+                  <video src={product.primary_image_url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
                 ) : (
-                  <>
-                    <button onClick={() => onActivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-accent">
-                      {actions.activate}
-                    </button>
-                    <button onClick={() => onHardDelete(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500">
-                      {actions.hardDelete}
-                    </button>
-                  </>
+                  <FallbackImage src={product.primary_image_url} alt={product.name} className="h-full w-full object-cover" />
                 )}
               </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="text-sm font-body text-foreground">{product.name}</div>
+                    <div className="mt-0.5 font-mono-label text-xs text-muted-foreground">{product.line}</div>
+                  </div>
+                  <Badge variant={statusVariant(product.catalog_status)}>{product.catalog_status}</Badge>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-4">
+                  <button onClick={() => onEdit(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent">
+                    {t.admin.editShrimp}
+                  </button>
+                  <button onClick={() => onViewVariants(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent">
+                    {actions.viewVariants}
+                  </button>
+                  {product.catalog_status === "active" ? (
+                    <button onClick={() => onDeactivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500">
+                      {actions.deactivate}
+                    </button>
+                  ) : (
+                    <>
+                      <button onClick={() => onActivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-accent">
+                        {actions.activate}
+                      </button>
+                      <button onClick={() => onHardDelete(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500">
+                        {actions.hardDelete}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 overflow-x-auto pb-1">
+              <ShrimpImageSlots
+                images={detailById.get(product.id)?.images ?? []}
+                disabled={Boolean(imagePendingById[product.id])}
+                onUpload={(file, index) => onUploadImage(product, file, index)}
+                onDelete={(imageId) => onDeleteImage(product, imageId)}
+                onReorder={(images) => onReorderImages(product, images)}
+              />
             </div>
           </div>
         ))}

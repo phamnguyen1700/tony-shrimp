@@ -15,7 +15,10 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Trash2 } from "lucide-react";
+import { useState } from "react";
 import FallbackImage from "@/components/common/images/FallbackImage";
+import Dialog from "@/components/ui/Dialog";
 import { isVideoMediaUrl } from "@/lib/media";
 import type { ShrimpImage } from "@/types/shrimp";
 
@@ -34,6 +37,7 @@ export default function ShrimpImageSlots({
   onDelete,
   onReorder,
 }: ShrimpImageSlotsProps) {
+  const [previewImage, setPreviewImage] = useState<ShrimpImage | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -55,30 +59,77 @@ export default function ShrimpImageSlots({
   }
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={sortedImages.map((image) => image.id)} strategy={horizontalListSortingStrategy}>
-        <div className="admin-image-slots">
-          {slots.map((image, index) =>
-            image ? (
-              <SortableImageSlot
-                key={image.id}
-                image={image}
-                index={index}
+    <>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={sortedImages.map((image) => image.id)} strategy={horizontalListSortingStrategy}>
+          <div className="admin-image-slots">
+            {slots.map((image, index) =>
+              image ? (
+                <SortableImageSlot
+                  key={image.id}
+                  image={image}
+                  index={index}
+                  disabled={disabled}
+                  onPreview={setPreviewImage}
+                />
+              ) : (
+                <EmptyImageSlot
+                  key={`empty-${index}`}
+                  index={index}
+                  disabled={disabled}
+                  onUpload={(file) => onUpload(file, index)}
+                />
+              ),
+            )}
+          </div>
+        </SortableContext>
+      </DndContext>
+
+      <Dialog
+        open={previewImage !== null}
+        onClose={() => setPreviewImage(null)}
+        title={previewImage?.alt_text ?? "Shrimp media"}
+        maxWidth="max-w-4xl"
+      >
+        {previewImage && (
+          <div className="space-y-4">
+            <div className="overflow-hidden bg-[#080b08]" style={{ borderRadius: "var(--radius)" }}>
+              {previewImage.url && isVideoMediaUrl(previewImage.url) ? (
+                <video
+                  src={previewImage.url}
+                  className="max-h-[72vh] w-full object-contain"
+                  controls
+                  playsInline
+                  preload="metadata"
+                />
+              ) : (
+                <FallbackImage
+                  src={previewImage.url}
+                  alt={previewImage.alt_text ?? "Shrimp image preview"}
+                  className="max-h-[72vh] w-full object-contain"
+                />
+              )}
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
                 disabled={disabled}
-                onDelete={onDelete}
-              />
-            ) : (
-              <EmptyImageSlot
-                key={`empty-${index}`}
-                index={index}
-                disabled={disabled}
-                onUpload={(file) => onUpload(file, index)}
-              />
-            ),
-          )}
-        </div>
-      </SortableContext>
-    </DndContext>
+                onClick={() => {
+                  onDelete(previewImage.id);
+                  setPreviewImage(null);
+                }}
+                className="inline-flex h-10 w-10 items-center justify-center border border-red-500/40 text-red-500 transition-colors hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                style={{ borderRadius: "var(--radius-sm)" }}
+                aria-label="Delete media"
+                title="Delete media"
+              >
+                <Trash2 className="h-4 w-4" strokeWidth={1.7} />
+              </button>
+            </div>
+          </div>
+        )}
+      </Dialog>
+    </>
   );
 }
 
@@ -86,12 +137,12 @@ function SortableImageSlot({
   image,
   index,
   disabled,
-  onDelete,
+  onPreview,
 }: {
   image: ShrimpImage;
   index: number;
   disabled: boolean;
-  onDelete: (imageId: string) => void;
+  onPreview: (image: ShrimpImage) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: image.id,
@@ -105,6 +156,7 @@ function SortableImageSlot({
       className={`admin-image-slot group ${
         disabled ? "cursor-not-allowed" : "cursor-grab active:cursor-grabbing"
       } ${isDragging ? "z-10 opacity-70 shadow-lg" : ""}`}
+      onClick={() => onPreview(image)}
       {...attributes}
       {...listeners}
     >
@@ -123,19 +175,6 @@ function SortableImageSlot({
           className="h-full w-full object-cover"
         />
       )}
-      <button
-        type="button"
-        disabled={disabled}
-        onPointerDown={(event) => event.stopPropagation()}
-        onClick={(event) => {
-          event.stopPropagation();
-          onDelete(image.id);
-        }}
-        className="admin-image-delete-button"
-        aria-label="Delete image"
-      >
-        Delete
-      </button>
     </div>
   );
 }
