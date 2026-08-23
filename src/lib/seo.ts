@@ -5,7 +5,13 @@ export const siteShortName = "Tony Shrimp";
 export const siteTitleSuffix = "Tony Shrimp - Victoria";
 export const siteDescription =
   "Premium ornamental aquarium shrimp in Australia, selectively bred for colour, pattern and vigour with live arrival support.";
-export const siteIcon = "/favicon.png";
+export const siteIcon = "/logo/favicon.png";
+export const siteIcon48 = "/logo/favicon-48.png";
+export const siteIcon96 = "/logo/favicon-96.png";
+export const siteIcon192 = "/logo/favicon-192.png";
+export const siteIcon512 = "/logo/favicon-512.png";
+export const appleTouchIcon = "/logo/apple-touch-icon-180.png";
+export const siteManifest = "/site.webmanifest";
 export const siteLogo = "/logo/tony-shrimp-logo.png";
 export const facebookUrl = "https://facebook.com/thang.pham.790508";
 export const siteUrl = (
@@ -42,20 +48,41 @@ export function createRootMetadata(): Metadata {
       type: "website",
       images: [{ url: defaultOpenGraphImage }],
     },
+    manifest: siteManifest,
     icons: {
       icon: [
         {
-          url: siteIcon,
+          url: "/favicon.ico",
+          type: "image/x-icon",
+          sizes: "48x48",
+        },
+        {
+          url: siteIcon48,
           type: "image/png",
-          sizes: "500x500",
+          sizes: "48x48",
+        },
+        {
+          url: siteIcon96,
+          type: "image/png",
+          sizes: "96x96",
+        },
+        {
+          url: siteIcon192,
+          type: "image/png",
+          sizes: "192x192",
+        },
+        {
+          url: siteIcon512,
+          type: "image/png",
+          sizes: "512x512",
         },
       ],
-      shortcut: siteIcon,
+      shortcut: siteIcon48,
       apple: [
         {
-          url: siteIcon,
+          url: appleTouchIcon,
           type: "image/png",
-          sizes: "500x500",
+          sizes: "180x180",
         },
       ],
     },
