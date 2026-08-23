@@ -56,7 +56,7 @@ export default function EcommerceFunnel({
 
   return (
     <DashboardPanel title={labels.ecommerceFunnel} eyebrow={labels.customerJourney}>
-      <BarChart items={funnelItems} heightClassName="h-44" showValues />
+      <BarChart items={funnelItems} heightClassName="h-32" showValues />
     </DashboardPanel>
   );
 }

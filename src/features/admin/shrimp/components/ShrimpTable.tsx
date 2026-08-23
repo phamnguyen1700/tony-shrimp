@@ -20,6 +20,7 @@ interface ShrimpTableProps {
   page: number;
   pageSize: number;
   totalRows: number;
+  selectedProductId?: string | null;
   onPageChange: (page: number) => void;
   filtersSlot?: ReactNode;
   onEdit: (product: ShrimpListItem) => void;
@@ -27,7 +28,6 @@ interface ShrimpTableProps {
   onViewVariants: (product: ShrimpListItem) => void;
   onActivate: (productId: string) => void;
   onDeactivate: (productId: string) => void;
-  onHardDelete: (productId: string) => void;
   onUploadImage: (product: ShrimpListItem, file: File | undefined, index: number) => void;
   onDeleteImage: (product: ShrimpListItem, imageId: string) => void;
   onReorderImages: (product: ShrimpListItem, images: ShrimpImage[]) => void;
@@ -42,6 +42,7 @@ export default function ShrimpTable({
   page,
   pageSize,
   totalRows,
+  selectedProductId,
   onPageChange,
   filtersSlot,
   onEdit,
@@ -49,7 +50,6 @@ export default function ShrimpTable({
   onViewVariants,
   onActivate,
   onDeactivate,
-  onHardDelete,
   onUploadImage,
   onDeleteImage,
   onReorderImages,
@@ -91,24 +91,16 @@ export default function ShrimpTable({
       ),
     },
     {
-      key: "price",
-      header: table.price,
-      align: "center",
-      className: "min-w-[130px]",
-      render: (product) => (
-        <button onClick={() => onViewVariants(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">
-          {actions.viewVariants}
-        </button>
-      ),
-    },
-    {
       key: "available",
       header: table.available,
       align: "center",
       className: "min-w-[110px]",
       render: (product) => (
-        <Badge variant={product.is_available ? "inStock" : "outOfStock"}>
-          {product.is_available ? actions.yes : actions.no}
+        <Badge
+          variant={product.total_stock > 0 ? "inStock" : "outOfStock"}
+          className={product.total_stock > 0 ? "" : "border-red-400/30 bg-red-400/8 text-red-500"}
+        >
+          {product.total_stock > 0 ? product.total_stock : "Out stock"}
         </Badge>
       ),
     },
@@ -117,7 +109,35 @@ export default function ShrimpTable({
       header: table.status,
       align: "center",
       className: "min-w-[120px]",
-      render: (product) => <Badge variant={statusVariant(product.catalog_status)}>{product.catalog_status}</Badge>,
+      render: (product) => (
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            if (product.catalog_status === "active") {
+              onDeactivate(product.id);
+              return;
+            }
+            onActivate(product.id);
+          }}
+          className="group"
+          aria-label={product.catalog_status === "active" ? actions.deactivate : actions.activate}
+        >
+          <Badge
+            variant={statusVariant(product.catalog_status)}
+            className={`w-[118px] justify-center ${
+              product.catalog_status === "active"
+                ? "group-hover:border-red-400/30 group-hover:bg-red-400/8 group-hover:text-red-500"
+                : "group-hover:border-accent/30 group-hover:bg-accent/8 group-hover:text-accent"
+            }`}
+          >
+            <span className="group-hover:hidden">{product.catalog_status}</span>
+            <span className="hidden group-hover:inline">
+              {product.catalog_status === "active" ? actions.deactivate : actions.activate}
+            </span>
+          </Badge>
+        </button>
+      ),
     },
     {
       key: "actions",
@@ -126,23 +146,15 @@ export default function ShrimpTable({
       className: "admin-data-action-cell",
       render: (product) => (
         <div className="flex items-center justify-center gap-3">
-          <button onClick={() => onEdit(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">
+          <button
+            onClick={(event) => {
+              event.stopPropagation();
+              onEdit(product);
+            }}
+            className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline"
+          >
             {t.admin.editShrimp}
           </button>
-          {product.catalog_status === "active" ? (
-            <button onClick={() => onDeactivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500 hover:underline">
-              {actions.deactivate}
-            </button>
-          ) : (
-            <>
-              <button onClick={() => onActivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-accent hover:underline">
-                {actions.activate}
-              </button>
-              <button onClick={() => onHardDelete(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500 hover:underline">
-                {actions.hardDelete}
-              </button>
-            </>
-          )}
         </div>
       ),
     },
@@ -186,13 +198,23 @@ export default function ShrimpTable({
           pageSize={pageSize}
           totalRows={totalRows}
           onPageChange={onPageChange}
-          minWidth="1480px"
+          onRowClick={onViewVariants}
+          rowClassName={(product) =>
+            product.id === selectedProductId ? "outline outline-1 outline-accent/50" : ""
+          }
+          minWidth="1320px"
         />
       </div>
 
       <div className="space-y-3 md:hidden">
         {products.map((product) => (
-          <div key={product.id} className="border border-border bg-card p-4" style={{ borderRadius: "var(--radius)" }}>
+          <div
+            key={product.id}
+            className={`border bg-card p-4 ${
+              product.id === selectedProductId ? "border-accent/60" : "border-border"
+            }`}
+            style={{ borderRadius: "var(--radius)" }}
+          >
             <div className="flex gap-3">
               <div className="h-14 w-14 shrink-0 overflow-hidden bg-[#080b08]" style={{ borderRadius: "var(--radius-sm)" }}>
                 {product.primary_image_url && isVideoMediaUrl(product.primary_image_url) ? (
@@ -209,29 +231,55 @@ export default function ShrimpTable({
                     <div className="text-sm font-body text-foreground">{product.name}</div>
                     <div className="mt-0.5 font-mono-label text-xs text-muted-foreground">{product.line}</div>
                   </div>
-                  <Badge variant={statusVariant(product.catalog_status)}>{product.catalog_status}</Badge>
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      if (product.catalog_status === "active") {
+                        onDeactivate(product.id);
+                        return;
+                      }
+                      onActivate(product.id);
+                    }}
+                    className="group"
+                  >
+                    <Badge
+                      variant={statusVariant(product.catalog_status)}
+                      className={`w-[118px] justify-center ${
+                        product.catalog_status === "active"
+                          ? "group-hover:border-red-400/30 group-hover:bg-red-400/8 group-hover:text-red-500"
+                          : "group-hover:border-accent/30 group-hover:bg-accent/8 group-hover:text-accent"
+                      }`}
+                    >
+                      <span className="group-hover:hidden">{product.catalog_status}</span>
+                      <span className="hidden group-hover:inline">
+                        {product.catalog_status === "active" ? actions.deactivate : actions.activate}
+                      </span>
+                    </Badge>
+                  </button>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-4">
-                  <button onClick={() => onEdit(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent">
+                  <Badge
+                    variant={product.total_stock > 0 ? "inStock" : "outOfStock"}
+                    className={product.total_stock > 0 ? "" : "border-red-400/30 bg-red-400/8 text-red-500"}
+                  >
+                    {product.total_stock > 0 ? product.total_stock : "Out stock"}
+                  </Badge>
+                  <button
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onEdit(product);
+                    }}
+                    className="font-mono-label text-xs uppercase tracking-widest text-accent"
+                  >
                     {t.admin.editShrimp}
                   </button>
-                  <button onClick={() => onViewVariants(product)} className="font-mono-label text-xs uppercase tracking-widest text-accent">
-                    {actions.viewVariants}
+                  <button
+                    onClick={() => onViewVariants(product)}
+                    className="font-mono-label text-xs uppercase tracking-widest text-accent"
+                  >
+                    {formLabels.variants}
                   </button>
-                  {product.catalog_status === "active" ? (
-                    <button onClick={() => onDeactivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500">
-                      {actions.deactivate}
-                    </button>
-                  ) : (
-                    <>
-                      <button onClick={() => onActivate(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-accent">
-                        {actions.activate}
-                      </button>
-                      <button onClick={() => onHardDelete(product.id)} className="font-mono-label text-xs uppercase tracking-widest text-red-500">
-                        {actions.hardDelete}
-                      </button>
-                    </>
-                  )}
                 </div>
               </div>
             </div>

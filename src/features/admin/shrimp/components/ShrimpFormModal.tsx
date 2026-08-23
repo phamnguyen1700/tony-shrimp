@@ -34,8 +34,10 @@ interface ShrimpFormModalProps {
   watchedTraits: string;
   speciesSuggestions: string[];
   gradeSuggestions: string[];
+  canHardDelete?: boolean;
   onCareChange: (updater: (draft: AdminShrimpCareDraft) => AdminShrimpCareDraft) => void;
   onSubmit: () => void;
+  onHardDelete?: () => void;
   onClose: () => void;
 }
 
@@ -56,8 +58,10 @@ export default function ShrimpFormModal({
   watchedTraits,
   speciesSuggestions,
   gradeSuggestions,
+  canHardDelete = false,
   onCareChange,
   onSubmit,
+  onHardDelete,
   onClose,
 }: ShrimpFormModalProps) {
   return (
@@ -187,6 +191,19 @@ export default function ShrimpFormModal({
             <div className="border border-border bg-secondary/20 p-4" style={{ borderRadius: "var(--radius)" }}>
               <p className="mono-section-label mb-4">{formLabels.careParameters}</p>
               <CareParameterFields careDraft={careDraft} formLabels={formLabels} onChange={onCareChange} />
+              {editingId && canHardDelete && onHardDelete && (
+                <div className="mt-5 border-t border-border pt-4">
+                  <MotionButton
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-500 hover:bg-red-500/10"
+                    onClick={onHardDelete}
+                  >
+                    {adminLabels.actions.hardDelete}
+                  </MotionButton>
+                </div>
+              )}
             </div>
           </div>
 

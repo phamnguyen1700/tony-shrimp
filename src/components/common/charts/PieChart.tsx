@@ -6,6 +6,9 @@ interface PieChartItem {
 
 interface PieChartProps {
   items: PieChartItem[];
+  sizeClassName?: string;
+  compact?: boolean;
+  horizontal?: boolean;
 }
 
 const colors = [
@@ -16,7 +19,12 @@ const colors = [
   "var(--border)",
 ];
 
-export default function PieChart({ items }: PieChartProps) {
+export default function PieChart({
+  items,
+  sizeClassName = "size-40",
+  compact = false,
+  horizontal = false,
+}: PieChartProps) {
   const total = items.reduce((sum, item) => sum + item.value, 0);
   let cursor = 0;
   const gradient = items
@@ -29,20 +37,26 @@ export default function PieChart({ items }: PieChartProps) {
     .join(", ");
 
   return (
-    <div className="grid min-w-0 items-center gap-6">
+    <div
+      className={`grid min-w-0 items-center ${
+        horizontal ? "grid-cols-[auto_minmax(0,1fr)]" : ""
+      } ${compact ? "gap-3" : "gap-6"}`}
+    >
       <div
-        className="mx-auto size-40 rounded-full border border-border"
+        className={`mx-auto rounded-full border border-border ${sizeClassName}`}
         style={{ background: `conic-gradient(${gradient})` }}
         aria-hidden="true"
       />
-      <div className="min-w-0 space-y-4">
+      <div className={`min-w-0 ${compact ? "space-y-2" : "space-y-4"}`}>
         {items.map((item, index) => {
           const percent = total > 0 ? (item.value / total) * 100 : 0;
 
           return (
             <div
               key={item.label}
-              className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-border pb-3 text-sm last:border-0"
+              className={`grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border text-sm last:border-0 ${
+                compact ? "pb-2" : "pb-3"
+              }`}
             >
               <span className="flex min-w-0 items-center gap-3 font-semibold text-foreground">
                 <span

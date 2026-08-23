@@ -17,11 +17,11 @@ export default function PaymentSummary({ items, labels }: PaymentSummaryProps) {
         {items.map((item) => (
           <div
             key={item.label}
-            className="flex items-start justify-between gap-4 border-b border-border py-5 first:pt-0 last:border-0 last:pb-0"
+            className="flex items-start justify-between gap-4 border-b border-border py-2.5 first:pt-0 last:border-0 last:pb-0"
           >
             <span className="text-sm font-semibold text-foreground">{item.label}</span>
             <div className="text-right">
-              <strong className="block font-display text-xl font-semibold text-foreground">
+              <strong className="block font-display text-base font-semibold text-foreground">
                 {item.value}
               </strong>
               {item.change && (

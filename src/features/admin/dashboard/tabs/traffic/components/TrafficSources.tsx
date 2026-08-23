@@ -19,7 +19,7 @@ export default function TrafficSources({ sources, labels }: TrafficSourcesProps)
           value: source.value,
           displayValue: `${source.value}%`,
         }))}
-        heightClassName="h-44"
+        heightClassName="h-32"
         showValues
       />
     </DashboardPanel>

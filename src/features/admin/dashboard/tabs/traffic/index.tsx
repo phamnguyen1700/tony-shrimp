@@ -69,7 +69,7 @@ export default function TrafficTab({
   onPeriodChange,
 }: TrafficTabProps) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         {errorMessage ? (
           <p className="text-sm font-medium text-destructive">{errorMessage}</p>
@@ -102,25 +102,27 @@ export default function TrafficTab({
         liveHelperLabel={labels.common.rightNow}
       />
 
-      {trafficData.length > 0 ? (
-        <WebsiteTrafficChart data={trafficData} labels={labels.traffic} />
-      ) : (
-        <div className="border border-border bg-card p-5 text-sm font-medium text-muted-foreground md:p-6">
-          {unavailableText}
-        </div>
-      )}
+      <div className="grid items-start gap-3 xl:grid-cols-[2fr_1fr]">
+        {trafficData.length > 0 ? (
+          <WebsiteTrafficChart data={trafficData} labels={labels.traffic} />
+        ) : (
+          <div className="border border-border bg-card p-3 text-sm font-medium text-muted-foreground">
+            {unavailableText}
+          </div>
+        )}
+        <TopPages
+          pages={topPages}
+          labels={labels.traffic}
+          emptyText={trafficUnavailableText(labels, unavailableText)}
+        />
+      </div>
 
-      <div className="grid items-start gap-5 xl:grid-cols-3">
+      <div className="grid items-start gap-3 xl:grid-cols-2">
         <TrafficSources sources={trafficSources} labels={labels.traffic} />
         <EcommerceFunnel
           funnel={funnel}
           labels={labels.traffic}
           unavailableText={unavailableText}
-        />
-        <TopPages
-          pages={topPages}
-          labels={labels.traffic}
-          emptyText={trafficUnavailableText(labels, unavailableText)}
         />
       </div>
     </div>

@@ -21,6 +21,8 @@ interface AdminDataTableProps<T> {
   onPageChange?: (page: number) => void;
   minWidth?: string;
   className?: string;
+  rowClassName?: (row: T) => string;
+  onRowClick?: (row: T) => void;
 }
 
 const alignClassName = {
@@ -42,6 +44,8 @@ export default function AdminDataTable<T>({
   onPageChange,
   minWidth = "920px",
   className = "",
+  rowClassName,
+  onRowClick,
 }: AdminDataTableProps<T>) {
   const [page, setPage] = useState(1);
   const currentPage = controlledPage ?? page;
@@ -97,9 +101,10 @@ export default function AdminDataTable<T>({
             {paginatedRows.map((row, index) => (
               <tr
                 key={getRowKey(row)}
+                onClick={() => onRowClick?.(row)}
                 className={`admin-data-row ${
                   index % 2 === 0 ? "admin-data-row-even" : "admin-data-row-odd"
-                }`}
+                } ${onRowClick ? "cursor-pointer" : ""} ${rowClassName?.(row) ?? ""}`}
               >
                 {columns.map((column) => (
                   <td

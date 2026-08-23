@@ -64,7 +64,7 @@ export default function PerformanceChart({
     <DashboardPanel
       title={labels.performance}
       eyebrow={periodLabel}
-      className="min-h-[420px]"
+      className="min-h-0 overflow-hidden"
       action={
         <div className="flex border border-border">
           {metrics.map((item) => (
@@ -84,12 +84,12 @@ export default function PerformanceChart({
         </div>
       }
     >
-      <div className="mb-3 flex items-start justify-between gap-4">
+      <div className="mb-2 flex items-start justify-between gap-4">
         <div>
-          <strong className="block font-display text-4xl font-semibold leading-none text-foreground">
+          <strong className="block font-display text-xl font-semibold leading-none text-foreground">
             {isRevenueMetric ? revenueTotal : unavailableText}
           </strong>
-          <span className="mt-3 block text-sm text-muted-foreground">
+          <span className="mt-1 block text-xs text-muted-foreground">
             {isRevenueMetric ? labels.totalRevenue : labels.uniqueVisitors}
           </span>
         </div>
@@ -98,7 +98,7 @@ export default function PerformanceChart({
         ) : null}
       </div>
 
-      <div className="grid min-h-64 grid-cols-[44px_1fr] gap-3">
+      <div className="grid h-36 grid-cols-[40px_1fr] gap-2 xl:h-32">
         <div className="flex flex-col justify-between py-3 font-mono-label text-[10px] text-muted-foreground">
           <span>
             {isRevenueMetric
@@ -112,7 +112,7 @@ export default function PerformanceChart({
           </span>
           <span>0</span>
         </div>
-        <div className="relative min-w-0">
+        <div className="relative min-w-0 overflow-hidden">
           <div className="absolute inset-x-0 bottom-8 top-3 flex flex-col justify-between">
             <i className="border-t border-dashed border-border" />
             <i className="border-t border-dashed border-border" />
@@ -120,7 +120,7 @@ export default function PerformanceChart({
             <i className="border-t border-dashed border-border" />
           </div>
           <svg
-            className="relative z-10 h-full w-full"
+            className="relative z-10 h-full w-full overflow-hidden"
             viewBox="0 0 700 230"
             preserveAspectRatio="none"
             role="img"

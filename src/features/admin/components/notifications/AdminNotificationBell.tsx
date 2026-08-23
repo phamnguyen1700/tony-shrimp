@@ -11,24 +11,26 @@ const bellBurstParticles = [
 interface AdminNotificationBellProps {
   unreadCount: number;
   pulseKey: number;
-  onPlay: () => void;
+  onClick: () => void;
+  label?: string;
 }
 
 export default function AdminNotificationBell({
   unreadCount,
   pulseKey,
-  onPlay,
+  onClick,
+  label = "Open orders",
 }: AdminNotificationBellProps) {
   const reduced = useReducedMotion();
 
   return (
-    <div className="flex shrink-0 flex-col items-end gap-1">
+    <div className="flex shrink-0 items-center">
       <motion.button
         key={pulseKey}
         type="button"
-        aria-label="Play notification bell"
-        onClick={onPlay}
-        className="relative inline-flex h-7 w-7 items-center justify-center text-foreground transition-colors hover:text-accent"
+        aria-label={label}
+        onClick={onClick}
+        className="relative inline-flex h-7 w-7 items-center justify-center text-foreground/80 transition-colors hover:text-foreground"
         animate={
           !reduced && pulseKey > 0
             ? {
@@ -88,10 +90,12 @@ export default function AdminNotificationBell({
             transition={{ duration: 0.55, ease: "easeOut" }}
           />
         )}
+        {unreadCount > 0 && (
+          <span className="absolute -right-1 top-0 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-accent px-1 font-mono-label text-[8px] leading-none text-accent-foreground">
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        )}
       </motion.button>
-      <span className="font-mono-label text-[10px] uppercase tracking-widest text-muted-foreground">
-        {unreadCount} unread
-      </span>
     </div>
   );
 }

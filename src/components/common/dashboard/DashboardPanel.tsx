@@ -16,15 +16,15 @@ export default function DashboardPanel({
   className = "",
 }: DashboardPanelProps) {
   return (
-    <section className={`border border-border bg-card p-5 md:p-6 ${className}`}>
-      <div className="mb-6 flex items-start justify-between gap-4">
+    <section className={`border border-border bg-card p-3 ${className}`}>
+      <div className="mb-2.5 flex items-start justify-between gap-4">
         <div>
           {eyebrow && (
             <p className="font-mono-label text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               {eyebrow}
             </p>
           )}
-          <h2 className="mt-3 font-display text-xl font-semibold leading-none text-foreground">
+          <h2 className="mt-1 font-display text-base font-semibold leading-none text-foreground">
             {title}
           </h2>
         </div>

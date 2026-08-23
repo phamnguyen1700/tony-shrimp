@@ -21,11 +21,14 @@ export default function TopPages({
     <DashboardPanel title={labels.topPages} eyebrow={labels.byPageViews}>
       {pages.length > 0 ? (
         <PieChart
-          items={pages.map((page) => ({
+          items={pages.slice(0, 5).map((page) => ({
             label: page.path,
             value: page.views,
             displayValue: `${page.views.toLocaleString()} ${labels.views}`,
           }))}
+          sizeClassName="size-40"
+          compact
+          horizontal
         />
       ) : (
         <p className="py-8 text-sm font-medium text-muted-foreground">{emptyText}</p>

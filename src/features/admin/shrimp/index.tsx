@@ -26,6 +26,7 @@ import {
 } from "@/hooks/shrimp";
 import { adminShrimpFormSchema } from "@/schema/shrimp";
 import { useShrimpOptionsStore } from "@/store/shrimpStore";
+import { useIsDesktop } from "@/hooks/device/useIsDesktop";
 import type {
   AdminShrimpCareDraft,
   AdminShrimpFilters,
@@ -57,6 +58,7 @@ import AdminShrimpFiltersPanel from "./components/AdminShrimpFilters";
 import ConfirmActionDialog from "./components/ConfirmActionDialog";
 import ShrimpFormModal from "./components/ShrimpFormModal";
 import ShrimpTable from "./components/ShrimpTable";
+import ShrimpVariantsPanel from "./components/ShrimpVariantsPanel";
 import VariantManagerDialog from "./components/VariantManagerDialog";
 
 const emptyAdminShrimpFilters: AdminShrimpFilters = {
@@ -76,6 +78,7 @@ export default function AdminShrimpFeature() {
   const { t } = useAppRuntime();
   const reduced = useReducedMotion();
   const ownerOptionsQuery = useOwnerCatalogOptions();
+  const isDesktop = useIsDesktop(1280);
   const storedOptions = useShrimpOptionsStore((state) => state.ownerCatalogOptions);
   const [filters, setFilters] = useState<AdminShrimpFilters>(emptyAdminShrimpFilters);
   const [page, setPage] = useState(1);
@@ -114,6 +117,7 @@ export default function AdminShrimpFeature() {
   const [archiveTarget, setArchiveTarget] = useState<string | null>(null);
   const [hardDeleteTarget, setHardDeleteTarget] = useState<string | null>(null);
   const [variantTarget, setVariantTarget] = useState<ShrimpListItem | null>(null);
+  const [variantsModalOpen, setVariantsModalOpen] = useState(false);
   const [careDraft, setCareDraft] = useState<AdminShrimpCareDraft>(emptyAdminShrimpCareDraft);
   const editHydratedIdRef = useRef<string | null>(null);
 
@@ -170,6 +174,7 @@ export default function AdminShrimpFeature() {
   ]);
   const currentArchiveTarget = products.find((product) => product.id === archiveTarget);
   const currentHardDeleteTarget = products.find((product) => product.id === hardDeleteTarget);
+  const currentEditingProduct = products.find((product) => product.id === editingId);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 300);
@@ -188,6 +193,15 @@ export default function AdminShrimpFeature() {
     filters.trait,
     filters.availability,
   ]);
+
+  useEffect(() => {
+    if (variantTarget && products.some((product) => product.id === variantTarget.id)) return;
+    setVariantTarget(products[0] ?? null);
+  }, [products, variantTarget]);
+
+  useEffect(() => {
+    if (isDesktop) setVariantsModalOpen(false);
+  }, [isDesktop]);
 
   useEffect(() => {
     if (!formOpen || !editingId || !editingDetailQuery.data) return;
@@ -389,6 +403,11 @@ export default function AdminShrimpFeature() {
     updateVariant.mutate({ variant_id: variantId, ...payload });
   }
 
+  function selectVariantTarget(product: ShrimpListItem) {
+    setVariantTarget(product);
+    if (isDesktop === false) setVariantsModalOpen(true);
+  }
+
   function confirmArchive() {
     if (!archiveTarget) return;
     deactivateShrimp.mutate(archiveTarget, {
@@ -399,7 +418,13 @@ export default function AdminShrimpFeature() {
   function confirmHardDelete() {
     if (!hardDeleteTarget) return;
     hardDeleteShrimp.mutate(hardDeleteTarget, {
-      onSuccess: () => setHardDeleteTarget(null),
+      onSuccess: () => {
+        if (editingId === hardDeleteTarget) {
+          setFormOpen(false);
+          setEditingId(null);
+        }
+        setHardDeleteTarget(null);
+      },
     });
   }
 
@@ -410,35 +435,56 @@ export default function AdminShrimpFeature() {
         initial={reduced ? undefined : "hidden"}
         animate={reduced ? undefined : "visible"}
       >
-        <motion.div variants={reduced ? undefined : fadeUp}>
-          <ShrimpTable
-            products={products}
-            detailById={detailById}
-            imagePendingById={imagePendingById}
-            t={t}
-            isLoading={shrimpQuery.isLoading}
-            page={page}
-            pageSize={adminShrimpPageSize}
-            totalRows={totalRows}
-            onPageChange={setPage}
-            filtersSlot={
-              <AdminShrimpFiltersPanel
-                filters={filters}
-                options={options ?? undefined}
-                onChange={setFilters}
-                onClear={() => setFilters(emptyAdminShrimpFilters)}
-              />
-            }
-            onAdd={openAdd}
-            onEdit={openEdit}
-            onViewVariants={setVariantTarget}
-            onActivate={(productId) => activateShrimp.mutate(productId)}
-            onDeactivate={setArchiveTarget}
-            onHardDelete={setHardDeleteTarget}
-            onUploadImage={uploadProductImage}
-            onDeleteImage={(product, imageId) => deleteImage.mutate({ shrimp_id: product.id, image_id: imageId })}
-            onReorderImages={reorderProductImages}
-          />
+        <motion.div
+          variants={reduced ? undefined : fadeUp}
+          className="grid min-h-screen items-start xl:grid-cols-[minmax(0,3fr)_minmax(320px,1fr)]"
+        >
+          <div className="min-w-0">
+            <ShrimpTable
+              products={products}
+              detailById={detailById}
+              imagePendingById={imagePendingById}
+              t={t}
+              isLoading={shrimpQuery.isLoading}
+              page={page}
+              pageSize={adminShrimpPageSize}
+              totalRows={totalRows}
+              selectedProductId={variantTarget?.id ?? null}
+              onPageChange={setPage}
+              filtersSlot={
+                <AdminShrimpFiltersPanel
+                  filters={filters}
+                  options={options ?? undefined}
+                  onChange={setFilters}
+                  onClear={() => setFilters(emptyAdminShrimpFilters)}
+                />
+              }
+              onAdd={openAdd}
+              onEdit={openEdit}
+              onViewVariants={selectVariantTarget}
+              onActivate={(productId) => activateShrimp.mutate(productId)}
+              onDeactivate={setArchiveTarget}
+              onUploadImage={uploadProductImage}
+              onDeleteImage={(product, imageId) => deleteImage.mutate({ shrimp_id: product.id, image_id: imageId })}
+              onReorderImages={reorderProductImages}
+            />
+          </div>
+          <div className="hidden xl:block">
+            <ShrimpVariantsPanel
+              product={variantTarget}
+              variants={variantDetailQuery.data?.variants ?? variantTarget?.variants ?? []}
+              isLoading={Boolean(variantTarget) && variantDetailQuery.isLoading}
+              formLabels={formLabels}
+              actions={actions}
+              saleUnits={options?.sale_units}
+              isAdding={addVariant.isPending}
+              isUpdating={updateVariant.isPending}
+              isDeleting={deleteVariant.isPending}
+              onAdd={addNewVariant}
+              onUpdate={updateExistingVariant}
+              onDelete={(variantId) => deleteVariant.mutate(variantId)}
+            />
+          </div>
         </motion.div>
       </motion.div>
 
@@ -459,16 +505,18 @@ export default function AdminShrimpFeature() {
         watchedTraits={watchedTraits}
         speciesSuggestions={speciesSuggestions}
         gradeSuggestions={gradeSuggestions}
+        canHardDelete={currentEditingProduct?.catalog_status === "inactive"}
         onCareChange={setCareDraft}
         onSubmit={() => void saveForm()}
+        onHardDelete={() => editingId && setHardDeleteTarget(editingId)}
         onClose={() => setFormOpen(false)}
       />
 
       <VariantManagerDialog
         product={variantTarget}
         variants={variantDetailQuery.data?.variants ?? []}
-        open={variantTarget !== null}
-        onClose={() => setVariantTarget(null)}
+        open={variantsModalOpen && isDesktop === false && variantTarget !== null}
+        onClose={() => setVariantsModalOpen(false)}
         formLabels={formLabels}
         actions={actions}
         saleUnits={options?.sale_units}

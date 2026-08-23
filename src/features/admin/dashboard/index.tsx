@@ -119,18 +119,18 @@ function mapKpiStats(
   unavailableText: string,
   labels: {
     grossRevenue: string;
+    netRevenue: string;
     orders: string;
     averageOrderValue: string;
-    refunds: string;
   },
   data?: AnalyticsDashboardResponse,
 ): Stat[] {
   if (!data) {
     return [
       { label: labels.grossRevenue, value: unavailableText },
+      { label: labels.netRevenue, value: unavailableText },
       { label: labels.orders, value: unavailableText },
       { label: labels.averageOrderValue, value: unavailableText },
-      { label: labels.refunds, value: unavailableText },
     ];
   }
 
@@ -141,6 +141,10 @@ function mapKpiStats(
       change: formatPercent(data.summary.gross_revenue_change_percent),
     },
     {
+      label: labels.netRevenue,
+      value: formatMoney(data.payments.net_revenue, data.payments.currency),
+    },
+    {
       label: labels.orders,
       value: formatInteger(data.summary.orders),
       change: formatPercent(data.summary.orders_change_percent),
@@ -149,11 +153,6 @@ function mapKpiStats(
       label: labels.averageOrderValue,
       value: formatMoney(data.average_order_value.amount, data.average_order_value.currency),
     },
-    {
-      label: labels.refunds,
-      value: formatMoney(data.payments.refund_amount, data.payments.currency),
-      change: data.payments.refund_count > 0 ? formatInteger(data.payments.refund_count) : undefined,
-    },
   ];
 }
 
@@ -161,33 +160,33 @@ function mapPaymentSummary(
   unavailableText: string,
   labels: {
     successfulPayments: string;
+    stripeFees: string;
     refunds: string;
-    averageOrderValue: string;
   },
   data?: AnalyticsDashboardResponse,
 ): PaymentSummaryItem[] {
   if (!data) {
     return [
       { label: labels.successfulPayments, value: unavailableText },
+      { label: labels.stripeFees, value: unavailableText },
       { label: labels.refunds, value: unavailableText },
-      { label: labels.averageOrderValue, value: unavailableText },
     ];
   }
 
   return [
     {
       label: labels.successfulPayments,
-      value: formatMoney(data.summary.gross_revenue, data.summary.currency),
-      change: formatPercent(data.summary.gross_revenue_change_percent),
+      value: formatInteger(data.payments.successful_count),
+    },
+    {
+      label: labels.stripeFees,
+      value: formatMoney(data.payments.stripe_fees, data.payments.currency),
+      down: true,
     },
     {
       label: labels.refunds,
       value: formatMoney(data.payments.refund_amount, data.payments.currency),
       down: true,
-    },
-    {
-      label: labels.averageOrderValue,
-      value: formatMoney(data.average_order_value.amount, data.average_order_value.currency),
     },
   ];
 }
@@ -340,9 +339,9 @@ export default function AdminDashboardFeature() {
   const trafficFunnel = mapEcommerceFunnel(traffic);
 
   return (
-    <div className="min-h-screen bg-background px-4 py-5 md:px-6">
+    <div className="min-h-screen bg-background px-3 py-3 md:px-4">
       <div className="mx-auto max-w-[1720px]">
-        <div className="mb-6 flex flex-wrap items-center gap-2 border-b border-border">
+        <div className="mb-3 flex flex-wrap items-center gap-2 border-b border-border">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;

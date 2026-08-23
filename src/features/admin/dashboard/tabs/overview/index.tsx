@@ -71,7 +71,7 @@ export default function OverviewTab({
   onPeriodChange,
 }: OverviewTabProps) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         {errorMessage ? (
           <p className="text-sm font-medium text-destructive">{errorMessage}</p>
@@ -104,27 +104,27 @@ export default function OverviewTab({
         liveHelperLabel={labels.common.rightNow}
       />
 
-      <div className="grid gap-5 xl:grid-cols-[2fr_1fr]">
-        <PerformanceChart
-          labels={labels.overview}
-          data={revenueData}
-          periodLabel={periodLabel}
-          revenueTotal={revenueTotal}
-          revenueChange={revenueChange}
-          revenueAxisPrefix={revenueAxisPrefix}
-          xLabels={chartLabels}
-          unavailable={unavailable}
-          unavailableText={unavailableText}
-        />
-        <PaymentSummary items={paymentSummary} labels={labels.overview} />
-      </div>
-
-      <TopProducts
-        products={topProducts}
+      <PerformanceChart
         labels={labels.overview}
+        data={revenueData}
+        periodLabel={periodLabel}
+        revenueTotal={revenueTotal}
+        revenueChange={revenueChange}
+        revenueAxisPrefix={revenueAxisPrefix}
+        xLabels={chartLabels}
         unavailable={unavailable}
         unavailableText={unavailableText}
       />
+
+      <div className="grid gap-3 xl:grid-cols-[1fr_2fr]">
+        <PaymentSummary items={paymentSummary} labels={labels.overview} />
+        <TopProducts
+          products={topProducts}
+          labels={labels.overview}
+          unavailable={unavailable}
+          unavailableText={unavailableText}
+        />
+      </div>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { Translations } from "@/i18n";
 import { routes } from "@/config/routes";
 import { drawerSlide } from "@/lib/motionVariants";
-import AdminNotificationsPanel from "./notifications/AdminNotificationsPanel";
+import AdminNotificationShortcut from "./notifications/AdminNotificationShortcut";
 
 interface Props {
   children: ReactNode;
@@ -139,6 +139,9 @@ export default function AdminLayout({
           </svg>
         </button>
       </div>
+      <div className="fixed right-14 top-2.5 z-30 md:right-4 md:top-4">
+        <AdminNotificationShortcut />
+      </div>
 
       <AnimatePresence>
         {drawerOpen && (
@@ -187,10 +190,7 @@ export default function AdminLayout({
       </AnimatePresence>
 
       <main className="ml-0 min-h-screen pt-14 md:ml-56 md:pt-0">
-        <div className="grid min-h-screen items-start xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
-          <section className="min-w-0">{children}</section>
-          <AdminNotificationsPanel />
-        </div>
+        <section className="min-w-0">{children}</section>
       </main>
     </div>
   );

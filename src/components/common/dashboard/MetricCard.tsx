@@ -20,18 +20,18 @@ export default function MetricCard({
   const isLongValue = value.length > 10;
 
   return (
-    <div className="border border-border bg-card p-5 md:p-6">
+    <div className="border border-border bg-card p-3">
       <p className="font-mono-label text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
         {label}
       </p>
       <strong
-        className={`mt-4 block font-display font-semibold leading-none text-foreground ${
-          isLongValue ? "text-xl md:text-2xl" : "text-3xl md:text-4xl"
+        className={`mt-2.5 block font-display font-semibold leading-none text-foreground ${
+          isLongValue ? "text-base md:text-lg" : "text-xl md:text-2xl"
         }`}
       >
         {value}
       </strong>
-      <div className="mt-5 flex min-h-4 items-center gap-2 text-xs">
+      <div className="mt-2.5 flex min-h-4 items-center gap-2 text-xs">
         {live ? (
           <span className="h-3 w-3 rounded-full border-2 border-primary bg-accent" />
         ) : (

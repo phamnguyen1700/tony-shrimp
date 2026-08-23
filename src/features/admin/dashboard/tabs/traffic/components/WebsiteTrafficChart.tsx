@@ -51,25 +51,25 @@ export default function WebsiteTrafficChart({ data, labels }: WebsiteTrafficChar
           ))}
         </div>
       }
-      className="min-h-[360px]"
+      className="min-h-0 overflow-hidden"
     >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <strong className="block font-display text-4xl font-semibold leading-none text-foreground">
+          <strong className="block font-display text-xl font-semibold leading-none text-foreground">
             {latestValue.toLocaleString()}
           </strong>
-          <span className="mt-3 block text-sm text-muted-foreground">
+          <span className="mt-1 block text-xs text-muted-foreground">
             {metrics.find((item) => item.key === metric)?.label.toLowerCase()}
           </span>
         </div>
       </div>
-      <div className="mt-10">
+      <div className="mt-3">
         <BarChart
-          items={data.slice(-14).map((point) => ({
-            label: point.date.replace("Day ", "D"),
+          items={data.slice(-10).map((point) => ({
+            label: point.date.slice(5),
             value: point[metric],
           }))}
-          heightClassName="h-44"
+          heightClassName="h-24"
         />
       </div>
     </DashboardPanel>
