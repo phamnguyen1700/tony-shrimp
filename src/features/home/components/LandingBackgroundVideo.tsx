@@ -1,3 +1,5 @@
+import { landingBackgroundVideoSrc } from "./landingBackgroundVideoData";
+
 export default function LandingBackgroundVideo() {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
@@ -10,7 +12,7 @@ export default function LandingBackgroundVideo() {
         preload="metadata"
         aria-hidden="true"
       >
-        <source src="/background-vid/background-swife.mp4" type="video/mp4" />
+        <source src={landingBackgroundVideoSrc} type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-[#080b08]/5" />
       <div
