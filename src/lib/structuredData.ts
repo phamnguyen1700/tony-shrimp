@@ -5,12 +5,50 @@ import {
   absoluteUrl,
   facebookUrl,
   siteDescription,
-  siteIcon,
   siteLogo,
   siteName,
   siteShortName,
   siteUrl,
 } from "./seo";
+
+const australiaCountryCode = "AU";
+const shippingRateAud = "25";
+const returnPolicyUrl = "/about#doa";
+
+const offerShippingDetails = {
+  "@type": "OfferShippingDetails",
+  shippingRate: {
+    "@type": "MonetaryAmount",
+    value: shippingRateAud,
+    currency: "AUD",
+  },
+  shippingDestination: {
+    "@type": "DefinedRegion",
+    addressCountry: australiaCountryCode,
+  },
+  deliveryTime: {
+    "@type": "ShippingDeliveryTime",
+    handlingTime: {
+      "@type": "QuantitativeValue",
+      minValue: 0,
+      maxValue: 3,
+      unitCode: "DAY",
+    },
+    transitTime: {
+      "@type": "QuantitativeValue",
+      minValue: 1,
+      maxValue: 4,
+      unitCode: "DAY",
+    },
+  },
+};
+
+const offerReturnPolicy = {
+  "@type": "MerchantReturnPolicy",
+  applicableCountry: australiaCountryCode,
+  returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+  merchantReturnLink: absoluteUrl(returnPolicyUrl),
+};
 
 export function createWebsiteJsonLd() {
   return {
@@ -89,6 +127,8 @@ export function createProductJsonLd(product: ShrimpDetail) {
             : "https://schema.org/OutOfStock",
           itemCondition: "https://schema.org/NewCondition",
           url: absoluteUrl(routes.product(product.slug)),
+          shippingDetails: offerShippingDetails,
+          hasMerchantReturnPolicy: offerReturnPolicy,
           seller: {
             "@type": "Organization",
             name: siteName,
