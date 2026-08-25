@@ -12,6 +12,7 @@ import { useAuthStore } from '@/store/authStore'
 import BrandMark from './BrandMark'
 import MobileDrawer from './MobileDrawer'
 import NavSearch from './NavSearch'
+import NavigationProgressBar from './NavigationProgressBar'
 
 interface Props {
   t: Translations
@@ -149,6 +150,7 @@ export default function Navbar({ t, lang, setLang, theme, setTheme, cartItems }:
             </button>
           </div>
         </div>
+        <NavigationProgressBar />
       </header>
 
       <MobileDrawer
