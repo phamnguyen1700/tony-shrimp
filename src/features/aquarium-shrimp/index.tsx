@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import PageHero from "@/components/common/layout/PageHero";
+import LoadMoreSentinel from "@/components/common/lazy/LoadMoreSentinel";
 import AppBreadcrumb from "@/components/common/navigation/AppBreadcrumb";
 import toast from "react-hot-toast";
 import { routes } from "@/config/routes";
@@ -14,6 +15,7 @@ import {
   useFetchShrimpDetail,
   useShrimpList,
 } from "@/hooks/shrimp";
+import { useProgressiveItems } from "@/hooks/useProgressiveItems";
 import { fadeUp, staggerContainer } from "@/lib/config/motionVariants";
 import { shrimpCollectionLinks } from "@/lib/shrimp/collectionConfig";
 import {
@@ -51,6 +53,9 @@ const fallbackCatalogOptions: CatalogOptions = {
   rarities: [],
   traits: [],
 };
+
+const shopInitialVisibleCount = 9;
+const shopVisibleStep = 9;
 
 interface AquariumShrimpFeatureProps {
   initialProducts?: ShrimpListItem[];
@@ -93,7 +98,18 @@ export default function AquariumShrimpFeature({
     () => createFilterOptionsForProducts(products, options),
     [products, options],
   );
-  const filteredProducts = filterShrimpProducts(products, filters);
+  const filteredProducts = useMemo(
+    () => filterShrimpProducts(products, filters),
+    [products, filters],
+  );
+  const {
+    visibleItems: visibleProducts,
+    hasMore: hasMoreVisibleProducts,
+    loadMore: loadMoreVisibleProducts,
+  } = useProgressiveItems(filteredProducts, {
+    initialCount: shopInitialVisibleCount,
+    step: shopVisibleStep,
+  });
   const filterCount = activeShopFilterCount(filters);
   const collectionIntro = activeCollectionSlug
     ? t.shop.collections[activeCollectionSlug as keyof typeof t.shop.collections]
@@ -235,21 +251,28 @@ export default function AquariumShrimpFeature({
                 isEmpty={!shrimpQuery.isLoading && filteredProducts.length === 0}
               />
             ) : (
-              <ShopProductGrid>
-                {filteredProducts.map((product) => (
-                  <ShopProductCardContainer
-                    key={product.id}
-                    product={product}
-                    t={t}
-                    reduced={reduced}
-                    hovered={hoveredId === product.id}
-                    items={items}
-                    onHover={setHoveredId}
-                    onAddToCart={addProductToCart}
-                    onContact={() => window.open(facebookUrl, "_blank", "noopener,noreferrer")}
-                  />
-                ))}
-              </ShopProductGrid>
+              <>
+                <ShopProductGrid>
+                  {visibleProducts.map((product) => (
+                    <ShopProductCardContainer
+                      key={product.id}
+                      product={product}
+                      t={t}
+                      reduced={reduced}
+                      hovered={hoveredId === product.id}
+                      items={items}
+                      onHover={setHoveredId}
+                      onAddToCart={addProductToCart}
+                      onContact={() => window.open(facebookUrl, "_blank", "noopener,noreferrer")}
+                    />
+                  ))}
+                </ShopProductGrid>
+                <LoadMoreSentinel
+                  enabled={hasMoreVisibleProducts}
+                  onLoadMore={loadMoreVisibleProducts}
+                  className="mt-8"
+                />
+              </>
             )}
           </motion.div>
         </div>
