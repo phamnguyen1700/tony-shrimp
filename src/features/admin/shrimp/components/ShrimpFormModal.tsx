@@ -34,6 +34,7 @@ interface ShrimpFormModalProps {
   watchedTraits: string;
   speciesSuggestions: string[];
   gradeSuggestions: string[];
+  isSaving?: boolean;
   canHardDelete?: boolean;
   onCareChange: (updater: (draft: AdminShrimpCareDraft) => AdminShrimpCareDraft) => void;
   onSubmit: () => void;
@@ -58,6 +59,7 @@ export default function ShrimpFormModal({
   watchedTraits,
   speciesSuggestions,
   gradeSuggestions,
+  isSaving = false,
   canHardDelete = false,
   onCareChange,
   onSubmit,
@@ -67,7 +69,9 @@ export default function ShrimpFormModal({
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={() => {
+        if (!isSaving) onClose();
+      }}
       title={editingId ? adminLabels.editShrimp : adminLabels.addShrimp}
       maxWidth="max-w-6xl"
     >
@@ -198,6 +202,7 @@ export default function ShrimpFormModal({
                     variant="ghost"
                     size="sm"
                     className="text-red-500 hover:bg-red-500/10"
+                    disabled={isSaving}
                     onClick={onHardDelete}
                   >
                     {adminLabels.actions.hardDelete}
@@ -235,13 +240,20 @@ export default function ShrimpFormModal({
 
         <div className="mt-6 flex gap-3 border-t border-border pt-4">
           <button
-            type="button"
-            onClick={onSubmit}
-            className="ui-radius inline-flex cursor-pointer items-center justify-center gap-2 bg-accent px-3 py-1.5 font-body text-xs font-medium uppercase tracking-widest text-accent-foreground transition-colors duration-150 hover:bg-accent/90 focus-visible:outline-ring"
+            type="submit"
+            disabled={isSaving}
+            aria-busy={isSaving}
+            className="ui-radius inline-flex cursor-pointer items-center justify-center gap-2 bg-accent px-3 py-1.5 font-body text-xs font-medium uppercase tracking-widest text-accent-foreground transition-colors duration-150 hover:bg-accent/90 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-40"
           >
+            {isSaving && (
+              <span
+                className="h-3 w-3 animate-spin rounded-full border border-current border-t-transparent"
+                aria-hidden="true"
+              />
+            )}
             {formLabels.save}
           </button>
-          <MotionButton type="button" variant="ghost" size="sm" onClick={onClose}>
+          <MotionButton type="button" variant="ghost" size="sm" disabled={isSaving} onClick={onClose}>
             {formLabels.cancel}
           </MotionButton>
         </div>

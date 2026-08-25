@@ -118,6 +118,7 @@ export default function AdminShrimpFeature() {
   const [variantsModalOpen, setVariantsModalOpen] = useState(false);
   const [careDraft, setCareDraft] = useState<AdminShrimpCareDraft>(emptyAdminShrimpCareDraft);
   const editHydratedIdRef = useRef<string | null>(null);
+  const formSaveInFlightRef = useRef(false);
 
   const updateShrimp = useUpdateShrimp(editingId ?? emptyUuid);
   const updateEditingCareParameter = useUpsertShrimpCareParameter(editingId ?? emptyUuid);
@@ -167,6 +168,10 @@ export default function AdminShrimpFeature() {
   const currentArchiveTarget = products.find((product) => product.id === archiveTarget);
   const currentHardDeleteTarget = products.find((product) => product.id === hardDeleteTarget);
   const currentEditingProduct = products.find((product) => product.id === editingId);
+  const isFormSaving =
+    createShrimp.isPending ||
+    updateShrimp.isPending ||
+    updateEditingCareParameter.isPending;
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedSearch(filters.search.trim()), 300);
@@ -271,6 +276,8 @@ export default function AdminShrimpFeature() {
   }
 
   async function saveForm() {
+    if (formSaveInFlightRef.current || isFormSaving) return;
+
     const parsed = adminShrimpFormSchema.safeParse(getValues());
 
     if (!parsed.success) {
@@ -306,6 +313,8 @@ export default function AdminShrimpFeature() {
       traits: splitTraits(form.traits),
     };
 
+    formSaveInFlightRef.current = true;
+
     if (editingId) {
       try {
         await updateEditingCareParameter.mutateAsync(careParameterPayloadFromDraft(careDraft));
@@ -313,17 +322,21 @@ export default function AdminShrimpFeature() {
         setFormOpen(false);
       } catch {
         // Mutation hooks surface API errors via toast.
+      } finally {
+        formSaveInFlightRef.current = false;
       }
       return;
     }
 
     if (!form.variant_name) {
+      formSaveInFlightRef.current = false;
       setError("variant_name", { message: t.apiErrors.variantNameRequired });
       toast.error(t.apiErrors.variantNameRequired);
       return;
     }
 
     if (!form.price) {
+      formSaveInFlightRef.current = false;
       setError("price", { message: t.apiErrors.priceRequired });
       toast.error(t.apiErrors.priceRequired);
       return;
@@ -345,9 +358,14 @@ export default function AdminShrimpFeature() {
       images: [],
     };
 
-    createShrimp.mutate(payload, {
-      onSuccess: () => setFormOpen(false),
-    });
+    try {
+      await createShrimp.mutateAsync(payload);
+      setFormOpen(false);
+    } catch {
+      // Mutation hooks surface API errors via toast.
+    } finally {
+      formSaveInFlightRef.current = false;
+    }
   }
 
   async function uploadProductImage(product: OwnerShrimpListItem, file: File | undefined, index: number) {
@@ -493,6 +511,7 @@ export default function AdminShrimpFeature() {
         watchedTraits={watchedTraits}
         speciesSuggestions={speciesSuggestions}
         gradeSuggestions={gradeSuggestions}
+        isSaving={isFormSaving}
         canHardDelete={currentEditingProduct?.catalog_status === "inactive"}
         onCareChange={setCareDraft}
         onSubmit={() => void saveForm()}
