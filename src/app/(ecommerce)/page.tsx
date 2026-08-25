@@ -8,7 +8,7 @@ import {
   createWebsiteJsonLd,
 } from "@/lib/seo/structuredData";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata = createPageMetadata({
   title:

@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring, type PanInfo } from "motion/react";
-import AppFooter from "@/components/common/layout/AppFooter";
 import { useShrimpList } from "@/hooks/shrimp";
 import { highQualityGradeFilter } from "@/lib/shrimp/highQuality";
 import { useAppRuntime } from "@/providers/AppProviders";
@@ -281,8 +280,6 @@ export default function HomeFeature({
           <LandingIndicators total={shrimp.length} activeIndex={activeIndex} onGoTo={goTo} />
         </div>
       </div>
-
-      <AppFooter t={t} />
     </div>
   );
 }
