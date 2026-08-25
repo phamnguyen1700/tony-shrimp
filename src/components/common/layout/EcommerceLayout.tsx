@@ -26,7 +26,7 @@ export default function EcommerceLayout({ children }: { children: ReactNode }) {
         cartItems={cartItems}
       />
       <PageTransition routeKey={pathname}>{children}</PageTransition>
-      {pathname !== "/" && <AppFooter t={t} />}
+      <AppFooter t={t} />
     </>
   );
 }

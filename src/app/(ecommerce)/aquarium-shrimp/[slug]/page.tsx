@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import AppPageFallback from "@/components/common/layout/AppPageFallback";
 import JsonLd from "@/components/common/seo/JsonLd";
 import ServerMaintenanceScreen from "@/components/common/ServerMaintenanceScreen";
 import AquariumShrimpFeature from "@/features/aquarium-shrimp";
@@ -57,7 +58,7 @@ export default async function Page({
               ]),
             )}
           />
-          <Suspense fallback={<div className="app-page" />}>
+          <Suspense fallback={<AppPageFallback />}>
             <AquariumShrimpFeature
               initialProducts={initialProducts}
               initialQuery={collection.query}
