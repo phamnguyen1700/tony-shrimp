@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { routes } from "@/config/routes";
 import type { Translations } from "@/i18n";
-import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
+import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimp/badgeStyles";
 import Badge from "@/components/ui/Badge";
 import type { ShrimpListItem } from "@/types/shrimp";
 

@@ -5,8 +5,8 @@ import Dialog from "@/components/ui/Dialog";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import MotionButton from "@/components/common/motion/MotionButton";
-import { badgeValues } from "@/lib/shrimpBadgeStyles";
-import { splitTraits } from "@/lib/shrimpAdminUtils";
+import { badgeValues } from "@/lib/shrimp/badgeStyles";
+import { splitTraits } from "@/lib/shrimp/adminUtils";
 import {
   catalogStatusOptions,
   lineSuggestions,

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import type { ThemeMode } from '@/hooks/useTheme'
 import type { Lang, Translations } from '@/i18n'
 import { routes } from '@/config/routes'
-import { drawerSlide } from '@/lib/motionVariants'
+import { drawerSlide } from '@/lib/config/motionVariants'
 
 interface Props {
   open: boolean
@@ -36,9 +36,9 @@ export default function MobileDrawer({
   ]
 
   const footerLinks = [
-    { to: '/shipping', label: t.nav.shipping },
-    { to: '/doa', label: t.nav.doaPolicy },
-    { to: '/contact', label: t.nav.contact },
+    { to: '/about#shipping', label: t.nav.shipping },
+    { to: '/about#doa', label: t.nav.doaPolicy },
+    { to: '/about#contact', label: t.nav.contact },
   ]
 
   const themes: ThemeMode[] = ['light', 'dark', 'system']

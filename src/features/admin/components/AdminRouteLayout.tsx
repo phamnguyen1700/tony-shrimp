@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import PageTransition from "@/components/common/motion/PageTransition";
 import { routes } from "@/config/routes";
-import { canAccessAdmin } from "@/lib/authAccess";
+import { canAccessAdmin } from "@/lib/user/authAccess";
 import { useCurrentUser } from "@/hooks/user";
 import { useOwnerNotificationStream } from "@/hooks/notification";
 import { useAppRuntime } from "@/providers/AppProviders";

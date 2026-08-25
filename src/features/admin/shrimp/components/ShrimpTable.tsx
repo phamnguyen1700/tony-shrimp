@@ -1,19 +1,18 @@
 import type { ReactNode } from "react";
 import AdminDataTable, { type AdminDataTableColumn } from "@/components/common/table/AdminDataTable";
 import type { Translations } from "@/i18n";
-import type { ShrimpDetail, ShrimpImage, ShrimpListItem } from "@/types/shrimp";
+import type { OwnerShrimpListItem, ShrimpImage } from "@/types/shrimp";
 import { Play } from "lucide-react";
 import FallbackImage from "@/components/common/images/FallbackImage";
 import Badge from "@/components/ui/Badge";
 import MotionButton from "@/components/common/motion/MotionButton";
-import { isVideoMediaUrl } from "@/lib/media";
-import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
-import { statusVariant } from "@/lib/shrimpAdminUtils";
+import { isVideoMediaUrl } from "@/lib/config/media";
+import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimp/badgeStyles";
+import { statusVariant } from "@/lib/shrimp/adminUtils";
 import ShrimpImageSlots from "./ShrimpImageSlots";
 
 interface ShrimpTableProps {
-  products: ShrimpListItem[];
-  detailById: Map<string, ShrimpDetail>;
+  products: OwnerShrimpListItem[];
   imagePendingById: Record<string, boolean>;
   t: Translations;
   isLoading: boolean;
@@ -23,19 +22,18 @@ interface ShrimpTableProps {
   selectedProductId?: string | null;
   onPageChange: (page: number) => void;
   filtersSlot?: ReactNode;
-  onEdit: (product: ShrimpListItem) => void;
+  onEdit: (product: OwnerShrimpListItem) => void;
   onAdd: () => void;
-  onViewVariants: (product: ShrimpListItem) => void;
+  onViewVariants: (product: OwnerShrimpListItem) => void;
   onActivate: (productId: string) => void;
   onDeactivate: (productId: string) => void;
-  onUploadImage: (product: ShrimpListItem, file: File | undefined, index: number) => void;
-  onDeleteImage: (product: ShrimpListItem, imageId: string) => void;
-  onReorderImages: (product: ShrimpListItem, images: ShrimpImage[]) => void;
+  onUploadImage: (product: OwnerShrimpListItem, file: File | undefined, index: number) => void;
+  onDeleteImage: (product: OwnerShrimpListItem, imageId: string) => void;
+  onReorderImages: (product: OwnerShrimpListItem, images: ShrimpImage[]) => void;
 }
 
 export default function ShrimpTable({
   products,
-  detailById,
   imagePendingById,
   t,
   isLoading,
@@ -57,7 +55,7 @@ export default function ShrimpTable({
   const table = t.admin.table;
   const formLabels = t.admin.form;
   const actions = t.admin.actions;
-  const columns: AdminDataTableColumn<ShrimpListItem>[] = [
+  const columns: AdminDataTableColumn<OwnerShrimpListItem>[] = [
     {
       key: "name",
       header: table.name,
@@ -165,7 +163,7 @@ export default function ShrimpTable({
       className: "admin-data-image-cell",
       render: (product) => (
         <ShrimpImageSlots
-          images={detailById.get(product.id)?.images ?? []}
+          images={product.images ?? []}
           disabled={Boolean(imagePendingById[product.id])}
           onUpload={(file, index) => onUploadImage(product, file, index)}
           onDelete={(imageId) => onDeleteImage(product, imageId)}
@@ -285,7 +283,7 @@ export default function ShrimpTable({
             </div>
             <div className="mt-4 overflow-x-auto pb-1">
               <ShrimpImageSlots
-                images={detailById.get(product.id)?.images ?? []}
+                images={product.images ?? []}
                 disabled={Boolean(imagePendingById[product.id])}
                 onUpload={(file, index) => onUploadImage(product, file, index)}
                 onDelete={(imageId) => onDeleteImage(product, imageId)}

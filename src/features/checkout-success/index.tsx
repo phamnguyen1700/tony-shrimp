@@ -8,7 +8,7 @@ import { CheckCircle2, ClipboardList, Loader2, PackageCheck, ShieldCheck, Shoppi
 import MotionButton from "@/components/common/motion/MotionButton";
 import { routes } from "@/config/routes";
 import { useOrderByPaymentSession } from "@/hooks/order";
-import { clearPendingOrderId } from "@/lib/pendingOrder";
+import { clearPendingOrderId } from "@/lib/order/pending";
 import { useAppRuntime } from "@/providers/AppProviders";
 import { useCart } from "@/store/cartStore";
 

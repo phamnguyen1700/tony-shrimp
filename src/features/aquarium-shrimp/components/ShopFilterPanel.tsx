@@ -1,7 +1,7 @@
-import Link from "next/link";
 import type { Translations } from "@/i18n";
-import type { ShrimpCollectionLink } from "@/lib/shrimpCollectionConfig";
+import type { ShrimpCollectionLink } from "@/lib/shrimp/collectionConfig";
 import type { CatalogOptions, ShopFilters } from "@/types/shrimp";
+import ShopCollectionLinks from "./ShopCollectionLinks";
 import ShopFilterCheckbox from "./ShopFilterCheckbox";
 import ShopFilterSection from "./ShopFilterSection";
 
@@ -11,6 +11,7 @@ interface ShopFilterPanelProps {
   options: Pick<CatalogOptions, "species" | "lines" | "colors" | "grades" | "rarities" | "traits">;
   collectionLinks?: ShrimpCollectionLink[];
   activeCollectionSlug?: string;
+  showCollections?: boolean;
   onToggle: (key: keyof ShopFilters, value: string) => void;
 }
 
@@ -20,6 +21,7 @@ export default function ShopFilterPanel({
   options,
   collectionLinks,
   activeCollectionSlug = "",
+  showCollections = true,
   onToggle,
 }: ShopFilterPanelProps) {
   const groups = [
@@ -33,39 +35,11 @@ export default function ShopFilterPanel({
 
   return (
     <div className="space-y-5">
-      {collectionLinks && collectionLinks.length > 0 && (
-        <ShopFilterSection title="Collection">
-          {collectionLinks.map((link) => {
-            const active = activeCollectionSlug === link.slug;
-
-            return (
-              <Link
-                key={link.slug || "all"}
-                href={link.href}
-                aria-current={active ? "page" : undefined}
-                className="group flex items-center gap-2"
-              >
-                <span
-                  className={`flex h-3.5 w-3.5 items-center justify-center border transition-colors ${
-                    active ? "border-accent bg-accent" : "border-border bg-transparent"
-                  }`}
-                  style={{ borderRadius: "999px" }}
-                  aria-hidden
-                >
-                  {active && (
-                    <span
-                      className="h-1.5 w-1.5 bg-accent-foreground"
-                      style={{ borderRadius: "999px" }}
-                    />
-                  )}
-                </span>
-                <span className="font-mono-label text-[11px] tracking-widest text-foreground/70 transition-colors group-hover:text-foreground">
-                  {link.label}
-                </span>
-              </Link>
-            );
-          })}
-        </ShopFilterSection>
+      {showCollections && collectionLinks && (
+        <ShopCollectionLinks
+          links={collectionLinks}
+          activeCollectionSlug={activeCollectionSlug}
+        />
       )}
       {groups.map((group) =>
         group.values.length > 0 ? (

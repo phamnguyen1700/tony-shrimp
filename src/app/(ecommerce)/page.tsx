@@ -1,13 +1,14 @@
 import JsonLd from "@/components/common/seo/JsonLd";
+import ServerMaintenanceScreen from "@/components/common/ServerMaintenanceScreen";
 import HomeFeature from "@/features/home";
-import { createPageMetadata } from "@/lib/seo";
+import { createPageMetadata } from "@/lib/seo/metadata";
 import { getLandingInitialData } from "@/lib/ssr/landing";
 import {
   createOrganizationJsonLd,
   createWebsiteJsonLd,
-} from "@/lib/structuredData";
+} from "@/lib/seo/structuredData";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata = createPageMetadata({
   title:
@@ -17,15 +18,19 @@ export const metadata = createPageMetadata({
 });
 
 export default async function Page() {
-  const landingData = await getLandingInitialData();
+  try {
+    const landingData = await getLandingInitialData();
 
-  return (
-    <>
-      <JsonLd data={[createWebsiteJsonLd(), createOrganizationJsonLd()]} />
+    return (
+      <>
+        <JsonLd data={[createWebsiteJsonLd(), createOrganizationJsonLd()]} />
       <HomeFeature
         initialShrimp={landingData.initialShrimp}
-        initialIsRareCollection={landingData.initialIsRareCollection}
+        initialCollectionKind={landingData.initialCollectionKind}
       />
-    </>
-  );
+      </>
+    );
+  } catch {
+    return <ServerMaintenanceScreen />;
+  }
 }

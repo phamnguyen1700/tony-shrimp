@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { createNoIndexMetadata } from "@/lib/seo";
+import { createNoIndexMetadata } from "@/lib/seo/metadata";
 
 export const metadata = createNoIndexMetadata();
 

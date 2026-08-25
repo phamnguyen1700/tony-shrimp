@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { routes } from "@/config/routes";
-import { createPageMetadata } from "@/lib/seo";
-import { markdownToDescriptionDraft } from "@/lib/shrimpDescription";
-import { createShrimpSeoMetadata } from "@/lib/shrimpSeoMetadata";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import { markdownToDescriptionDraft } from "@/lib/shrimp/description";
+import { createShrimpSeoMetadata } from "@/lib/seo/shrimpMetadata";
 import {
   createBreadcrumbItems,
   createBreadcrumbJsonLd,
   createProductJsonLd,
-} from "@/lib/structuredData";
+} from "@/lib/seo/structuredData";
 import { shrimpService } from "@/services/shrimp";
 import type { ShrimpDetail } from "@/types/shrimp";
 

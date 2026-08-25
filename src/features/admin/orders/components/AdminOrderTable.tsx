@@ -2,7 +2,7 @@ import Link from "next/link";
 import AdminDataTable, {
   type AdminDataTableColumn,
 } from "@/components/common/table/AdminDataTable";
-import { formatOrderDate, formatOrderMoney } from "@/lib/orderFormat";
+import { formatOrderDate, formatOrderMoney } from "@/lib/order/format";
 import type { OrderSummary } from "@/types/order";
 
 interface AdminOrderTableProps {

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { routes } from "@/config/routes";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl } from "@/lib/seo/metadata";
 import { shrimpCollectionConfigs } from "@/lib/ssr/collection";
 import { shrimpService } from "@/services/shrimp";
 import type { ShrimpListItem } from "@/types/shrimp";

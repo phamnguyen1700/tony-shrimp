@@ -10,7 +10,7 @@ import {
   emptyAdminShrimpVariantDraft,
   variantPayloadFromDraft,
   variantToDraft,
-} from "@/lib/shrimpAdminUtils";
+} from "@/lib/shrimp/adminUtils";
 import type { AdminShrimpVariantDraft } from "@/types/shrimp";
 
 interface VariantManagerDialogProps {

@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { uniqueItems } from "@/lib/shrimpAdminUtils";
+import { uniqueItems } from "@/lib/shrimp/adminUtils";
 
 interface ComboboxInputProps {
   label: string;

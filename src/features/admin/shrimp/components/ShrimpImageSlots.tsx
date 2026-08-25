@@ -19,7 +19,7 @@ import { Play, Trash2, Video } from "lucide-react";
 import { useState } from "react";
 import FallbackImage from "@/components/common/images/FallbackImage";
 import Dialog from "@/components/ui/Dialog";
-import { isVideoMediaUrl } from "@/lib/media";
+import { isVideoMediaUrl } from "@/lib/config/media";
 import type { ShrimpImage } from "@/types/shrimp";
 
 const imageSlotCount = 4;

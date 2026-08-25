@@ -4,8 +4,8 @@ import FallbackImage from "@/components/common/images/FallbackImage";
 import type { Translations } from "@/i18n";
 import type { CartItem } from "@/types/cart";
 import { routes } from "@/config/routes";
-import { isVideoMediaUrl } from "@/lib/media";
-import { fadeUp } from "@/lib/motionVariants";
+import { isVideoMediaUrl } from "@/lib/config/media";
+import { fadeUp } from "@/lib/config/motionVariants";
 
 interface CartItemRowProps {
   t: Translations;

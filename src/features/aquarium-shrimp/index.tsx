@@ -6,20 +6,22 @@ import { motion, useReducedMotion } from "motion/react";
 import PageHero from "@/components/common/layout/PageHero";
 import AppBreadcrumb from "@/components/common/navigation/AppBreadcrumb";
 import toast from "react-hot-toast";
-import { getApiErrorMessage } from "@/config/api";
 import { routes } from "@/config/routes";
+import { facebookUrl } from "@/lib/seo/metadata";
+import { getLocalizedApiErrorMessage } from "@/lib/config/apiErrorMessages";
 import {
   useCatalogOptions,
   useFetchShrimpDetail,
   useShrimpList,
 } from "@/hooks/shrimp";
-import { fadeUp, staggerContainer } from "@/lib/motionVariants";
-import { shrimpCollectionLinks } from "@/lib/shrimpCollectionConfig";
+import { fadeUp, staggerContainer } from "@/lib/config/motionVariants";
+import { shrimpCollectionLinks } from "@/lib/shrimp/collectionConfig";
 import {
   activeShopFilterCount,
   emptyShopFilters,
   filterShrimpProducts,
-} from "@/lib/shrimpFilters";
+} from "@/lib/shrimp/filters";
+import { isHighQualityShrimp } from "@/lib/shrimp/highQuality";
 import { useAppRuntime } from "@/providers/AppProviders";
 import { useCart } from "@/store/cartStore";
 import { useShrimpOptionsStore } from "@/store/shrimpStore";
@@ -32,6 +34,7 @@ import type {
 } from "@/types/shrimp";
 import ShopEmptyState from "./components/ShopEmptyState";
 import ShopCollectionIntro from "./components/ShopCollectionIntro";
+import ShopCollectionLinks from "./components/ShopCollectionLinks";
 import ShopFilterPanel from "./components/ShopFilterPanel";
 import ShopMobileFilterBar from "./components/ShopMobileFilterBar";
 import ShopMobileFilterSheet from "./components/ShopMobileFilterSheet";
@@ -111,9 +114,17 @@ export default function AquariumShrimpFeature({
 
   async function addProductToCart(product: ShrimpListItem) {
     if (!product.is_available) return;
+    if (isHighQualityShrimp(product)) {
+      toast.error(t.product.highQualityContactOnly);
+      return;
+    }
 
     try {
       const detail = await fetchShrimpDetail(product.id);
+      if (isHighQualityShrimp(detail)) {
+        toast.error(t.product.highQualityContactOnly);
+        return;
+      }
       const activeVariants = detail.variants.filter(
         (variant) => variant.is_active,
       );
@@ -125,7 +136,7 @@ export default function AquariumShrimpFeature({
       const qtyInCart = getCartQuantityForVariant(items, firstVariant.id);
       const maxAddable = Math.max(0, firstVariant.stock_quantity - qtyInCart);
       if (maxAddable <= 0) {
-        toast.error("This item has reached the available stock in your cart.");
+        toast.error(t.apiErrors.maxStockInCart);
         return;
       }
 
@@ -148,7 +159,7 @@ export default function AquariumShrimpFeature({
         saleQuantity: firstVariant.sale_quantity,
       });
     } catch (error) {
-      toast.error(getApiErrorMessage(error, "Could not add shrimp to cart."));
+      toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.addToCartFailed));
     }
   }
 
@@ -171,10 +182,17 @@ export default function AquariumShrimpFeature({
         <PageHero
           title={collectionTitle ?? t.shop.title}
           reduced={reduced}
+          titleClassName="text-3xl md:text-7xl"
           // className="py-2 md:py-5"
         />
 
         {collectionIntro && <ShopCollectionIntro intro={collectionIntro} />}
+
+        <ShopCollectionLinks
+          links={shrimpCollectionLinks}
+          activeCollectionSlug={activeCollectionSlug}
+          className="mt-6 border-y border-border py-4 md:hidden"
+        />
 
         <ShopMobileFilterBar
           t={t}
@@ -228,6 +246,7 @@ export default function AquariumShrimpFeature({
                     items={items}
                     onHover={setHoveredId}
                     onAddToCart={addProductToCart}
+                    onContact={() => window.open(facebookUrl, "_blank", "noopener,noreferrer")}
                   />
                 ))}
               </ShopProductGrid>
@@ -261,6 +280,7 @@ function ShopProductCardContainer({
   items,
   onHover,
   onAddToCart,
+  onContact,
 }: {
   product: ShrimpListItem;
   t: ReturnType<typeof useAppRuntime>["t"];
@@ -269,8 +289,10 @@ function ShopProductCardContainer({
   items: ReturnType<typeof useCart>["items"];
   onHover: (id: string | null) => void;
   onAddToCart: (product: ShrimpListItem) => void;
+  onContact: () => void;
 }) {
   const defaultVariant = getDefaultListVariant(product);
+  const isHighQuality = isHighQualityShrimp(product);
   const qtyInCart = defaultVariant
     ? getCartQuantityForVariant(items, defaultVariant.id)
     : 0;
@@ -278,6 +300,7 @@ function ShopProductCardContainer({
     ? Math.max(0, defaultVariant.stock_quantity - qtyInCart)
     : 0;
   const addDisabled =
+    isHighQuality ||
     !product.is_available ||
     (defaultVariant
       ? !defaultVariant.is_active ||
@@ -297,8 +320,10 @@ function ShopProductCardContainer({
         hovered={hovered}
         addDisabled={addDisabled}
         addLabel={addLabel}
+        isHighQuality={isHighQuality}
         onHover={onHover}
         onAddToCart={onAddToCart}
+        onContact={onContact}
       />
     </motion.div>
   );

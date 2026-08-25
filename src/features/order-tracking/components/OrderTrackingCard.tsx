@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import type { Translations } from "@/i18n";
-import { getPaymentStatusLabel, isPendingPaymentOrder } from "@/lib/orderPayment";
-import { formatOrderDate } from "@/lib/orderFormat";
+import { getPaymentStatusLabel, isPendingPaymentOrder } from "@/lib/payment/orderPayment";
+import { formatOrderDate } from "@/lib/order/format";
 import { useAppRuntime } from "@/providers/AppProviders";
 import type { OrderDetail } from "@/types/order";
 

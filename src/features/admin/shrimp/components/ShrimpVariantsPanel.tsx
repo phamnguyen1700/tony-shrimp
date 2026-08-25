@@ -15,7 +15,7 @@ import {
   emptyAdminShrimpVariantDraft,
   variantPayloadFromDraft,
   variantToDraft,
-} from "@/lib/shrimpAdminUtils";
+} from "@/lib/shrimp/adminUtils";
 import { saleQuantityOptions, saleUnitOptions } from "../selectorElements";
 
 interface ShrimpVariantsPanelProps {

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { routes } from "@/config/routes";
 import type { Translations } from "@/i18n";
-import { staggerContainer } from "@/lib/motionVariants";
+import { staggerContainer } from "@/lib/config/motionVariants";
 import type { CartItem } from "@/types/cart";
 import CartItemRow from "./CartItemRow";
 

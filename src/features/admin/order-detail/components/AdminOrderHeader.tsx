@@ -2,7 +2,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import Badge from "@/components/ui/Badge";
 import type { Translations } from "@/i18n";
-import { formatOrderDate, getOrderStatusLabel } from "@/lib/orderFormat";
+import { formatOrderDate, getOrderStatusLabel } from "@/lib/order/format";
 import type { OrderDetail } from "@/types/order";
 
 interface AdminOrderHeaderProps {

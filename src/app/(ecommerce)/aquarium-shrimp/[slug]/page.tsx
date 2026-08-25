@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import JsonLd from "@/components/common/seo/JsonLd";
+import ServerMaintenanceScreen from "@/components/common/ServerMaintenanceScreen";
 import AquariumShrimpFeature from "@/features/aquarium-shrimp";
 import ProductDetailFeature from "@/features/product-detail";
 import { routes } from "@/config/routes";
@@ -18,7 +19,7 @@ import {
 import {
   createBreadcrumbItems,
   createBreadcrumbJsonLd,
-} from "@/lib/structuredData";
+} from "@/lib/seo/structuredData";
 
 export const dynamic = "force-dynamic";
 
@@ -43,29 +44,33 @@ export default async function Page({
   const collection = getShrimpCollectionConfig(slug);
 
   if (collection) {
-    const initialProducts = await getShrimpCollectionInitialProducts(collection);
+    try {
+      const initialProducts = await getShrimpCollectionInitialProducts(collection);
 
-    return (
-      <>
-        <JsonLd
-          data={createBreadcrumbJsonLd(
-            createBreadcrumbItems([
-              { name: "Aquarium Shrimp", path: routes.shop },
-              { name: collection.heading, path: `${routes.shop}/${collection.slug}` },
-            ]),
-          )}
-        />
-        <Suspense fallback={<div className="app-page" />}>
-          <AquariumShrimpFeature
-            initialProducts={initialProducts}
-            initialQuery={collection.query}
-            initialFilters={collection.filters}
-            collectionTitle={collection.heading}
-            activeCollectionSlug={collection.slug}
+      return (
+        <>
+          <JsonLd
+            data={createBreadcrumbJsonLd(
+              createBreadcrumbItems([
+                { name: "Aquarium Shrimp", path: routes.shop },
+                { name: collection.heading, path: `${routes.shop}/${collection.slug}` },
+              ]),
+            )}
           />
-        </Suspense>
-      </>
-    );
+          <Suspense fallback={<div className="app-page" />}>
+            <AquariumShrimpFeature
+              initialProducts={initialProducts}
+              initialQuery={collection.query}
+              initialFilters={collection.filters}
+              collectionTitle={collection.heading}
+              activeCollectionSlug={collection.slug}
+            />
+          </Suspense>
+        </>
+      );
+    } catch {
+      return <ServerMaintenanceScreen />;
+    }
   }
 
   const [shrimp, products] = await Promise.all([

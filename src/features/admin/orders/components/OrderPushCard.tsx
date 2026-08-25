@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import type { Translations } from "@/i18n";
-import { formatOrderDate, formatOrderMoney, getOrderStatusLabel } from "@/lib/orderFormat";
+import { formatOrderDate, formatOrderMoney, getOrderStatusLabel } from "@/lib/order/format";
 import type { OrderSummary } from "@/types/order";
 
 interface Props {

@@ -70,8 +70,6 @@ export interface ShrimpListItem {
   colors: string[];
   grade: string | null;
   rarity: string | null;
-  meta_title: string | null;
-  meta_description: string | null;
   catalog_status: CatalogStatus;
   traits: string[];
   created_at: string;
@@ -82,6 +80,10 @@ export interface ShrimpListItem {
   primary_image_url: string | null;
   first_variant?: ShrimpVariant | null;
   variants?: ShrimpVariant[];
+}
+
+export interface OwnerShrimpListItem extends ShrimpListItem {
+  images?: ShrimpImage[];
 }
 
 export interface ShrimpVariant {
@@ -126,6 +128,8 @@ export interface ShrimpImage {
 
 export interface ShrimpDetail extends Omit<ShrimpListItem, "min_price" | "total_stock" | "primary_image_url"> {
   description: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
   variants: ShrimpVariant[];
   care_parameter: ShrimpCareParameter | null;
   images: ShrimpImage[];

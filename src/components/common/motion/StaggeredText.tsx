@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react'
 import type { ReactNode } from 'react'
-import { staggerContainer, fadeUp } from '@/lib/motionVariants'
+import { staggerContainer, fadeUp } from '@/lib/config/motionVariants'
 
 interface Props {
   children: ReactNode[]

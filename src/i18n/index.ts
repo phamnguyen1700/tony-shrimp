@@ -16,11 +16,60 @@ const translations = {
       doaPolicy: "Live Arrival / DOA Policy",
       contact: "Contact",
     },
+    apiErrors: {
+      backendUnavailable: "Backend unavailable.",
+      insufficientStock:
+        "We apologize for the inconvenience because some items in your cart are out of stock.",
+      maxStockInCart: "This item has reached the available stock in your cart.",
+      removeOutOfStockBeforeCheckout:
+        "Remove or update out-of-stock items before checkout.",
+      legacyCartItem: "{name} needs to be added to cart again before ordering.",
+      sendCodeFailed: "Could not send code.",
+      verifyCodeFailed: "Could not verify code.",
+      sessionRefreshFailed: "Session refresh failed.",
+      logoutFailed: "Logout failed.",
+      updateProfileFailed: "Could not update profile.",
+      saveAddressFailed: "Could not save address.",
+      updateAddressFailed: "Could not update address.",
+      deleteAddressFailed: "Could not delete address.",
+      updateDefaultAddressFailed: "Could not update default address.",
+      activateUserFailed: "Could not activate user.",
+      deactivateUserFailed: "Could not deactivate user.",
+      updateUserRoleFailed: "Could not update user role.",
+      deleteUserFailed: "Could not permanently delete user.",
+      createShrimpFailed: "Could not create shrimp.",
+      updateShrimpFailed: "Could not update shrimp.",
+      activateShrimpFailed: "Could not activate shrimp.",
+      deactivateShrimpFailed: "Could not deactivate shrimp.",
+      deleteShrimpFailed: "Could not permanently delete shrimp.",
+      addVariantFailed: "Could not add variant.",
+      updateVariantFailed: "Could not update variant.",
+      deleteVariantFailed: "Could not delete variant.",
+      saveCareParametersFailed: "Could not save care parameters.",
+      updateImageFailed: "Could not update image.",
+      deleteImageFailed: "Could not delete image.",
+      uploadMediaFailed: "Could not upload media.",
+      addToCartFailed: "Could not add shrimp to cart.",
+      placeOrderFailed: "Could not place order.",
+      continuePaymentFailed: "Could not continue payment.",
+      cancelOrderFailed: "Could not cancel order.",
+      paymentUnavailable:
+        "This payment is no longer available. Please review the order status.",
+      orderNoLongerCancellable:
+        "This order is already no longer cancellable. Refreshing the latest status.",
+      updateOrderStatusFailed: "Could not update order status.",
+      markNotificationReadFailed: "Could not mark notification read.",
+      markNotificationsReadFailed: "Could not mark notifications read.",
+      checkHighlightedFields: "Please check the highlighted fields.",
+      variantNameRequired: "Variant name is required.",
+      priceRequired: "Price is required.",
+    },
     landing: {
       dragHint: "DRAG TO EXPLORE",
       swipeHint: "SWIPE TO EXPLORE",
       viewShrimp: "VIEW SHRIMP ->",
       collectionTitle: "TOP COLLECTION",
+      highQualityCollectionTitle: "HIGH QUALITY SHRIMP COLLECTION",
       rareCollectionTitle: "RARE SHRIMP COLLECTION",
       from: "From",
     },
@@ -253,11 +302,22 @@ const translations = {
       loading: "Loading shrimp...",
       empty: "No shrimp match your filters.",
       collections: {
+        "high-quality-shrimp": {
+          eyebrow: "High Quality Aquarium Shrimp in Australia",
+          title: "For high quality shrimp, please contact us for the best deal",
+          titleLinkText: "contact us",
+          titleLinkHref: "/about#contact",
+          body: "Explore selected High Grade, SS and SSS shrimp from Tony Shrimp in Victoria, Australia. These high quality specimens are handled through direct Facebook contact so collectors can confirm availability and arrange the right stock.",
+          highlights: [
+            "High Grade, SS and SSS shrimp grouped in one collection",
+            "Available by direct Facebook contact rather than cart checkout",
+            "Selected stock for collectors looking for higher quality lines",
+          ],
+        },
         "rare-shrimp": {
-          eyebrow: "Collector Shrimp",
-          title: "Rare aquarium shrimp in Australia",
-          body:
-            "Explore rare and extremely rare aquarium shrimp from Tony Shrimp in Victoria, Australia. Selected rare stock is released in limited numbers, so collectors should check back often or contact Tony Shrimp directly through Facebook to ask about upcoming availability and pre-orders.",
+          eyebrow: "Rare Aquarium Shrimp in Australia",
+          title: "Rare aquarium varieties curated for you",
+          body: "Explore rare and extremely rare aquarium shrimp from Tony Shrimp in Victoria, Australia. Selected rare stock is released in limited numbers, so collectors should check back often or contact Tony Shrimp directly through Facebook to ask about upcoming availability and pre-orders.",
           highlights: [
             "Rare and extremely rare shrimp grouped in one collector collection",
             "Selected stock from a leading Australian shrimp breeding operation",
@@ -267,8 +327,7 @@ const translations = {
         "caridina-shrimp": {
           eyebrow: "Soft Water Shrimp",
           title: "Caridina shrimp for Australian aquariums",
-          body:
-            "Browse high-quality Caridina shrimp from Tony Shrimp in Victoria, Australia. Backed by a leading Australian shrimp breeding operation, Tony Shrimp focuses on keeping strong Caridina lines regularly available at fair, accessible prices for hobbyists and breeders.",
+          body: "Browse high-quality Caridina shrimp from Tony Shrimp in Victoria, Australia. Backed by a leading Australian shrimp breeding operation, Tony Shrimp focuses on keeping strong Caridina lines regularly available at fair, accessible prices for hobbyists and breeders.",
           highlights: [
             "Regularly available Caridina shrimp for planted and dedicated tanks",
             "High-quality stock at sensible, accessible prices",
@@ -278,8 +337,7 @@ const translations = {
         "neocaridina-shrimp": {
           eyebrow: "Colour Shrimp",
           title: "Neocaridina shrimp for planted aquariums",
-          body:
-            "Browse high-quality Neocaridina shrimp from Tony Shrimp in Victoria, Australia. Core Neo lines are kept reliably available with healthy breeder-backed stock and fair pricing, making them easier to access for planted tanks, colony building, and everyday shrimp keepers.",
+          body: "Browse high-quality Neocaridina shrimp from Tony Shrimp in Victoria, Australia. Core Neo lines are kept reliably available with healthy breeder-backed stock and fair pricing, making them easier to access for planted tanks, colony building, and everyday shrimp keepers.",
           highlights: [
             "Reliable Neocaridina availability for freshwater aquariums",
             "Healthy, colourful stock at approachable prices",
@@ -290,6 +348,8 @@ const translations = {
     },
     product: {
       addToCart: "ADD TO CART",
+      contactUs: "CONTACT US",
+      highQualityContactOnly: "Please contact us for high quality product.",
       available: "AVAILABLE",
       inStock: "IN STOCK",
       lowStock: "LOW STOCK",
@@ -588,6 +648,14 @@ const translations = {
       dark: "Dark",
       system: "System",
     },
+    maintenance: {
+      label: "Server maintenance",
+      title: "Server is under maintenance",
+      description:
+        "Tony Shrimp is temporarily unable to reach the server. We are checking the system and will bring the shop back shortly.",
+      retryHint: "Please refresh the page in a moment.",
+      imageAlt: "Server maintenance",
+    },
   },
   vi: {
     brand: "TONY SHRIMP",
@@ -604,11 +672,62 @@ const translations = {
       doaPolicy: "Live Arrival / DOA Policy",
       contact: "Liên hệ",
     },
+    apiErrors: {
+      backendUnavailable: "Không thể kết nối máy chủ.",
+      insufficientStock:
+        "Rất tiếc, một số sản phẩm trong giỏ hàng hiện không đủ số lượng trong kho.",
+      maxStockInCart:
+        "Sản phẩm này đã đạt số lượng tồn kho có thể thêm vào giỏ.",
+      removeOutOfStockBeforeCheckout:
+        "Vui lòng xóa hoặc cập nhật sản phẩm hết hàng trước khi thanh toán.",
+      legacyCartItem:
+        "{name} cần được thêm lại vào giỏ hàng trước khi đặt hàng.",
+      sendCodeFailed: "Không thể gửi mã đăng nhập.",
+      verifyCodeFailed: "Không thể xác minh mã đăng nhập.",
+      sessionRefreshFailed: "Không thể làm mới phiên đăng nhập.",
+      logoutFailed: "Không thể đăng xuất.",
+      updateProfileFailed: "Không thể cập nhật hồ sơ.",
+      saveAddressFailed: "Không thể lưu địa chỉ.",
+      updateAddressFailed: "Không thể cập nhật địa chỉ.",
+      deleteAddressFailed: "Không thể xóa địa chỉ.",
+      updateDefaultAddressFailed: "Không thể cập nhật địa chỉ mặc định.",
+      activateUserFailed: "Không thể kích hoạt người dùng.",
+      deactivateUserFailed: "Không thể vô hiệu hóa người dùng.",
+      updateUserRoleFailed: "Không thể cập nhật vai trò người dùng.",
+      deleteUserFailed: "Không thể xóa vĩnh viễn người dùng.",
+      createShrimpFailed: "Không thể tạo sản phẩm tép.",
+      updateShrimpFailed: "Không thể cập nhật sản phẩm tép.",
+      activateShrimpFailed: "Không thể kích hoạt sản phẩm tép.",
+      deactivateShrimpFailed: "Không thể vô hiệu hóa sản phẩm tép.",
+      deleteShrimpFailed: "Không thể xóa vĩnh viễn sản phẩm tép.",
+      addVariantFailed: "Không thể thêm pack.",
+      updateVariantFailed: "Không thể cập nhật pack.",
+      deleteVariantFailed: "Không thể xóa pack.",
+      saveCareParametersFailed: "Không thể lưu thông số chăm sóc.",
+      updateImageFailed: "Không thể cập nhật ảnh.",
+      deleteImageFailed: "Không thể xóa ảnh.",
+      uploadMediaFailed: "Không thể tải media lên.",
+      addToCartFailed: "Không thể thêm tép vào giỏ hàng.",
+      placeOrderFailed: "Không thể đặt hàng.",
+      continuePaymentFailed: "Không thể tiếp tục thanh toán.",
+      cancelOrderFailed: "Không thể hủy đơn hàng.",
+      paymentUnavailable:
+        "Thanh toán này không còn khả dụng. Vui lòng kiểm tra trạng thái đơn hàng.",
+      orderNoLongerCancellable:
+        "Đơn hàng này không còn có thể hủy. Đang cập nhật trạng thái mới nhất.",
+      updateOrderStatusFailed: "Không thể cập nhật trạng thái đơn hàng.",
+      markNotificationReadFailed: "Không thể đánh dấu thông báo đã đọc.",
+      markNotificationsReadFailed: "Không thể đánh dấu các thông báo đã đọc.",
+      checkHighlightedFields: "Vui lòng kiểm tra các trường được đánh dấu.",
+      variantNameRequired: "Tên pack là bắt buộc.",
+      priceRequired: "Giá là bắt buộc.",
+    },
     landing: {
       dragHint: "KÉO ĐỂ KHÁM PHÁ",
       swipeHint: "VUỐT ĐỂ KHÁM PHÁ",
       viewShrimp: "XEM TÔM ->",
       collectionTitle: "BỘ SƯU TẬP NỔI BẬT",
+      highQualityCollectionTitle: "BỘ SƯU TẬP TÉP CHẤT LƯỢNG CAO",
       rareCollectionTitle: "BỘ SƯU TẬP TÉP HIẾM",
       from: "Từ",
     },
@@ -828,11 +947,23 @@ const translations = {
       loading: "Đang tải tôm...",
       empty: "Không có tôm nào khớp với bộ lọc.",
       collections: {
+        "high-quality-shrimp": {
+          eyebrow: "Tép chất lượng cao",
+          title:
+            "với tép chất lượng cao, vui lòng liên hệ với chúng tôi để có giá tốt nhất",
+          titleLinkText: "liên hệ với chúng tôi",
+          titleLinkHref: "/about#contact",
+          body: "Khám phá các dòng High Grade, SS và SSS từ Tony Shrimp tại Victoria, Australia. Những cá thể chất lượng cao này được xử lý qua liên hệ Facebook trực tiếp để người chơi xác nhận tình trạng hàng và chọn đúng dòng phù hợp.",
+          highlights: [
+            "High Grade, SS và SSS được gom trong một bộ sưu tập riêng",
+            "Bán qua liên hệ Facebook trực tiếp thay vì thanh toán qua giỏ hàng",
+            "Hàng tuyển chọn cho người chơi tìm các dòng chất lượng cao hơn",
+          ],
+        },
         "rare-shrimp": {
           eyebrow: "Tép tuyển chọn",
           title: "Tép hiếm cho người chơi tại Úc",
-          body:
-            "Khám phá các dòng tép hiếm và cực hiếm từ Tony Shrimp tại Victoria, Australia. Hàng tuyển chọn thường được thả với số lượng giới hạn, vì vậy người chơi nên theo dõi thường xuyên hoặc liên hệ trực tiếp qua fanpage Facebook để hỏi lịch có hàng và đặt trước.",
+          body: "Khám phá các dòng tép hiếm và cực hiếm từ Tony Shrimp tại Victoria, Australia. Hàng tuyển chọn thường được thả với số lượng giới hạn, vì vậy người chơi nên theo dõi thường xuyên hoặc liên hệ trực tiếp qua fanpage Facebook để hỏi lịch có hàng và đặt trước.",
           highlights: [
             "Gộp cả tép hiếm và cực hiếm trong một bộ sưu tập",
             "Nguồn tép tuyển chọn từ một trại tép hàng đầu tại Úc",
@@ -842,8 +973,7 @@ const translations = {
         "caridina-shrimp": {
           eyebrow: "Tép nước mềm",
           title: "Caridina chất lượng cao cho hồ thủy sinh tại Úc",
-          body:
-            "Xem các dòng Caridina chất lượng cao từ Tony Shrimp tại Victoria, Australia. Với nền tảng từ một trại tép hàng đầu tại Úc, Tony Shrimp tập trung giữ các dòng Caridina mạnh, ổn định, có hàng thường xuyên với mức giá phải chăng và dễ tiếp cận.",
+          body: "Xem các dòng Caridina chất lượng cao từ Tony Shrimp tại Victoria, Australia. Với nền tảng từ một trại tép hàng đầu tại Úc, Tony Shrimp tập trung giữ các dòng Caridina mạnh, ổn định, có hàng thường xuyên với mức giá phải chăng và dễ tiếp cận.",
           highlights: [
             "Caridina có sẵn thường xuyên cho hồ thủy sinh và hồ tép chuyên biệt",
             "Tép chất lượng cao với giá hợp lý, dễ tiếp cận",
@@ -853,8 +983,7 @@ const translations = {
         "neocaridina-shrimp": {
           eyebrow: "Tép màu",
           title: "Neocaridina cho hồ thủy sinh và hồ tép cộng đồng",
-          body:
-            "Xem các dòng Neocaridina chất lượng cao từ Tony Shrimp tại Victoria, Australia. Các dòng Neo chủ lực luôn được duy trì nguồn hàng ổn định, khỏe, màu đẹp và có giá phải chăng, phù hợp cho hồ thủy sinh, xây đàn và người chơi phổ thông.",
+          body: "Xem các dòng Neocaridina chất lượng cao từ Tony Shrimp tại Victoria, Australia. Các dòng Neo chủ lực luôn được duy trì nguồn hàng ổn định, khỏe, màu đẹp và có giá phải chăng, phù hợp cho hồ thủy sinh, xây đàn và người chơi phổ thông.",
           highlights: [
             "Nguồn Neocaridina ổn định cho hồ nước ngọt",
             "Tép khỏe, màu đẹp với mức giá dễ tiếp cận",
@@ -865,6 +994,8 @@ const translations = {
     },
     product: {
       addToCart: "THÊM VÀO GIỎ",
+      contactUs: "LIÊN HỆ",
+      highQualityContactOnly: "Please contact us for high quality product.",
       available: "CÒN HÀNG",
       inStock: "CÒN HÀNG",
       lowStock: "SẮP HẾT",
@@ -1163,6 +1294,14 @@ const translations = {
       light: "Sáng",
       dark: "Tối",
       system: "Hệ thống",
+    },
+    maintenance: {
+      label: "Bảo trì máy chủ",
+      title: "Server đang bảo trì",
+      description:
+        "Tony Shrimp hiện chưa kết nối được tới máy chủ. Chúng tôi đang kiểm tra hệ thống và sẽ mở lại cửa hàng trong ít phút.",
+      retryHint: "Vui lòng tải lại trang sau ít phút.",
+      imageAlt: "Server đang bảo trì",
     },
   },
 };

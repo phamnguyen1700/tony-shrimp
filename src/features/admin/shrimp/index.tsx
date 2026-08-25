@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { getApiErrorMessage } from "@/config/api";
+import { getLocalizedApiErrorMessage } from "@/lib/config/apiErrorMessages";
 import { useAppRuntime } from "@/providers/AppProviders";
 import {
   useActivateShrimp,
@@ -16,7 +16,6 @@ import {
   useHardDeleteShrimp,
   useOwnerCatalogOptions,
   useOwnerShrimpDetail,
-  useOwnerShrimpDetails,
   useOwnerShrimpList,
   useUpdateShrimp,
   useUpdateShrimpImage,
@@ -32,17 +31,17 @@ import type {
   AdminShrimpFilters,
   AdminShrimpFormInput,
   CreateShrimpPayload,
+  OwnerShrimpListItem,
   OwnerShrimpListQuery,
   SaleUnit,
   ShrimpImage,
-  ShrimpListItem,
   ShrimpVariantPayload,
 } from "@/types/shrimp";
-import { fadeUp, staggerContainer } from "@/lib/motionVariants";
+import { fadeUp, staggerContainer } from "@/lib/config/motionVariants";
 import {
   descriptionDraftToMarkdown,
   markdownToDescriptionDraft,
-} from "@/lib/shrimpDescription";
+} from "@/lib/shrimp/description";
 import {
   careParameterPayloadFromDraft,
   emptyAdminShrimpCareDraft,
@@ -52,7 +51,7 @@ import {
   toInputString,
   toNullableString,
   uniqueItems,
-} from "@/lib/shrimpAdminUtils";
+} from "@/lib/shrimp/adminUtils";
 import { normalizeRarityValue } from "./selectorElements";
 import AdminShrimpFiltersPanel from "./components/AdminShrimpFilters";
 import ConfirmActionDialog from "./components/ConfirmActionDialog";
@@ -102,7 +101,6 @@ export default function AdminShrimpFeature() {
   const totalRows = hasNextPage
     ? page * adminShrimpPageSize + 1
     : (page - 1) * adminShrimpPageSize + products.length;
-  const detailQueries = useOwnerShrimpDetails(products.map((product) => product.id));
 
   const createShrimp = useCreateShrimp();
   const activateShrimp = useActivateShrimp();
@@ -116,7 +114,7 @@ export default function AdminShrimpFeature() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [archiveTarget, setArchiveTarget] = useState<string | null>(null);
   const [hardDeleteTarget, setHardDeleteTarget] = useState<string | null>(null);
-  const [variantTarget, setVariantTarget] = useState<ShrimpListItem | null>(null);
+  const [variantTarget, setVariantTarget] = useState<OwnerShrimpListItem | null>(null);
   const [variantsModalOpen, setVariantsModalOpen] = useState(false);
   const [careDraft, setCareDraft] = useState<AdminShrimpCareDraft>(emptyAdminShrimpCareDraft);
   const editHydratedIdRef = useRef<string | null>(null);
@@ -145,12 +143,6 @@ export default function AdminShrimpFeature() {
     defaultValues: emptyAdminShrimpForm,
   });
 
-  const detailById = new Map(
-    detailQueries
-      .map((query) => query.data)
-      .filter((detail) => Boolean(detail))
-      .map((detail) => [detail!.id, detail!]),
-  );
   const imagePendingById = Object.fromEntries(
     products.map((product) => [
       product.id,
@@ -253,9 +245,7 @@ export default function AdminShrimpFeature() {
     setFormOpen(true);
   }
 
-  function openEdit(product: ShrimpListItem) {
-    const descriptionDraft = markdownToDescriptionDraft(detailById.get(product.id)?.description);
-
+  function openEdit(product: OwnerShrimpListItem) {
     setEditingId(product.id);
     editHydratedIdRef.current = null;
     setCareDraft(emptyAdminShrimpCareDraft);
@@ -268,12 +258,12 @@ export default function AdminShrimpFeature() {
       colors: product.colors.join(", "),
       grade: product.grade ?? "",
       rarity: normalizeRarityValue(product.rarity),
-      meta_title: detailById.get(product.id)?.meta_title ?? "",
-      meta_description: detailById.get(product.id)?.meta_description ?? "",
-      description_title: descriptionDraft.title,
-      description_overview: descriptionDraft.overview,
-      description_highlights: descriptionDraft.highlights,
-      description_care_notes: descriptionDraft.careNotes,
+      meta_title: "",
+      meta_description: "",
+      description_title: "",
+      description_overview: "",
+      description_highlights: "",
+      description_care_notes: "",
       catalog_status: product.catalog_status,
       traits: product.traits.join(", "),
     });
@@ -290,7 +280,7 @@ export default function AdminShrimpFeature() {
           setError(field as keyof AdminShrimpFormInput, { message: issue.message });
         }
       }
-      toast.error("Please check the highlighted fields.");
+      toast.error(t.apiErrors.checkHighlightedFields);
       return;
     }
 
@@ -328,14 +318,14 @@ export default function AdminShrimpFeature() {
     }
 
     if (!form.variant_name) {
-      setError("variant_name", { message: "Variant name is required" });
-      toast.error("Variant name is required.");
+      setError("variant_name", { message: t.apiErrors.variantNameRequired });
+      toast.error(t.apiErrors.variantNameRequired);
       return;
     }
 
     if (!form.price) {
-      setError("price", { message: "Price is required" });
-      toast.error("Price is required.");
+      setError("price", { message: t.apiErrors.priceRequired });
+      toast.error(t.apiErrors.priceRequired);
       return;
     }
 
@@ -360,9 +350,8 @@ export default function AdminShrimpFeature() {
     });
   }
 
-  async function uploadProductImage(product: ShrimpListItem, file: File | undefined, index: number) {
+  async function uploadProductImage(product: OwnerShrimpListItem, file: File | undefined, index: number) {
     if (!file) return;
-    const images = detailById.get(product.id)?.images ?? [];
     const toastId = toast.loading(`Uploading ${file.name}...`);
 
     try {
@@ -371,17 +360,17 @@ export default function AdminShrimpFeature() {
         file,
         alt_text: product.name,
         sort_order: index,
-        is_primary: images.length === 0 || index === 0,
+        is_primary: (product.images ?? []).length === 0 || index === 0,
       });
       toast.success("Media uploaded.", { id: toastId });
     } catch (error) {
-      toast.error(getApiErrorMessage(error, "Could not upload media."), { id: toastId });
+      toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.uploadMediaFailed), { id: toastId });
     }
   }
 
-  function reorderProductImages(product: ShrimpListItem, images: ShrimpImage[]) {
+  function reorderProductImages(product: OwnerShrimpListItem, images: ShrimpImage[]) {
     const currentImageById = new Map(
-      (detailById.get(product.id)?.images ?? []).map((image) => [image.id, image]),
+      (product.images ?? []).map((image) => [image.id, image]),
     );
 
     images.forEach((image) => {
@@ -403,7 +392,7 @@ export default function AdminShrimpFeature() {
     updateVariant.mutate({ variant_id: variantId, ...payload });
   }
 
-  function selectVariantTarget(product: ShrimpListItem) {
+  function selectVariantTarget(product: OwnerShrimpListItem) {
     setVariantTarget(product);
     if (isDesktop === false) setVariantsModalOpen(true);
   }
@@ -442,7 +431,6 @@ export default function AdminShrimpFeature() {
           <div className="min-w-0">
             <ShrimpTable
               products={products}
-              detailById={detailById}
               imagePendingById={imagePendingById}
               t={t}
               isLoading={shrimpQuery.isLoading}

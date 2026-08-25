@@ -4,7 +4,7 @@ import FallbackImage from "@/components/common/images/FallbackImage";
 import MotionButton from "@/components/common/motion/MotionButton";
 import Dialog from "@/components/ui/Dialog";
 import Badge from "@/components/ui/Badge";
-import { isVideoMediaUrl } from "@/lib/media";
+import { isVideoMediaUrl } from "@/lib/config/media";
 import type { Translations } from "@/i18n";
 import type { CartItem } from "@/types/cart";
 import type { AddressLocalityCheckResponse, AddressSuburbSuggestion, UserAddress } from "@/types/user";

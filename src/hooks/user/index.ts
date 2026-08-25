@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { ApiError, getApiErrorMessage } from "@/config/api";
+import { ApiError } from "@/config/api";
+import { getLocalizedApiErrorMessage } from "@/lib/config/apiErrorMessages";
+import { useAppRuntime } from "@/providers/AppProviders";
 import {
   addressLocalityCheckQuerySchema,
   addressSuburbsQuerySchema,
@@ -65,6 +67,7 @@ export function useUserProfile() {
 
 export function useUpdateUserProfile() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (payload: UpdateUserProfilePayload) => {
@@ -76,7 +79,7 @@ export function useUpdateUserProfile() {
       toast.success("Profile updated.");
     },
     onError: (error) => {
-      toast.error(getApiErrorMessage(error, "Could not update profile."));
+      toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.updateProfileFailed));
     },
   });
 }
@@ -135,6 +138,7 @@ export function useUserAddresses() {
 
 export function useCreateUserAddress() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (payload: CreateUserAddressPayload) => {
@@ -146,13 +150,14 @@ export function useCreateUserAddress() {
       void queryClient.invalidateQueries({ queryKey: userQueryKeys.addresses });
     },
     onError: (error) => {
-      toast.error(getApiErrorMessage(error, "Could not save address."));
+      toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.saveAddressFailed));
     },
   });
 }
 
 export function useUpdateUserAddress() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: ({ addressId, payload }: { addressId: string; payload: UpdateUserAddressPayload }) => {
@@ -164,13 +169,14 @@ export function useUpdateUserAddress() {
       void queryClient.invalidateQueries({ queryKey: userQueryKeys.addresses });
     },
     onError: (error) => {
-      toast.error(getApiErrorMessage(error, "Could not update address."));
+      toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.updateAddressFailed));
     },
   });
 }
 
 export function useDeleteUserAddress() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (addressId: string) => userService.deleteAddress(addressId),
@@ -179,13 +185,14 @@ export function useDeleteUserAddress() {
       void queryClient.invalidateQueries({ queryKey: userQueryKeys.addresses });
     },
     onError: (error) => {
-      toast.error(getApiErrorMessage(error, "Could not delete address."));
+      toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.deleteAddressFailed));
     },
   });
 }
 
 export function useSetDefaultUserAddress() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (addressId: string) => userService.setDefaultAddress(addressId),
@@ -194,7 +201,7 @@ export function useSetDefaultUserAddress() {
       void queryClient.invalidateQueries({ queryKey: userQueryKeys.addresses });
     },
     onError: (error) => {
-      toast.error(getApiErrorMessage(error, "Could not update default address."));
+      toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.updateDefaultAddressFailed));
     },
   });
 }

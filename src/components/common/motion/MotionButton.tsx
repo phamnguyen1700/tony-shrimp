@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react'
 import type { ReactNode, ButtonHTMLAttributes } from 'react'
-import { buttonTap } from '@/lib/motionVariants'
+import { buttonTap } from '@/lib/config/motionVariants'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode

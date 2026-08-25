@@ -1,7 +1,9 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { ApiError, getApiErrorMessage } from "@/config/api";
+import { ApiError } from "@/config/api";
+import { getLocalizedApiErrorMessage } from "@/lib/config/apiErrorMessages";
+import { useAppRuntime } from "@/providers/AppProviders";
 import {
   createShrimpSchema,
   ownerShrimpListQuerySchema,
@@ -162,6 +164,7 @@ export function useOwnerShrimpDetails(shrimpIds: string[]) {
 
 export function useCreateShrimp() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (payload: CreateShrimpPayload) =>
@@ -172,12 +175,13 @@ export function useCreateShrimp() {
       void queryClient.invalidateQueries({ queryKey: ["owner", "catalog", "shrimp"] });
       void queryClient.invalidateQueries({ queryKey: shrimpQueryKeys.ownerCatalogOptions });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not create shrimp.")),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.createShrimpFailed)),
   });
 }
 
 export function useUpdateShrimp(shrimpId: string) {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (payload: UpdateShrimpPayload) =>
@@ -188,12 +192,13 @@ export function useUpdateShrimp(shrimpId: string) {
       void queryClient.invalidateQueries({ queryKey: ["owner", "catalog", "shrimp"] });
       void queryClient.invalidateQueries({ queryKey: ["catalog", "shrimp"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not update shrimp.")),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.updateShrimpFailed)),
   });
 }
 
 export function useActivateShrimp() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (shrimpId: string) => shrimpService.activateShrimp(validateId(shrimpId)),
@@ -203,12 +208,13 @@ export function useActivateShrimp() {
       void queryClient.invalidateQueries({ queryKey: ["owner", "catalog", "shrimp"] });
       void queryClient.invalidateQueries({ queryKey: ["catalog", "shrimp"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not activate shrimp.")),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.activateShrimpFailed)),
   });
 }
 
 export function useDeactivateShrimp() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (shrimpId: string) => shrimpService.deactivateShrimp(validateId(shrimpId)),
@@ -218,12 +224,13 @@ export function useDeactivateShrimp() {
       void queryClient.invalidateQueries({ queryKey: ["owner", "catalog", "shrimp"] });
       void queryClient.invalidateQueries({ queryKey: ["catalog", "shrimp"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not deactivate shrimp.")),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.deactivateShrimpFailed)),
   });
 }
 
 export function useHardDeleteShrimp() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (shrimpId: string) => shrimpService.hardDeleteShrimp(validateId(shrimpId)),
@@ -235,16 +242,18 @@ export function useHardDeleteShrimp() {
       void queryClient.invalidateQueries({ queryKey: ["catalog", "shrimp"] });
       void queryClient.invalidateQueries({ queryKey: shrimpQueryKeys.ownerCatalogOptions });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not permanently delete shrimp.")),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.deleteShrimpFailed)),
   });
 }
 
 export function useAddShrimpVariant(shrimpId: string) {
+  const { t } = useAppRuntime();
+
   return useShrimpDetailMutation(
     (payload: ShrimpVariantPayload) =>
       shrimpService.addVariant(validateId(shrimpId), shrimpVariantSchema.parse(payload)),
     "Variant added.",
-    "Could not add variant.",
+    t.apiErrors.addVariantFailed,
   );
 }
 
@@ -253,6 +262,8 @@ type UpdateShrimpVariantMutationPayload = UpdateShrimpVariantPayload & {
 };
 
 export function useUpdateShrimpVariant(shrimpId: string) {
+  const { t } = useAppRuntime();
+
   return useShrimpDetailMutation(
     ({ variant_id, ...payload }: UpdateShrimpVariantMutationPayload) =>
       shrimpService.updateVariant(
@@ -261,24 +272,28 @@ export function useUpdateShrimpVariant(shrimpId: string) {
         updateShrimpVariantSchema.parse(payload),
       ),
     "Variant updated.",
-    "Could not update variant.",
+    t.apiErrors.updateVariantFailed,
   );
 }
 
 export function useDeleteShrimpVariant(shrimpId: string) {
+  const { t } = useAppRuntime();
+
   return useShrimpDetailMutation(
     (variantId: string) => shrimpService.deleteVariant(validateId(shrimpId), validateId(variantId)),
     "Variant deleted.",
-    "Could not delete variant.",
+    t.apiErrors.deleteVariantFailed,
   );
 }
 
 export function useUpsertShrimpCareParameter(shrimpId: string) {
+  const { t } = useAppRuntime();
+
   return useShrimpDetailMutation(
     (payload: ShrimpCareParameterPayload) =>
       shrimpService.upsertCareParameter(validateId(shrimpId), shrimpCareParameterSchema.parse(payload)),
     "Care parameters saved.",
-    "Could not save care parameters.",
+    t.apiErrors.saveCareParametersFailed,
   );
 }
 
@@ -322,6 +337,8 @@ type UpdateShrimpImageMutationPayload = UpdateShrimpImagePayload & {
 
 // Keep for image metadata controls. Primary is derived from the smallest sort_order.
 export function useUpdateShrimpImage(shrimpId?: string) {
+  const { t } = useAppRuntime();
+
   return useShrimpDetailMutation(
     ({ shrimp_id, image_id, ...payload }: UpdateShrimpImageMutationPayload) =>
       shrimpService.updateImage(
@@ -330,7 +347,7 @@ export function useUpdateShrimpImage(shrimpId?: string) {
         updateShrimpImageSchema.parse(payload),
       ),
     "Image updated.",
-    "Could not update image.",
+    t.apiErrors.updateImageFailed,
   );
 }
 
@@ -340,6 +357,8 @@ type DeleteShrimpImageMutationPayload = {
 };
 
 export function useDeleteShrimpImage(shrimpId?: string) {
+  const { t } = useAppRuntime();
+
   return useShrimpDetailMutation(
     (payload: DeleteShrimpImageMutationPayload) =>
       shrimpService.deleteImage(
@@ -347,7 +366,7 @@ export function useDeleteShrimpImage(shrimpId?: string) {
         validateId(payload.image_id),
       ),
     "Image deleted.",
-    "Could not delete image.",
+    t.apiErrors.deleteImageFailed,
   );
 }
 
@@ -357,6 +376,7 @@ function useShrimpDetailMutation<TPayload>(
   errorMessage: string,
 ) {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn,
@@ -366,6 +386,6 @@ function useShrimpDetailMutation<TPayload>(
       void queryClient.invalidateQueries({ queryKey: ["owner", "catalog", "shrimp"] });
       void queryClient.invalidateQueries({ queryKey: ["catalog", "shrimp"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, errorMessage)),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, errorMessage)),
   });
 }

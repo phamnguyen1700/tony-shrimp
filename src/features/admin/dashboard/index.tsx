@@ -2,7 +2,7 @@
 
 import { Activity, BarChart3, Server } from "lucide-react";
 import { useState } from "react";
-import { getApiErrorMessage } from "@/config/api";
+import { getLocalizedApiErrorMessage } from "@/lib/config/apiErrorMessages";
 import {
   useOwnerAnalyticsDashboard,
   useOwnerAnalyticsRealtime,
@@ -376,7 +376,7 @@ export default function AdminDashboardFeature() {
             }
             errorMessage={
               dashboardQuery.isError
-                ? getApiErrorMessage(dashboardQuery.error, analyticsText.loadFailed)
+                ? getLocalizedApiErrorMessage(dashboardQuery.error, t, analyticsText.loadFailed)
                 : undefined
             }
             stats={overviewKpiStats}
@@ -415,7 +415,7 @@ export default function AdminDashboardFeature() {
             }
             errorMessage={
               trafficQuery.isError
-                ? getApiErrorMessage(trafficQuery.error, analyticsText.loadFailed)
+                ? getLocalizedApiErrorMessage(trafficQuery.error, t, analyticsText.loadFailed)
                 : undefined
             }
             unavailableText={

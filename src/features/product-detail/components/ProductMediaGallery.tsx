@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { motion } from "motion/react";
 import FallbackImage from "@/components/common/images/FallbackImage";
-import { isVideoMediaUrl } from "@/lib/media";
+import { isVideoMediaUrl } from "@/lib/config/media";
 import type { ShrimpDetail } from "@/types/shrimp";
 
 interface ProductMediaGalleryProps {
