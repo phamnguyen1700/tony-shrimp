@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { Translations } from "@/i18n";
 import { routes } from "@/config/routes";
-import { drawerSlide } from "@/lib/motionVariants";
+import { drawerSlide } from "@/lib/config/motionVariants";
 import AdminNotificationShortcut from "./notifications/AdminNotificationShortcut";
 
 interface Props {

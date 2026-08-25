@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import FallbackImage from "@/components/common/images/FallbackImage";
-import { isVideoMediaUrl } from "@/lib/media";
-import { formatOrderMoney } from "@/lib/orderFormat";
+import { isVideoMediaUrl } from "@/lib/config/media";
+import { formatOrderMoney } from "@/lib/order/format";
 import type { OrderDetail } from "@/types/order";
 
 interface OrderItemsListProps {

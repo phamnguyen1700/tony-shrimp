@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { isValidAustralianPhone, normalizeAustralianPhone } from "@/lib/australianPhone";
+import { isValidAustralianPhone, normalizeAustralianPhone } from "@/lib/user/australianPhone";
 
 const nullableTrimmedString = (max: number) =>
   z

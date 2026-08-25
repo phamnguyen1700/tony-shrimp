@@ -1,5 +1,5 @@
 import { routes } from "@/config/routes";
-import { markdownToDescriptionDraft } from "@/lib/shrimpDescription";
+import { markdownToDescriptionDraft } from "@/lib/shrimp/description";
 import type { ShrimpDetail } from "@/types/shrimp";
 import {
   absoluteUrl,
@@ -9,7 +9,7 @@ import {
   siteName,
   siteShortName,
   siteUrl,
-} from "./seo";
+} from "./metadata";
 
 const australiaCountryCode = "AU";
 const shippingRateAud = "25";

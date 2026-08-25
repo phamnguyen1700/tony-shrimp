@@ -1,35 +1,71 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import PageHero from "@/components/common/layout/PageHero";
 import AppBreadcrumb from "@/components/common/navigation/AppBreadcrumb";
 import { routes } from "@/config/routes";
-import { fadeUp, staggerContainer } from "@/lib/motionVariants";
+import { fadeUp, staggerContainer } from "@/lib/config/motionVariants";
 import { useAppRuntime } from "@/providers/AppProviders";
 import AboutAccordionList from "./components/AboutAccordionList";
+
+const aboutSectionIds = new Set(["shipping", "live-arrival", "doa", "contact"]);
 
 export default function AboutFeature() {
   const { t, lang } = useAppRuntime();
   const reduced = useReducedMotion();
   const [activeHash, setActiveHash] = useState("");
+  const scrollTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
+    const scrollToSection = (sectionId: string) => {
+      if (scrollTimeoutRef.current) {
+        window.clearTimeout(scrollTimeoutRef.current);
+      }
+
+      scrollTimeoutRef.current = window.setTimeout(() => {
+        document
+          .getElementById(sectionId)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 280);
+    };
+
     const syncHash = () => {
-      const nextHash = window.location.hash.replace("#", "");
+      const nextHash = decodeURIComponent(window.location.hash.replace("#", ""));
       setActiveHash(nextHash);
 
-      if (nextHash) {
-        window.setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }, 120);
+      if (aboutSectionIds.has(nextHash)) {
+        scrollToSection(nextHash);
+      }
+    };
+
+    const syncSamePageHashLink = (event: MouseEvent) => {
+      const link = (event.target as Element | null)?.closest("a[href]");
+      if (!link || !(link instanceof HTMLAnchorElement)) return;
+
+      const url = new URL(link.href);
+      const nextHash = decodeURIComponent(url.hash.replace("#", ""));
+
+      if (
+        url.pathname === window.location.pathname &&
+        aboutSectionIds.has(nextHash)
+      ) {
+        setActiveHash(nextHash);
+        scrollToSection(nextHash);
       }
     };
 
     syncHash();
     window.addEventListener("hashchange", syncHash);
+    document.addEventListener("click", syncSamePageHashLink);
 
-    return () => window.removeEventListener("hashchange", syncHash);
+    return () => {
+      if (scrollTimeoutRef.current) {
+        window.clearTimeout(scrollTimeoutRef.current);
+      }
+      window.removeEventListener("hashchange", syncHash);
+      document.removeEventListener("click", syncSamePageHashLink);
+    };
   }, []);
 
   return (

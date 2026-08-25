@@ -11,7 +11,7 @@ import {
   useOwnerUsers,
   useUpdateOwnerUserRole,
 } from "@/hooks/customer";
-import { normalizeUserRole } from "@/lib/authAccess";
+import { normalizeUserRole } from "@/lib/user/authAccess";
 import { useAppRuntime } from "@/providers/AppProviders";
 import { useAuthStore } from "@/store/authStore";
 import CustomerAddressDialog from "./components/CustomerAddressDialog";

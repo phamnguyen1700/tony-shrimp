@@ -16,8 +16,9 @@ import {
   useUserAddresses,
   useUserProfile,
 } from "@/hooks/user";
-import { normalizeAustralianPhone } from "@/lib/australianPhone";
-import { savePendingOrderId } from "@/lib/pendingOrder";
+import { normalizeAustralianPhone } from "@/lib/user/australianPhone";
+import { savePendingOrderId } from "@/lib/order/pending";
+import { isHighQualityCartItem } from "@/lib/shrimp/highQuality";
 import { createUserAddressSchema } from "@/schema/user";
 import { useAuthStore } from "@/store/authStore";
 import { useCart } from "@/store/cartStore";
@@ -96,6 +97,11 @@ export default function CartFeature() {
     0,
   );
   const hasOutOfStockItems = outOfStockLineIds.length > 0;
+  const highQualityLineIds = useMemo(
+    () => items.filter(isHighQualityCartItem).map((item) => item.lineId),
+    [items],
+  );
+  const hasHighQualityItems = highQualityLineIds.length > 0;
   const shipping = purchasableItems.length > 0 ? 25 : 0;
   const total = reconciledSubtotal + shipping;
   const addresses = addressesQuery.data ?? [];
@@ -129,6 +135,11 @@ export default function CartFeature() {
     useAddressLocalityCheck(addressLocalityQuery);
 
   function order() {
+    if (hasHighQualityItems) {
+      toast.error(t.product.highQualityContactOnly);
+      return;
+    }
+
     if (!user) {
       const query = searchParams.toString();
       const redirectTo = `/cart${query ? `?${query}` : ""}`;
@@ -156,8 +167,13 @@ export default function CartFeature() {
   }
 
   function requestPlaceOrder() {
+    if (hasHighQualityItems) {
+      toast.error(t.product.highQualityContactOnly);
+      return;
+    }
+
     if (hasOutOfStockItems) {
-      toast.error("Remove or update out-of-stock items before checkout.");
+      toast.error(t.apiErrors.removeOutOfStockBeforeCheckout);
       return;
     }
 
@@ -173,7 +189,7 @@ export default function CartFeature() {
   async function confirmPlaceOrder() {
     try {
       if (hasOutOfStockItems) {
-        toast.error("Remove or update out-of-stock items before checkout.");
+        toast.error(t.apiErrors.removeOutOfStockBeforeCheckout);
         setConfirmOrderOpen(false);
         return;
       }
@@ -181,8 +197,15 @@ export default function CartFeature() {
       const legacyItem = items.find((item) => !item.variantId);
       if (legacyItem) {
         toast.error(
-          `${legacyItem.name} needs to be added to cart again before ordering.`,
+          t.apiErrors.legacyCartItem.replace("{name}", legacyItem.name),
         );
+        setConfirmOrderOpen(false);
+        return;
+      }
+
+      const highQualityItem = items.find(isHighQualityCartItem);
+      if (highQualityItem) {
+        toast.error(t.product.highQualityContactOnly);
         setConfirmOrderOpen(false);
         return;
       }
@@ -314,6 +337,13 @@ export default function CartFeature() {
       current.filter((lineId) => items.some((item) => item.lineId === lineId)),
     );
   }, [items]);
+
+  useEffect(() => {
+    if (highQualityLineIds.length === 0) return;
+
+    highQualityLineIds.forEach(removeItem);
+    toast.error(t.product.highQualityContactOnly);
+  }, [highQualityLineIds, removeItem, t.product.highQualityContactOnly]);
 
   function removeCartItem(lineId: string) {
     setOutOfStockLineIds((current) =>

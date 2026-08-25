@@ -11,9 +11,9 @@ import {
   getPendingPaymentCopy,
   isPaidOrder,
   isPendingPaymentOrder,
-} from "@/lib/orderPayment";
-import { clearPendingOrderId } from "@/lib/pendingOrder";
-import { formatOrderDate, formatOrderMoney, getOrderStatusLabel } from "@/lib/orderFormat";
+} from "@/lib/payment/orderPayment";
+import { clearPendingOrderId } from "@/lib/order/pending";
+import { formatOrderDate, formatOrderMoney, getOrderStatusLabel } from "@/lib/order/format";
 import { useAppRuntime } from "@/providers/AppProviders";
 import { useCart } from "@/store/cartStore";
 import Badge from "@/components/ui/Badge";

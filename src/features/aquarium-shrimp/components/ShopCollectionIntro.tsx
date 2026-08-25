@@ -1,10 +1,39 @@
+import Link from "next/link";
+
 import type { Translations } from "@/i18n";
 
 type ShopCollectionIntroContent =
   Translations["shop"]["collections"][keyof Translations["shop"]["collections"]];
+type ShopCollectionIntroContentWithLink = ShopCollectionIntroContent & {
+  titleLinkHref?: string;
+  titleLinkText?: string;
+};
 
 interface ShopCollectionIntroProps {
-  intro: ShopCollectionIntroContent;
+  intro: ShopCollectionIntroContentWithLink;
+}
+
+function renderIntroTitle(intro: ShopCollectionIntroContentWithLink) {
+  const { title, titleLinkHref, titleLinkText } = intro;
+
+  if (!titleLinkHref || !titleLinkText || !title.includes(titleLinkText)) {
+    return title;
+  }
+
+  const [beforeLink, afterLink] = title.split(titleLinkText);
+
+  return (
+    <>
+      {beforeLink}
+      <Link
+        href={titleLinkHref}
+        className="underline decoration-current underline-offset-4 transition-colors hover:text-accent"
+      >
+        {titleLinkText}
+      </Link>
+      {afterLink}
+    </>
+  );
 }
 
 export default function ShopCollectionIntro({ intro }: ShopCollectionIntroProps) {
@@ -16,7 +45,7 @@ export default function ShopCollectionIntro({ intro }: ShopCollectionIntroProps)
             {intro.eyebrow}
           </p>
           <h2 className="mt-2 font-serif text-xl italic leading-snug text-foreground md:text-2xl">
-            {intro.title}
+            {renderIntroTitle(intro)}
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-foreground/72">
             {intro.body}

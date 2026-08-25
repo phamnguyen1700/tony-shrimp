@@ -1,7 +1,7 @@
 import JsonLd from "@/components/common/seo/JsonLd";
 import AboutFeature from "@/features/about";
-import { createPageMetadata } from "@/lib/seo";
-import { createBreadcrumbItems, createBreadcrumbJsonLd } from "@/lib/structuredData";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import { createBreadcrumbItems, createBreadcrumbJsonLd } from "@/lib/seo/structuredData";
 
 export const metadata = createPageMetadata({
   title: "About Tony Shrimp",

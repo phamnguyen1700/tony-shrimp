@@ -1,5 +1,6 @@
 import { routes } from "@/config/routes";
-import { emptyShopFilters } from "@/lib/shrimpFilters";
+import { emptyShopFilters } from "@/lib/shrimp/filters";
+import { highQualityGradeFilter } from "@/lib/shrimp/highQuality";
 import type { ShopFilters, ShrimpListQuery } from "@/types/shrimp";
 
 export interface ShrimpCollectionConfig {
@@ -21,6 +22,16 @@ export interface ShrimpCollectionLink {
 const collectionBaseFilters = emptyShopFilters;
 
 export const shrimpCollectionConfigs = [
+  {
+    slug: "high-quality-shrimp",
+    navLabel: "High Quality Shrimp",
+    title: "High Quality Aquarium Shrimp Australia",
+    heading: "High Quality Shrimp",
+    description:
+      "Browse high quality aquarium shrimp from Tony Shrimp in Victoria, Australia. Selected high grade, SS and SSS shrimp are available by direct contact.",
+    query: { limit: 24, grade: highQualityGradeFilter },
+    filters: collectionBaseFilters,
+  },
   {
     slug: "rare-shrimp",
     navLabel: "Rare Shrimp",

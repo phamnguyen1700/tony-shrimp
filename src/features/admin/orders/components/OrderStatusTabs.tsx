@@ -1,5 +1,5 @@
 import type { Translations } from "@/i18n";
-import { getOrderStatusLabel } from "@/lib/orderFormat";
+import { getOrderStatusLabel } from "@/lib/order/format";
 import type { OrderStatus } from "@/types/order";
 
 interface Props {

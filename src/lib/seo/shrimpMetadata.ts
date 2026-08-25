@@ -1,5 +1,5 @@
 import type { ShrimpDetail } from "@/types/shrimp";
-import { siteShortName } from "./seo";
+import { siteShortName } from "./metadata";
 
 const metaDescriptionMaxLength = 160;
 const metaDescriptionPreferredCut = 150;

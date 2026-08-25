@@ -1,6 +1,6 @@
 import "@/index.css";
 import AppProviders from "@/providers/AppProviders";
-import { createRootMetadata } from "@/lib/seo";
+import { createRootMetadata } from "@/lib/seo/metadata";
 
 export const metadata = createRootMetadata();
 

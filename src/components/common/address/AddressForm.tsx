@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
 import MotionButton from "@/components/common/motion/MotionButton";
-import { formatAustralianPhoneInput } from "@/lib/australianPhone";
+import { formatAustralianPhoneInput } from "@/lib/user/australianPhone";
 import Input from "@/components/ui/Input";
 import type { Translations } from "@/i18n";
 import type { AddressLocalityCheckResponse, AddressSuburbSuggestion } from "@/types/user";

@@ -4,9 +4,9 @@ import AddToCartMotion from "@/components/common/motion/AddToCartMotion";
 import FallbackImage from "@/components/common/images/FallbackImage";
 import { routes } from "@/config/routes";
 import type { Translations } from "@/i18n";
-import { isVideoMediaUrl } from "@/lib/media";
-import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
-import { getShrimpListPrice } from "@/lib/shrimpVariantPricing";
+import { isVideoMediaUrl } from "@/lib/config/media";
+import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from "@/lib/shrimp/badgeStyles";
+import { getShrimpListPrice } from "@/lib/shrimp/variantPricing";
 import Badge, { StatusDot } from "@/components/ui/Badge";
 import type { ShrimpListItem } from "@/types/shrimp";
 
@@ -16,8 +16,10 @@ interface ShopProductCardProps {
   hovered: boolean;
   addDisabled: boolean;
   addLabel: string;
+  isHighQuality: boolean;
   onHover: (id: string | null) => void;
   onAddToCart: (product: ShrimpListItem) => void;
+  onContact: () => void;
 }
 
 export default function ShopProductCard({
@@ -26,8 +28,10 @@ export default function ShopProductCard({
   hovered,
   addDisabled,
   addLabel,
+  isHighQuality,
   onHover,
   onAddToCart,
+  onContact,
 }: ShopProductCardProps) {
   const price = getShrimpListPrice(product);
   const speciesAndType = [product.species, product.line].filter(Boolean);
@@ -66,28 +70,42 @@ export default function ShopProductCard({
                 exit={{ opacity: 0, y: 4 }}
                 transition={{ duration: 0.18 }}
               >
-                <AddToCartMotion
-                  className="w-full"
-                  disabled={addDisabled}
-                  imageUrl={product.primary_image_url}
-                  label={product.name}
-                  onAddToCart={() => onAddToCart(product)}
-                >
-                  {({ disabled, onClick }) => (
-                    <button
-                      onClick={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        void onClick();
-                      }}
-                      disabled={disabled}
-                      className="w-full bg-accent py-2 font-mono-label text-[11px] uppercase tracking-[0.16em] text-accent-foreground transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-40"
-                      style={{ borderRadius: "var(--radius)" }}
-                    >
-                      {addLabel}
-                    </button>
-                  )}
-                </AddToCartMotion>
+                {isHighQuality ? (
+                  <button
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      onContact();
+                    }}
+                    className="w-full bg-accent py-2 font-mono-label text-[11px] uppercase tracking-[0.16em] text-accent-foreground transition-colors hover:bg-accent/90"
+                    style={{ borderRadius: "var(--radius)" }}
+                  >
+                    {t.product.contactUs}
+                  </button>
+                ) : (
+                  <AddToCartMotion
+                    className="w-full"
+                    disabled={addDisabled}
+                    imageUrl={product.primary_image_url}
+                    label={product.name}
+                    onAddToCart={() => onAddToCart(product)}
+                  >
+                    {({ disabled, onClick }) => (
+                      <button
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          void onClick();
+                        }}
+                        disabled={disabled}
+                        className="w-full bg-accent py-2 font-mono-label text-[11px] uppercase tracking-[0.16em] text-accent-foreground transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-40"
+                        style={{ borderRadius: "var(--radius)" }}
+                      >
+                        {addLabel}
+                      </button>
+                    )}
+                  </AddToCartMotion>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

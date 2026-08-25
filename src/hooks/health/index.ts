@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { getApiErrorMessage } from "@/config/api";
+import { getLocalizedApiErrorMessage } from "@/lib/config/apiErrorMessages";
+import { useAppRuntime } from "@/providers/AppProviders";
 import { healthService } from "@/services/health";
 
 export const healthQueryKeys = {
@@ -9,6 +10,7 @@ export const healthQueryKeys = {
 };
 
 export function useHealthCheck() {
+  const { t } = useAppRuntime();
   const query = useQuery({
     queryKey: healthQueryKeys.check,
     queryFn: healthService.check,
@@ -18,8 +20,8 @@ export function useHealthCheck() {
   useEffect(() => {
     if (!query.error) return;
 
-    toast.error(getApiErrorMessage(query.error, "Backend unavailable."));
-  }, [query.error]);
+    toast.error(getLocalizedApiErrorMessage(query.error, t, t.apiErrors.backendUnavailable));
+  }, [query.error, t]);
 
   return query;
 }

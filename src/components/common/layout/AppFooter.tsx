@@ -70,15 +70,18 @@ export default function AppFooter({ t }: AppFooterProps) {
               </div>
             </div>
           </div>
-          <div className="min-h-48 overflow-hidden border border-white/10 bg-[#080b08]" style={{ borderRadius: "var(--radius)" }}>
+          <div
+            className="min-h-48 overflow-hidden border border-white/10 bg-[#080b08]"
+            style={{ borderRadius: "var(--radius)" }}
+          >
             <GoogleMapEmbed className="h-48 w-full border-0 grayscale md:h-full" />
           </div>
         </div>
-        <div className="mt-12 flex flex-col justify-between gap-3 border-t border-white/10 pt-8 md:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-8 text-center md:flex-row md:items-start md:text-left">
           <p className="font-mono-label text-xs uppercase tracking-widest text-[#9da29a]/75">
-            © 2026 Tony Shrimp Australia. All rights reserved.
+            © 2025 Tony Shrimp Australia. All rights reserved.
           </p>
-          <p className="font-mono-label text-xs uppercase tracking-widest text-[#9da29a]/65">
+          <p className="font-mono-label text-xs uppercase tracking-widest text-[#9da29a]/65 md:text-right">
             Australia-wide shipping · Live arrival guarantee
           </p>
         </div>

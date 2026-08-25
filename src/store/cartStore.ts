@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist, type StateStorage } from "zustand/middleware";
+import { isHighQualityCartItem } from "@/lib/shrimp/highQuality";
 import type { CartItem } from "@/types/cart";
 
 interface CartState {
@@ -11,6 +12,10 @@ interface CartState {
   updateQuantity: (lineId: string, quantity: number) => void;
   clearCart: () => void;
 }
+
+type PersistedCartState = {
+  items?: CartItem[];
+};
 
 function getCartLineId(item: Pick<CartItem, "productId" | "variantId">) {
   return `${item.productId}:${item.variantId}`;
@@ -42,6 +47,8 @@ export const useCartStore = create<CartState>()(
       items: [],
       addItem: (item, quantity = 1) =>
         set((state) => {
+          if (isHighQualityCartItem(item)) return state;
+
           const lineId = getCartLineId(item);
           const existing = state.items.find((current) => current.lineId === lineId);
           return {
@@ -67,8 +74,15 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: "tony-cart",
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => legacyCompatibleStorage),
+      migrate: (persistedState) => {
+        const state = persistedState as PersistedCartState;
+        return {
+          ...state,
+          items: (state.items ?? []).filter((item) => !isHighQualityCartItem(item)),
+        };
+      },
       partialize: (state) => ({ items: state.items }),
     },
   ),

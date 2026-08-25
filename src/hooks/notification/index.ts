@@ -3,9 +3,10 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { getApiErrorMessage } from "@/config/api";
 import { endpoints } from "@/config/endpoints";
 import { env } from "@/config/env";
+import { getLocalizedApiErrorMessage } from "@/lib/config/apiErrorMessages";
+import { useAppRuntime } from "@/providers/AppProviders";
 import { ownerNotificationListQuerySchema } from "@/schema/notification";
 import { notificationService } from "@/services/notification";
 import type {
@@ -42,6 +43,7 @@ export function useOwnerNotifications(params?: OwnerNotificationListQuery, enabl
 
 export function useMarkOwnerNotificationRead() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (notificationId: string) =>
@@ -49,19 +51,20 @@ export function useMarkOwnerNotificationRead() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["owner", "notifications"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not mark notification read.")),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.markNotificationReadFailed)),
   });
 }
 
 export function useMarkAllOwnerNotificationsRead() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: () => notificationService.markAllOwnerNotificationsRead(),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["owner", "notifications"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not mark notifications read.")),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.markNotificationsReadFailed)),
   });
 }
 

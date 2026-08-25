@@ -8,7 +8,7 @@ import { AlertCircle, ClipboardList, CreditCard, Loader2, PackageCheck, ShieldCh
 import MotionButton from "@/components/common/motion/MotionButton";
 import { routes } from "@/config/routes";
 import { useCancelOrder, useContinuePayment, useOrderByPaymentSession } from "@/hooks/order";
-import { clearPendingOrderId } from "@/lib/pendingOrder";
+import { clearPendingOrderId } from "@/lib/order/pending";
 import { useAppRuntime } from "@/providers/AppProviders";
 import { useCart } from "@/store/cartStore";
 import type { OrderDetail } from "@/types/order";

@@ -1,5 +1,5 @@
 import Badge from "@/components/ui/Badge";
-import { rarityBadgeClass, traitBadgeClass } from "@/lib/shrimpBadgeStyles";
+import { rarityBadgeClass, traitBadgeClass } from "@/lib/shrimp/badgeStyles";
 import type { ShrimpDetail } from "@/types/shrimp";
 
 interface ProductBadgeListProps {

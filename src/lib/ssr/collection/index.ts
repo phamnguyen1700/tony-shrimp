@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { createPageMetadata } from "@/lib/seo";
+import { createPageMetadata } from "@/lib/seo/metadata";
 import { shrimpService } from "@/services/shrimp";
-import type { ShrimpCollectionConfig } from "@/lib/shrimpCollectionConfig";
+import type { ShrimpCollectionConfig } from "@/lib/shrimp/collectionConfig";
 import type { ShrimpListItem, ShrimpListQuery } from "@/types/shrimp";
 
 export {
@@ -9,7 +9,7 @@ export {
   getShrimpCollectionStaticParams,
   shrimpCollectionConfigs,
   type ShrimpCollectionConfig,
-} from "@/lib/shrimpCollectionConfig";
+} from "@/lib/shrimp/collectionConfig";
 
 export const catalogInitialQuery = {
   limit: 24,

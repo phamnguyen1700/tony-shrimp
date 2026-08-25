@@ -1,5 +1,5 @@
 import type { Translations } from "@/i18n";
-import { formatOrderDate, formatOrderMoney } from "@/lib/orderFormat";
+import { formatOrderDate, formatOrderMoney } from "@/lib/order/format";
 import type { OrderDetail } from "@/types/order";
 
 interface OrderDetailSummaryProps {

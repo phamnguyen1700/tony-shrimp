@@ -2,10 +2,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import toast from "react-hot-toast";
 import {
-  getApiErrorMessage,
   getInsufficientStockItems,
   isOrderActionUnavailableError,
 } from "@/config/api";
+import { getLocalizedApiErrorMessage } from "@/lib/config/apiErrorMessages";
+import { useAppRuntime } from "@/providers/AppProviders";
 import {
   createOrderSchema,
   orderListQuerySchema,
@@ -32,6 +33,7 @@ export const orderQueryKeys = {
 
 export function useCreateOrder() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (payload: CreateOrderPayload) =>
@@ -47,12 +49,10 @@ export function useCreateOrder() {
     onError: (error) => {
       const stockItems = getInsufficientStockItems(error);
       if (stockItems) {
-        toast.error(
-          "We apologize for the inconvenience because some items in your cart are out of stock.",
-        );
+        toast.error(t.apiErrors.insufficientStock);
         return;
       }
-      toast.error(getApiErrorMessage(error, "Could not place order."));
+      toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.placeOrderFailed));
     },
   });
 }
@@ -95,6 +95,7 @@ export function useOrderByPaymentSession(sessionId: string, enabled = true) {
 
 export function useContinuePayment(orderId: string) {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: () => orderService.continuePayment(orderId),
@@ -113,8 +114,8 @@ export function useContinuePayment(orderId: string) {
 
       toast.error(
         isOrderActionUnavailableError(error)
-          ? "This payment is no longer available. Please review the order status."
-          : getApiErrorMessage(error, "Could not continue payment."),
+          ? t.apiErrors.paymentUnavailable
+          : getLocalizedApiErrorMessage(error, t, t.apiErrors.continuePaymentFailed),
       );
     },
   });
@@ -122,6 +123,7 @@ export function useContinuePayment(orderId: string) {
 
 export function useCancelOrder(orderId: string) {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: () => orderService.cancelOrder(orderId),
@@ -138,8 +140,8 @@ export function useCancelOrder(orderId: string) {
 
       toast.error(
         isOrderActionUnavailableError(error)
-          ? "This order is already no longer cancellable. Refreshing the latest status."
-          : getApiErrorMessage(error, "Could not cancel order."),
+          ? t.apiErrors.orderNoLongerCancellable
+          : getLocalizedApiErrorMessage(error, t, t.apiErrors.cancelOrderFailed),
       );
     },
   });
@@ -163,6 +165,8 @@ export function useOwnerOrderDetail(orderId: string) {
 }
 
 export function useUpdateOwnerOrderStatus(orderId: string) {
+  const { t } = useAppRuntime();
+
   return useOwnerOrderMutation(
     (payload: UpdateOwnerOrderStatusPayload) =>
       orderService.updateOwnerOrderStatus(
@@ -170,7 +174,7 @@ export function useUpdateOwnerOrderStatus(orderId: string) {
         updateOwnerOrderStatusSchema.parse(payload),
       ),
     "Order status updated.",
-    "Could not update order status.",
+    t.apiErrors.updateOrderStatusFailed,
   );
 }
 
@@ -182,6 +186,7 @@ function useOwnerOrderMutation<TPayload>(
   errorMessage: string,
 ) {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn,
@@ -190,6 +195,6 @@ function useOwnerOrderMutation<TPayload>(
       queryClient.setQueryData(orderQueryKeys.ownerDetail(order.id), order);
       void queryClient.invalidateQueries({ queryKey: ["owner", "orders"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, errorMessage)),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, errorMessage)),
   });
 }

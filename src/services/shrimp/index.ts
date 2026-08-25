@@ -4,6 +4,7 @@ import { endpoints } from "@/config/endpoints";
 import type {
   CatalogOptions,
   CreateShrimpPayload,
+  OwnerShrimpListItem,
   OwnerShrimpListQuery,
   PresignShrimpImageUploadPayload,
   PresignShrimpImageUploadResponse,
@@ -45,7 +46,7 @@ export const shrimpService = {
   },
 
   async listOwnerShrimp(params?: OwnerShrimpListQuery) {
-    const response = await apiClient.get<ShrimpListItem[]>(endpoints.ownerCatalog.shrimp, {
+    const response = await apiClient.get<OwnerShrimpListItem[]>(endpoints.ownerCatalog.shrimp, {
       params,
     });
     return response.data;

@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import MotionButton from "@/components/common/motion/MotionButton";
 import type { Translations } from "@/i18n";
-import { formatOrderDateTime, getOrderStatusLabel } from "@/lib/orderFormat";
+import { formatOrderDateTime, getOrderStatusLabel } from "@/lib/order/format";
 import type { OrderDetail, OrderStatus } from "@/types/order";
 
 interface AdminOrderTimelineProps {

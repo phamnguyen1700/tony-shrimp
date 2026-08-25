@@ -1,8 +1,8 @@
 import { motion } from "motion/react";
 import Badge from "@/components/ui/Badge";
 import type { Translations } from "@/i18n";
-import { getPaymentStatusLabel, isPaidOrder } from "@/lib/orderPayment";
-import { formatOrderDateTime, getOrderStatusLabel } from "@/lib/orderFormat";
+import { getPaymentStatusLabel, isPaidOrder } from "@/lib/payment/orderPayment";
+import { formatOrderDateTime, getOrderStatusLabel } from "@/lib/order/format";
 import { useAppRuntime } from "@/providers/AppProviders";
 import type { OrderDetail, OrderStatus } from "@/types/order";
 

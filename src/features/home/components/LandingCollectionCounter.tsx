@@ -1,21 +1,25 @@
 import type { Translations } from "@/i18n";
+import type { LandingCollectionKind } from "@/types/landing";
 
 interface LandingCollectionCounterProps {
   t: Translations;
   activeIndex: number;
   total: number;
-  isRareCollection: boolean;
+  collectionKind: LandingCollectionKind;
 }
 
 export default function LandingCollectionCounter({
   t,
   activeIndex,
   total,
-  isRareCollection,
+  collectionKind,
 }: LandingCollectionCounterProps) {
-  const title = isRareCollection
-    ? t.landing.rareCollectionTitle
-    : t.landing.collectionTitle;
+  const collectionTitles: Record<LandingCollectionKind, string> = {
+    "high-quality": t.landing.highQualityCollectionTitle,
+    rare: t.landing.rareCollectionTitle,
+    top: t.landing.collectionTitle,
+  };
+  const title = collectionTitles[collectionKind];
 
   return (
     <span className="font-mono-label text-xs tracking-[0.24em] uppercase text-white/30">

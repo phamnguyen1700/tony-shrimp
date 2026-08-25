@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "motion/react";
 import type { Translations } from "@/i18n";
-import { bottomSheetSlide } from "@/lib/motionVariants";
+import { bottomSheetSlide } from "@/lib/config/motionVariants";
 import MotionButton from "@/components/common/motion/MotionButton";
-import type { ShrimpCollectionLink } from "@/lib/shrimpCollectionConfig";
+import type { ShrimpCollectionLink } from "@/lib/shrimp/collectionConfig";
 import type { CatalogOptions, ShopFilters } from "@/types/shrimp";
 import ShopFilterPanel from "./ShopFilterPanel";
 
@@ -53,23 +53,11 @@ export default function ShopMobileFilterSheet({
             exit="exit"
           >
             <div className="p-6">
-              <div className="mb-6 flex items-center justify-between">
-                <p className="font-mono-label text-xs uppercase tracking-[0.16em] text-foreground">
-                  {t.shop.filters}
-                </p>
-                <button
-                  onClick={onClose}
-                  className="p-1 text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path
-                      d="M1 1L13 13M13 1L1 13"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
+              <div className="mb-6 flex justify-center">
+                <span
+                  className="h-px w-10 bg-muted-foreground/60"
+                  aria-hidden
+                />
               </div>
               <ShopFilterPanel
                 filters={filters}
@@ -77,6 +65,7 @@ export default function ShopMobileFilterSheet({
                 options={options}
                 collectionLinks={collectionLinks}
                 activeCollectionSlug={activeCollectionSlug}
+                showCollections={false}
                 onToggle={onToggle}
               />
               <div className="mt-6 flex gap-3">

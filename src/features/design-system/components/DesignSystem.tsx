@@ -9,8 +9,8 @@ import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import { getShrimpImage } from '@/assets/images'
 import { shrimpProducts } from '@/data/shrimp'
-import { fadeUp, fadeIn, modalScale, staggerContainer, staggerFast } from '@/lib/motionVariants'
-import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from '@/lib/shrimpBadgeStyles'
+import { fadeUp, fadeIn, modalScale, staggerContainer, staggerFast } from '@/lib/config/motionVariants'
+import { gradeBadgeClass, rarityBadgeClass, traitBadgeClass } from '@/lib/shrimp/badgeStyles'
 
 interface Props {
   t: Translations

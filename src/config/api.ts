@@ -106,13 +106,20 @@ export function normalizeApiError(error: unknown) {
       typeof data.detail === "object" &&
       !Array.isArray(data.detail)
     ) {
-      const structured = data.detail as { error?: string; items?: unknown };
+      const structured = data.detail as {
+        error?: string;
+        items?: unknown;
+        message?: unknown;
+      };
       if (structured.error === "INSUFFICIENT_STOCK") {
         return new ApiError(
-          "Một số sản phẩm trong đơn không đủ số lượng trong kho.",
+          structured.error,
           status,
           structured,
         );
+      }
+      if (structured.error === "CONTACT_ONLY_ITEM") {
+        return new ApiError(structured.error, status, structured);
       }
     }
     const detailMessage = getDetailMessage(data?.detail);

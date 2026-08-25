@@ -15,15 +15,15 @@ import {
   useUserAddresses,
   useUserProfile,
 } from "@/hooks/user";
-import { getApiErrorMessage } from "@/config/api";
+import { getLocalizedApiErrorMessage } from "@/lib/config/apiErrorMessages";
 import { createUserAddressSchema } from "@/schema/user";
-import { normalizeAustralianPhone } from "@/lib/australianPhone";
+import { normalizeAustralianPhone } from "@/lib/user/australianPhone";
 import { motion, useReducedMotion } from "motion/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { ZodError } from "zod";
 import { useAuthStore } from "@/store/authStore";
-import { getPostLoginRedirect } from "@/lib/authAccess";
+import { getPostLoginRedirect } from "@/lib/user/authAccess";
 import AccountAddressesPanel from "./components/AccountAddressesPanel";
 import AccountHeader from "./components/AccountHeader";
 import AccountLoginForm, { type LoginStep } from "./components/AccountLoginForm";
@@ -132,7 +132,7 @@ export default function AccountFeature() {
       setLoginEmail(normalizedEmail);
       setLoginStep("code");
     } catch (error) {
-      setAuthError(getApiErrorMessage(error, "Could not send login code."));
+      setAuthError(getLocalizedApiErrorMessage(error, t, t.apiErrors.sendCodeFailed));
     }
   }
 
@@ -143,7 +143,7 @@ export default function AccountFeature() {
       const signedInUser = await verifyOtpMutation.mutateAsync({ email: loginEmail, code });
       router.replace(redirect ?? getPostLoginRedirect(signedInUser));
     } catch (error) {
-      setAuthError(getApiErrorMessage(error, "Could not verify login code."));
+      setAuthError(getLocalizedApiErrorMessage(error, t, t.apiErrors.verifyCodeFailed));
     }
   }
 

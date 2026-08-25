@@ -5,7 +5,9 @@ import { motion, useReducedMotion } from "motion/react";
 import AppBreadcrumb from "@/components/common/navigation/AppBreadcrumb";
 import { routes } from "@/config/routes";
 import { useShrimpDetailBySlug, useShrimpList } from "@/hooks/shrimp";
-import { fadeIn, fadeUp, staggerContainer } from "@/lib/motionVariants";
+import { fadeIn, fadeUp, staggerContainer } from "@/lib/config/motionVariants";
+import { facebookUrl } from "@/lib/seo/metadata";
+import { isHighQualityShrimp } from "@/lib/shrimp/highQuality";
 import { useAppRuntime } from "@/providers/AppProviders";
 import { useCart } from "@/store/cartStore";
 import ProductAccordions from "./components/ProductAccordions";
@@ -41,6 +43,7 @@ export default function ProductDetailFeature({
   const listQuery = useShrimpList({ limit: 24 }, { initialData: initialProducts });
 
   const product = detailQuery.data;
+  const isHighQuality = product ? isHighQualityShrimp(product) : false;
   const activeVariants =
     product?.variants.filter((variant) => variant.is_active) ?? [];
   const selectedVariant =
@@ -97,6 +100,7 @@ export default function ProductDetailFeature({
 
   function handleAddToCart() {
     if (!product || !selectedVariant) return;
+    if (isHighQuality) return;
     if (qty <= 0 || qty > maxAddable) return;
 
     addItem(
@@ -114,6 +118,10 @@ export default function ProductDetailFeature({
       },
       qty,
     );
+  }
+
+  function handleContact() {
+    window.open(facebookUrl, "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -177,7 +185,9 @@ export default function ProductDetailFeature({
               qty={qty}
               qtyInCart={qtyInCart}
               maxAddable={maxAddable}
+              isHighQuality={isHighQuality}
               onAddToCart={handleAddToCart}
+              onContact={handleContact}
               onDecreaseQty={() => setQty((value) => Math.max(1, value - 1))}
               onIncreaseQty={() =>
                 setQty((value) => Math.min(maxAddable, value + 1))

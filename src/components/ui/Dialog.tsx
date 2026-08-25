@@ -2,7 +2,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import type { ReactNode } from 'react'
 import { X } from 'lucide-react'
-import { modalScale } from '@/lib/motionVariants'
+import { modalScale } from '@/lib/config/motionVariants'
 
 interface Props {
   open: boolean

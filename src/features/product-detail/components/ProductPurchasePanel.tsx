@@ -15,7 +15,9 @@ interface ProductPurchasePanelProps {
   qtyInCart: number;
   /** Số lượng tối đa còn có thể thêm = stock_quantity - qtyInCart */
   maxAddable: number;
+  isHighQuality: boolean;
   onAddToCart: () => void;
+  onContact: () => void;
   onDecreaseQty: () => void;
   onIncreaseQty: () => void;
   onSelectVariant: (variantId: string) => void;
@@ -30,7 +32,9 @@ export default function ProductPurchasePanel({
   qty,
   qtyInCart,
   maxAddable,
+  isHighQuality,
   onAddToCart,
+  onContact,
   onDecreaseQty,
   onIncreaseQty,
   onSelectVariant,
@@ -65,6 +69,22 @@ export default function ProductPurchasePanel({
       </div>
 
       <div className="space-y-3">
+        {isHighQuality ? (
+          <>
+            <p className="font-mono-label text-[11px] uppercase leading-5 tracking-widest text-muted-foreground">
+              {t.product.highQualityContactOnly}
+            </p>
+            <MotionButton
+              variant="accent"
+              size="lg"
+              className="w-full"
+              onClick={onContact}
+            >
+              {t.product.contactUs}
+            </MotionButton>
+          </>
+        ) : (
+          <>
         <p className="mono-section-label">{t.product.quantity}</p>
         <div className="flex flex-row items-center gap-3">
           <select
@@ -124,6 +144,8 @@ export default function ProductPurchasePanel({
             </MotionButton>
           )}
         </AddToCartMotion>
+          </>
+        )}
       </div>
     </>
   );

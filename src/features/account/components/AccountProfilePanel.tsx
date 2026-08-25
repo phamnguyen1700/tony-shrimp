@@ -1,6 +1,6 @@
 import Input from "@/components/ui/Input";
 import MotionButton from "@/components/common/motion/MotionButton";
-import { formatAustralianPhoneInput } from "@/lib/australianPhone";
+import { formatAustralianPhoneInput } from "@/lib/user/australianPhone";
 import type { Translations } from "@/i18n";
 
 interface AccountProfilePanelProps {

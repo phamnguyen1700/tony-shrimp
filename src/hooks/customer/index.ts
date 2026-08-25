@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { getApiErrorMessage } from "@/config/api";
+import { getLocalizedApiErrorMessage } from "@/lib/config/apiErrorMessages";
+import { useAppRuntime } from "@/providers/AppProviders";
 import { ownerUserListQuerySchema, updateOwnerUserRoleSchema } from "@/schema/customer";
 import { customerService } from "@/services/customer";
 import type { OwnerUserListQuery, UpdateOwnerUserRolePayload } from "@/types/customer";
@@ -35,6 +36,7 @@ export function useOwnerUserDetail(userId: string | null) {
 
 export function useActivateOwnerUser() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (userId: string) => customerService.activateOwnerUser(validateId(userId)),
@@ -43,12 +45,13 @@ export function useActivateOwnerUser() {
       queryClient.setQueryData(customerQueryKeys.ownerUserDetail(user.id), user);
       void queryClient.invalidateQueries({ queryKey: ["owner", "users"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not activate user.")),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.activateUserFailed)),
   });
 }
 
 export function useDeactivateOwnerUser() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (userId: string) => customerService.deactivateOwnerUser(validateId(userId)),
@@ -57,12 +60,13 @@ export function useDeactivateOwnerUser() {
       queryClient.setQueryData(customerQueryKeys.ownerUserDetail(user.id), user);
       void queryClient.invalidateQueries({ queryKey: ["owner", "users"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not deactivate user.")),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.deactivateUserFailed)),
   });
 }
 
 export function useUpdateOwnerUserRole() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: ({ userId, payload }: { userId: string; payload: UpdateOwnerUserRolePayload }) =>
@@ -72,12 +76,13 @@ export function useUpdateOwnerUserRole() {
       queryClient.setQueryData(customerQueryKeys.ownerUserDetail(user.id), user);
       void queryClient.invalidateQueries({ queryKey: ["owner", "users"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not update user role.")),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.updateUserRoleFailed)),
   });
 }
 
 export function useHardDeleteOwnerUser() {
   const queryClient = useQueryClient();
+  const { t } = useAppRuntime();
 
   return useMutation({
     mutationFn: (userId: string) => customerService.hardDeleteOwnerUser(validateId(userId)),
@@ -86,7 +91,7 @@ export function useHardDeleteOwnerUser() {
       queryClient.removeQueries({ queryKey: customerQueryKeys.ownerUserDetail(userId) });
       void queryClient.invalidateQueries({ queryKey: ["owner", "users"] });
     },
-    onError: (error) => toast.error(getApiErrorMessage(error, "Could not permanently delete user.")),
+    onError: (error) => toast.error(getLocalizedApiErrorMessage(error, t, t.apiErrors.deleteUserFailed)),
   });
 }
 
